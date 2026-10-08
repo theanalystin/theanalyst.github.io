@@ -52,7 +52,7 @@ footer{padding:28px 0 45px;display:flex;justify-content:space-between;gap:20px;c
 </section>
 
 <section class="section" id="lesson">
-<div class="section-head"><div class="label">02 — Day 0</div><div><h2>Start with the mental model.</h2><p class="section-intro">Today is not about memorizing syntax. It is about understanding what a query is asking the database to produce.</p></div></div>
+<div class="section-head"><div class="label">02 — Day 0 · Deployed</div><div><h2>Start with the mental model.</h2><p class="section-intro">Today is not about memorizing syntax. It is about understanding what a query is asking the database to produce. Day 0 is your first complete lesson: learn the table model, write your first queries, validate the output, and build the habit of thinking in result sets.</p></div></div>
 <div class="lesson">
 <article class="lesson-card">
 <div class="label">Today's objective</div>
@@ -80,6 +80,16 @@ ORDER BY amount DESC
 LIMIT 5;</pre>
 <p>The database first identifies rows from <code class="inline">orders</code>, then returns the requested columns, sorts the result by amount from high to low, and keeps the first five rows.</p>
 </article>
+</div>
+</section>
+
+<section class="section" id="day0-practice">
+<div class="section-head"><div class="label">Day 0 — Practice</div><div><h2>Four checks before you move on.</h2><p class="section-intro">Use the practice engine below, then verify your thinking against the answer key. Do not optimize for speed on Day 0. Optimize for correctness.</p></div></div>
+<div class="guides">
+<article class="guide-card"><div class="label">01 · Question</div><h3>Inspect the table</h3><p>How many customers are in the <code class="inline">customers</code> table, and which countries do they belong to?</p><p><b>Answer:</b> 6 customers across India, Singapore and UAE.</p></article>
+<article class="guide-card"><div class="label">02 · Question</div><h3>Filter precisely</h3><p>Return the names of customers from India, alphabetically.</p><p><b>Answer:</b> Aarav Mehta, Isha Rao, Kabir Singh, Neha Shah.</p></article>
+<article class="guide-card"><div class="label">03 · Question</div><h3>Sort with intent</h3><p>Return the five largest orders with their amounts.</p><p><b>Answer:</b> 106/2100, 103/1850, 109/1725, 104/2750, 108/2650 — then notice why the exact expected order must come from your query rather than memory.</p></article>
+<article class="guide-card"><div class="label">04 · Challenge</div><h3>Write it yourself</h3><p>Return <code class="inline">order_id</code> and <code class="inline">amount</code> for orders above 2000, highest amount first.</p><p><b>Hint:</b> You need only <code class="inline">SELECT</code>, <code class="inline">FROM</code>, <code class="inline">WHERE</code> and <code class="inline">ORDER BY</code>.</p></article>
 </div>
 </section>
 
