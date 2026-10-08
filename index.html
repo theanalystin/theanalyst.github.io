@@ -33,10 +33,10 @@ footer{padding:24px 0 40px;display:flex;justify-content:space-between;gap:20px;c
 <section class="section" id="learn">
 <div class="section-head"><div class="label">Learning</div><div><h2>Learn one thing well.</h2><p class="section-intro">Use the tabs to move through the course without scrolling through a long page.</p></div></div>
 <div class="tabs" role="tablist">
-<button class="tab active" data-tab="today">Today</button>
-<button class="tab" data-tab="practice-tab">Practice</button>
-<button class="tab" data-tab="roadmap-tab">Roadmap</button>
-<button class="tab" data-tab="guide-tab">Guide</button>
+<button class="tab active" data-tab="today" role="tab" aria-selected="true">Today</button>
+<button class="tab" data-tab="practice-tab" role="tab" aria-selected="false">Practice</button>
+<button class="tab" data-tab="roadmap-tab" role="tab" aria-selected="false">Roadmap</button>
+<button class="tab" data-tab="guide-tab" role="tab" aria-selected="false">Guide</button>
 </div>
 <div class="tab-panel active" id="today"><section class="section" id="lesson">
 <div class="section-head"><div class="label">02 — Day 0 · Deployed</div><div><h2>Start with the mental model.</h2><p class="section-intro">Today is not about memorizing syntax. It is about understanding what a query is asking the database to produce. Day 0 is your first complete lesson: learn the table model, write your first queries, validate the output, and build the habit of thinking in result sets.</p></div></div>
@@ -134,7 +134,7 @@ ORDER BY name;</textarea>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.13.0/sql-wasm.js">
-const menuBtn=document.getElementById('menuBtn'),navMenu=document.getElementById('navMenu');menuBtn.addEventListener('click',()=>{const open=navMenu.classList.toggle('open');menuBtn.setAttribute('aria-expanded',open)});document.querySelectorAll('#navMenu a').forEach(a=>a.addEventListener('click',()=>navMenu.classList.remove('open')));document.querySelectorAll('.tab').forEach(tab=>tab.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t===tab));document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id===tab.dataset.tab))}));
+const menuBtn=document.getElementById('menuBtn'),navMenu=document.getElementById('navMenu');menuBtn.addEventListener('click',()=>{const open=navMenu.classList.toggle('open');menuBtn.setAttribute('aria-expanded',open)});document.querySelectorAll('#navMenu a').forEach(a=>a.addEventListener('click',()=>navMenu.classList.remove('open')));document.querySelectorAll('.tab').forEach(tab=>tab.addEventListener('click',()=>{const target=tab.dataset.tab;document.querySelectorAll('.tab').forEach(t=>{const active=t.dataset.tab===target;t.classList.toggle('active',active);t.setAttribute('aria-selected',active?'true':'false')});document.querySelectorAll('.tab-panel').forEach(p=>{const active=p.id===target;p.classList.toggle('active',active);p.hidden=!active})}));document.querySelectorAll('.tab-panel').forEach(p=>{p.hidden=!p.classList.contains('active')});
 </script>
 <script>
 const challenges=[
