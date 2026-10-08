@@ -3,65 +3,150 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>The Analyst — Clarity in a noisy world</title>
-<meta name="description" content="The Analyst — independent analysis, research and ideas for people who want to understand what matters.">
+<title>The Analyst SQL — Zero to Advanced</title>
+<meta name="description" content="A structured SQL zero-to-advanced course with daily lessons, a 30-day roadmap and an in-browser SQL practice engine.">
 <style>
-:root{--bg:#f6f4ef;--ink:#101318;--muted:#666b73;--paper:#fff;--line:#ddd9d0;--accent:#b36a2c}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-a{color:inherit}.shell{max-width:1180px;margin:auto;padding:0 28px}
-header{display:flex;justify-content:space-between;align-items:center;padding:28px 0;border-bottom:1px solid var(--line)}
-.brand{font-weight:800;letter-spacing:-.03em;font-size:1.15rem}.brand span{color:var(--accent)}
-nav a{text-decoration:none;color:var(--muted);margin-left:28px;font-size:.92rem}nav a:hover{color:var(--ink)}
-.hero{min-height:690px;display:flex;align-items:center;border-bottom:1px solid var(--line)}
-.hero-inner{max-width:930px;padding:80px 0}
-.eyebrow{font-size:.78rem;text-transform:uppercase;letter-spacing:.18em;color:var(--accent);font-weight:800}
-h1{font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:clamp(4rem,9vw,8.4rem);line-height:.88;letter-spacing:-.065em;margin:22px 0 32px;max-width:1000px}
-.sub{font-size:1.25rem;line-height:1.6;color:var(--muted);max-width:680px}
-.actions{display:flex;gap:12px;margin-top:38px;flex-wrap:wrap}.btn{padding:14px 20px;border-radius:999px;text-decoration:none;font-weight:700;font-size:.9rem;border:1px solid var(--ink)}.primary{background:var(--ink);color:#fff}.secondary{border-color:var(--line);color:var(--ink)}
-.section{padding:100px 0;border-bottom:1px solid var(--line)}
-.section-head{display:grid;grid-template-columns:1fr 2fr;gap:50px;margin-bottom:45px}.section-label{font-size:.78rem;text-transform:uppercase;letter-spacing:.16em;color:var(--accent);font-weight:800}.section h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(2.4rem,5vw,4.5rem);font-weight:500;letter-spacing:-.05em;margin:0}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{background:var(--paper);padding:30px;border:1px solid var(--line);min-height:270px;display:flex;flex-direction:column;justify-content:space-between}.num{color:var(--accent);font-size:.8rem;font-weight:800}.card h3{font-family:Georgia,serif;font-size:1.7rem;font-weight:500;margin:0 0 12px}.card p{color:var(--muted);line-height:1.65;margin:0}
-.statement{font-family:Georgia,serif;font-size:clamp(2.1rem,4vw,3.8rem);line-height:1.15;max-width:900px;letter-spacing:-.035em}
-footer{padding:28px 0 45px;display:flex;justify-content:space-between;gap:20px;color:var(--muted);font-size:.85rem}
-@media(max-width:760px){.shell{padding:0 20px}nav a{margin-left:14px}.hero{min-height:auto}.hero-inner{padding:85px 0}.section{padding:70px 0}.section-head{grid-template-columns:1fr;gap:18px}.cards{grid-template-columns:1fr}footer{flex-direction:column}}
+:root{--bg:#f5f3ee;--ink:#111318;--muted:#656a72;--paper:#fff;--line:#dedbd3;--accent:#b36a2c;--code:#17191d;--code2:#202329;--good:#236b43;--bad:#9a3030}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:inherit}.shell{max-width:1240px;margin:auto;padding:0 28px}
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);position:relative;z-index:2}.brand{font-weight:800;letter-spacing:-.03em;font-size:1.1rem;text-decoration:none}.brand span{color:var(--accent)}nav a{text-decoration:none;color:var(--muted);margin-left:24px;font-size:.9rem}nav a:hover{color:var(--ink)}
+.hero{padding:92px 0 105px;border-bottom:1px solid var(--line)}.eyebrow,.label{font-size:.75rem;text-transform:uppercase;letter-spacing:.17em;color:var(--accent);font-weight:800}.hero h1{font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:clamp(3.8rem,8vw,7.8rem);line-height:.88;letter-spacing:-.065em;margin:20px 0 30px;max-width:1000px}.lead{font-size:1.2rem;line-height:1.65;color:var(--muted);max-width:760px}.actions{display:flex;gap:12px;margin-top:34px;flex-wrap:wrap}.btn{display:inline-block;padding:13px 19px;border-radius:999px;text-decoration:none;font-weight:750;font-size:.88rem;border:1px solid var(--ink);cursor:pointer}.primary{background:var(--ink);color:#fff}.secondary{border-color:var(--line)}
+.section{padding:88px 0;border-bottom:1px solid var(--line)}.section-head{display:grid;grid-template-columns:1fr 2.2fr;gap:50px;margin-bottom:42px}.section h2{font-family:Georgia,serif;font-size:clamp(2.4rem,5vw,4.3rem);font-weight:500;letter-spacing:-.05em;line-height:.98;margin:0}.section-intro{font-size:1.05rem;line-height:1.7;color:var(--muted);max-width:800px}
+.roadmap{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.day{background:var(--paper);border:1px solid var(--line);padding:24px;min-height:210px}.day strong{display:block;font-size:.72rem;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:18px}.day h3{font-family:Georgia,serif;font-size:1.45rem;font-weight:500;margin:0 0 10px}.day p{color:var(--muted);line-height:1.6;margin:0}.tag{display:inline-block;margin-top:16px;padding:5px 8px;border:1px solid var(--line);border-radius:999px;font-size:.7rem;color:var(--muted)}
+.lesson{display:grid;grid-template-columns:1fr 1.4fr;gap:18px}.lesson-card,.practice-card,.guide-card{background:var(--paper);border:1px solid var(--line);padding:30px}.lesson-card h3,.guide-card h3{font-family:Georgia,serif;font-size:1.8rem;font-weight:500;margin:8px 0 14px}.lesson-card p,.guide-card p{color:var(--muted);line-height:1.7}.lesson-list{padding-left:20px;line-height:1.9;color:var(--muted)}
+code,pre,.sql-input{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}.inline{background:#e9e6df;padding:2px 6px;border-radius:4px}.code{background:var(--code);color:#eef0f3;border-radius:8px;padding:18px;overflow:auto;font-size:.88rem;line-height:1.6;margin:18px 0}.code .comment{color:#8d949e}
+.practice-wrap{display:grid;grid-template-columns:310px 1fr;gap:18px}.challenge-list{background:var(--paper);border:1px solid var(--line);padding:18px;height:max-content}.challenge-list button{display:block;width:100%;text-align:left;border:0;background:transparent;padding:13px 12px;border-radius:7px;cursor:pointer;font:inherit}.challenge-list button.active,.challenge-list button:hover{background:#eeeae2}.challenge-list small{display:block;color:var(--muted);margin-top:3px}.practice-card{padding:0;overflow:hidden}.practice-top{padding:24px 28px;border-bottom:1px solid var(--line)}.practice-top h3{font-family:Georgia,serif;font-size:1.8rem;font-weight:500;margin:6px 0 10px}.practice-top p{color:var(--muted);line-height:1.6;margin:0}.editor{padding:20px 28px}.sql-input{width:100%;min-height:180px;resize:vertical;background:var(--code);color:#eef0f3;border:0;border-radius:8px;padding:18px;font-size:.9rem;line-height:1.6;outline:none}.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}.toolbar button{border:1px solid var(--line);background:var(--paper);padding:9px 13px;border-radius:7px;cursor:pointer;font-weight:700}.toolbar .run{background:var(--ink);color:#fff;border-color:var(--ink)}.result{border-top:1px solid var(--line);padding:20px 28px;min-height:100px}.result h4{margin:0 0 10px}.result .ok{color:var(--good);font-weight:750}.result .error{color:var(--bad);font-weight:700}.table-scroll{overflow:auto;margin-top:10px}.result table{border-collapse:collapse;width:100%;font-size:.82rem}.result th,.result td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}.hint{color:var(--muted);font-size:.88rem;line-height:1.6}.schema{padding:0 28px 24px;color:var(--muted);font-size:.8rem}.schema code{background:#eeeae2;padding:2px 5px;border-radius:4px}
+.guides{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.guide-card ul{color:var(--muted);line-height:1.8;padding-left:19px}.guide-card p{margin-bottom:0}.principles{font-family:Georgia,serif;font-size:clamp(1.8rem,3.4vw,3.2rem);line-height:1.2;max-width:920px;letter-spacing:-.035em}
+footer{padding:28px 0 45px;display:flex;justify-content:space-between;gap:20px;color:var(--muted);font-size:.82rem}
+@media(max-width:850px){.shell{padding:0 20px}.section-head,.lesson,.practice-wrap{grid-template-columns:1fr;gap:20px}.roadmap,.guides{grid-template-columns:1fr}.hero{padding:70px 0 80px}.section{padding:65px 0}nav a{margin-left:12px}}
+@media(max-width:560px){nav{display:none}.hero h1{font-size:3.5rem}.practice-top,.editor,.result{padding-left:18px;padding-right:18px}.schema{padding-left:18px;padding-right:18px}}
 </style>
 </head>
 <body>
 <div class="shell">
-<header><a class="brand" href="#">The<span>Analyst</span></a><nav><a href="#work">Work</a><a href="#about">About</a><a href="#contact">Contact</a></nav></header>
+<header>
+<a class="brand" href="#">The<span>Analyst</span> / SQL</a>
+<nav><a href="#roadmap">Roadmap</a><a href="#lesson">Day 0</a><a href="#practice">Practice</a><a href="#guide">Guide</a></nav>
+</header>
 
 <main>
 <section class="hero">
-<div class="hero-inner">
-<div class="eyebrow">Independent analysis · theanalyst.in</div>
-<h1>Clarity in a<br>noisy world.</h1>
-<p class="sub">The Analyst turns complex information into clear thinking — through research, business analysis, market observations and ideas worth paying attention to.</p>
-<div class="actions"><a class="btn primary" href="#work">Explore the work</a><a class="btn secondary" href="#about">What is The Analyst?</a></div>
+<div class="eyebrow">SQL Zero → Advanced · Daily curriculum</div>
+<h1>Learn SQL by<br>actually querying.</h1>
+<p class="lead">A cumulative path from your first <code class="inline">SELECT</code> to advanced analytics, window functions, query design and performance. One focused lesson every day, with a real SQL engine in the browser.</p>
+<div class="actions"><a class="btn primary" href="#practice">Open practice engine</a><a class="btn secondary" href="#roadmap">See the roadmap</a></div>
+</section>
+
+<section class="section" id="roadmap">
+<div class="section-head"><div class="label">01 — Roadmap</div><div><h2>30 days. Zero to advanced.</h2><p class="section-intro">The sequence is deliberate: retrieve data first, then shape it, combine it, analyze it, and finally reason about how databases execute your work.</p></div></div>
+<div class="roadmap">
+<article class="day"><strong>Days 0–4 · Foundations</strong><h3>Think in tables</h3><p>Databases, tables, rows, columns, SELECT, WHERE, ORDER BY, LIMIT and NULL.</p><span class="tag">Beginner</span></article>
+<article class="day"><strong>Days 5–8 · Core SQL</strong><h3>Transform data</h3><p>Expressions, CASE, DISTINCT, string/date functions, aliases and clean result sets.</p><span class="tag">Beginner</span></article>
+<article class="day"><strong>Days 9–12 · Aggregation</strong><h3>Summarize</h3><p>COUNT, SUM, AVG, MIN, MAX, GROUP BY, HAVING and conditional aggregation.</p><span class="tag">Intermediate</span></article>
+<article class="day"><strong>Days 13–16 · Joins</strong><h3>Connect tables</h3><p>INNER, LEFT, CROSS and self joins; join keys, cardinality and avoiding accidental row multiplication.</p><span class="tag">Intermediate</span></article>
+<article class="day"><strong>Days 17–20 · Query design</strong><h3>Compose</h3><p>Subqueries, correlated subqueries, CTEs, set operations and readable multi-step queries.</p><span class="tag">Intermediate</span></article>
+<article class="day"><strong>Days 21–24 · Analytics</strong><h3>Think over rows</h3><p>Window functions, PARTITION BY, ranking, running totals, LAG/LEAD and cohort-style analysis.</p><span class="tag">Advanced</span></article>
+<article class="day"><strong>Days 25–27 · Data modeling</strong><h3>Understand the system</h3><p>Keys, constraints, normalization, transactions, views and the shape of analytical data.</p><span class="tag">Advanced</span></article>
+<article class="day"><strong>Days 28–30 · Performance</strong><h3>Make it scale</h3><p>Indexes, query plans, sargability, filtering strategy and practical optimization.</p><span class="tag">Advanced</span></article>
+<article class="day"><strong>After Day 30</strong><h3>Real-world SQL</h3><p>Interview problems, business cases, messy datasets, database-specific features and production habits.</p><span class="tag">Mastery</span></article>
 </div>
 </section>
 
-<section class="section" id="work">
-<div class="section-head"><div class="section-label">01 — The work</div><h2>Understand first.<br>Decide second.</h2></div>
-<div class="cards">
-<article class="card"><div class="num">01</div><div><h3>Analysis</h3><p>Break down markets, companies, technology and trends into the underlying drivers that actually matter.</p></div></article>
-<article class="card"><div class="num">02</div><div><h3>Research</h3><p>Go beyond headlines. Follow the evidence, connect the dots and build a sharper view of the subject.</p></div></article>
-<article class="card"><div class="num">03</div><div><h3>Ideas</h3><p>Frameworks, observations and original thinking designed to make better questions easier to ask.</p></div></article>
+<section class="section" id="lesson">
+<div class="section-head"><div class="label">02 — Day 0</div><div><h2>Start with the mental model.</h2><p class="section-intro">Today is not about memorizing syntax. It is about understanding what a query is asking the database to produce.</p></div></div>
+<div class="lesson">
+<article class="lesson-card">
+<div class="label">Today's objective</div>
+<h3>Read a table. Ask a precise question.</h3>
+<p>A SQL query is a specification for a result set. Start with the columns you need, identify the table that contains them, then add only the filters required by the question.</p>
+<ul class="lesson-list">
+<li>Know the difference between a database, table, row and column.</li>
+<li>Write a basic <code class="inline">SELECT ... FROM ...</code>.</li>
+<li>Filter with <code class="inline">WHERE</code>.</li>
+<li>Sort with <code class="inline">ORDER BY</code>.</li>
+<li>Limit the result with <code class="inline">LIMIT</code>.</li>
+</ul>
+</article>
+<article class="lesson-card">
+<div class="label">Worked example</div>
+<h3>Find the highest-value orders.</h3>
+<pre class="code"><span class="comment">-- Start broad</span>
+SELECT *
+FROM orders;
+
+<span class="comment">-- Choose only useful columns</span>
+SELECT order_id, customer_id, amount
+FROM orders
+ORDER BY amount DESC
+LIMIT 5;</pre>
+<p>The database first identifies rows from <code class="inline">orders</code>, then returns the requested columns, sorts the result by amount from high to low, and keeps the first five rows.</p>
+</article>
 </div>
 </section>
 
-<section class="section" id="about">
-<div class="section-head"><div class="section-label">02 — The idea</div><h2>A place for signal, not noise.</h2></div>
-<p class="statement">Good analysis does not make the world simpler. It makes the important parts easier to see.</p>
+<section class="section" id="practice">
+<div class="section-head"><div class="label">03 — Practice engine</div><div><h2>Write SQL. Run SQL. Get feedback.</h2><p class="section-intro">The engine runs locally in your browser using SQLite. Your queries stay in the browser; no database account is required.</p></div></div>
+<div class="practice-wrap">
+<aside class="challenge-list">
+<button class="active" data-challenge="0"><b>01 · First query</b><small>SELECT + WHERE</small></button>
+<button data-challenge="1"><b>02 · Sort and limit</b><small>ORDER BY + LIMIT</small></button>
+<button data-challenge="2"><b>03 · Summarize</b><small>GROUP BY + SUM</small></button>
+<button data-challenge="3"><b>04 · Join</b><small>INNER JOIN</small></button>
+<button data-challenge="4"><b>05 · CTE</b><small>WITH</small></button>
+<button data-challenge="5"><b>06 · Window function</b><small>ROW_NUMBER</small></button>
+</aside>
+<section class="practice-card">
+<div class="practice-top"><div class="label" id="challenge-level">Beginner</div><h3 id="challenge-title">Return all customers from India.</h3><p id="challenge-prompt">Select <code class="inline">customer_id</code> and <code class="inline">name</code> for customers whose country is India. Sort by name.</p></div>
+<div class="editor">
+<textarea id="sql" class="sql-input" spellcheck="false">SELECT customer_id, name
+FROM customers
+WHERE country = 'India'
+ORDER BY name;</textarea>
+<div class="toolbar"><button class="run" id="run">Run query</button><button id="check">Check answer</button><button id="reset">Reset database</button><button id="hint">Show hint</button></div>
+<div id="hintbox" class="hint" hidden></div>
+</div>
+<div class="schema"><b>Schema:</b> <code>customers(customer_id, name, country)</code> · <code>orders(order_id, customer_id, amount, order_date)</code> · <code>employees(employee_id, name, department, salary)</code></div>
+<div class="result" id="result"><h4>Result</h4><p class="hint">Loading the local SQL engine…</p></div>
+</section>
+</div>
 </section>
 
-<section class="section" id="contact">
-<div class="section-head"><div class="section-label">03 — Stay close</div><h2>More to come.</h2></div>
-<p class="sub">The Analyst is being built as a home for thoughtful research and practical insight. Check back for new work.</p>
-<div class="actions"><a class="btn primary" href="mailto:hello@theanalyst.in">Get in touch</a></div>
+<section class="section" id="guide">
+<div class="section-head"><div class="label">04 — Best practices</div><div><h2>How to become good at SQL.</h2><p class="section-intro">Syntax is the easy part. The durable skill is translating a question into a correct, testable result.</p></div></div>
+<div class="guides">
+<article class="guide-card"><div class="label">01</div><h3>Think in result sets</h3><p>Before writing SQL, state exactly what one output row represents. This prevents many join and aggregation errors.</p><ul><li>Define the grain.</li><li>Choose required columns.</li><li>Then choose joins and filters.</li></ul></article>
+<article class="guide-card"><div class="label">02</div><h3>Build in layers</h3><p>Do not write a 50-line query in one shot. Start with the base rows, inspect them, then add one transformation at a time.</p><ul><li>Base query.</li><li>Filter.</li><li>Join.</li><li>Aggregate or window.</li></ul></article>
+<article class="guide-card"><div class="label">03</div><h3>Validate aggressively</h3><p>A query that runs is not necessarily correct. Check row counts, duplicates, NULLs, edge cases and totals.</p><ul><li>Test small samples.</li><li>Compare totals.</li><li>Check boundary dates.</li></ul></article>
+</div>
+<p class="principles" style="margin-top:60px">The fastest route to advanced SQL is not more syntax. It is more deliberate practice on increasingly difficult questions.</p>
 </section>
 </main>
 
-<footer><span>© 2026 The Analyst</span><span>theanalyst.in</span></footer>
+<footer><span>© 2026 The Analyst · SQL Zero → Advanced</span><span>theanalyst.in</span></footer>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.13.0/sql-wasm.js"></script>
+<script>
+const challenges=[
+{level:"Beginner",title:"Return all customers from India.",prompt:"Select customer_id and name for customers whose country is India. Sort by name.",hint:"Use SELECT, FROM, WHERE and ORDER BY.",expected:[["customer_id","name"],[1,"Aarav Mehta"],[4,"Isha Rao"],[6,"Neha Shah"]],starter:"SELECT customer_id, name\nFROM customers\nWHERE country = 'India'\nORDER BY name;"},
+{level:"Beginner",title:"Find the three largest orders.",prompt:"Return order_id and amount for the three largest orders, highest first.",hint:"Sort amount descending, then keep three rows.",expected:[["order_id","amount"],[106,2100],[103,1850],[109,1725]],starter:"SELECT order_id, amount\nFROM orders\nORDER BY amount DESC\nLIMIT 3;"},
+{level:"Intermediate",title:"Revenue by customer.",prompt:"Return each customer_id and their total order value. Sort highest revenue first.",hint:"Group by customer_id and SUM(amount).",expected:[["customer_id","total_revenue"],[1,3950],[2,3450],[4,2925],[6,2650],[3,2100],[5,1725]],starter:"SELECT customer_id, SUM(amount) AS total_revenue\nFROM orders\nGROUP BY customer_id\nORDER BY total_revenue DESC;"},
+{level:"Intermediate",title:"Show orders with customer names.",prompt:"Return order_id, customer name and amount for every order. Sort by order_id.",hint:"Join orders to customers on customer_id.",expected:[["order_id","name","amount"],[101,"Aarav Mehta",1200],[102,"Kabir Singh",800],[103,"Maya Chen",1850],[104,"Aarav Mehta",2750],[105,"Kabir Singh",2650],[106,"Isha Rao",2100],[107,"Maya Chen",250],[108,"Neha Shah",2650],[109,"Rohan Das",1725],[110,"Isha Rao",825]],starter:"SELECT o.order_id, c.name, o.amount\nFROM orders o\nJOIN customers c ON c.customer_id = o.customer_id\nORDER BY o.order_id;"},
+{level:"Advanced",title:"Above-average orders by customer.",prompt:"Use a CTE to calculate each customer's total revenue, then return customers whose total is above the average customer revenue.",hint:"First build totals per customer. Then compare each total with AVG(total_revenue).",expected:[["customer_id","total_revenue"],[1,3950],[2,3450],[4,2925]],starter:"WITH customer_totals AS (\n  SELECT customer_id, SUM(amount) AS total_revenue\n  FROM orders\n  GROUP BY customer_id\n)\nSELECT customer_id, total_revenue\nFROM customer_totals\nWHERE total_revenue > (SELECT AVG(total_revenue) FROM customer_totals)\nORDER BY total_revenue DESC;"},
+{level:"Advanced",title:"Rank employees by salary within department.",prompt:"Return employee name, department, salary and a salary rank within each department. Highest salary should be rank 1.",hint:"Use ROW_NUMBER() OVER (PARTITION BY department ORDER BY salary DESC).",expected:[["name","department","salary","salary_rank"],["Priya Nair","Analytics",145000,1],["Arjun Rao","Analytics",118000,2],["Meera Shah","Analytics",97000,3],["Daniel Kim","Engineering",152000,1],["Lena Ortiz","Engineering",139000,2],["Omar Ali","Engineering",121000,3],["Sofia Chen","Product",128000,1],["Vikram Das","Product",111000,2]],starter:"SELECT name, department, salary,\n       ROW_NUMBER() OVER (PARTITION BY department ORDER BY salary DESC) AS salary_rank\nFROM employees\nORDER BY department, salary_rank;"}
+];
+let db=null,current=0;
+const $=id=>document.getElementById(id);
+function setChallenge(i){current=i;const c=challenges[i];document.querySelectorAll('.challenge-list button').forEach((b,n)=>b.classList.toggle('active',n===i));$('challenge-level').textContent=c.level;$('challenge-title').textContent=c.title;$('challenge-prompt').innerHTML=c.prompt;$('sql').value=c.starter;$('hintbox').hidden=true;$('result').innerHTML='<h4>Result</h4><p class="hint">Run the query to see the result.</p>';}
+function rowsFromResult(res){if(!res||!res[0])return[];const cols=res[0].columns;return[cols,...res[0].values];}
+function render(res){if(!res||!res[0]){$('result').innerHTML='<h4>Result</h4><p class="hint">Query executed successfully but returned no rows.</p>';return}const cols=res[0].columns,vals=res[0].values;let h='<h4>Result · '+vals.length+' row'+(vals.length===1?'':'s')+'</h4><div class="table-scroll"><table><thead><tr>'+cols.map(c=>'<th>'+escapeHtml(c)+'</th>').join('')+'</tr></thead><tbody>'+vals.map(r=>'<tr>'+r.map(v=>'<td>'+escapeHtml(v===null?'NULL':String(v))+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';$('result').innerHTML=h;}
+function escapeHtml(s){return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));}
+function runQuery(){if(!db){$('result').innerHTML='<h4>Result</h4><p class="error">SQL engine is still loading. Try again in a moment.</p>';return}try{const res=db.exec($('sql').value);render(res)}catch(e){$('result').innerHTML='<h4>SQL error</h4><p class="error">'+escapeHtml(e.message)+'</p>';}}
+function check(){if(!db)return;try{const got=rowsFromResult(db.exec($('sql').value)),want=challenges[current].expected;const ok=JSON.stringify(got)===JSON.stringify(want);$('result').innerHTML=ok?'<h4 class="ok">Correct.</h4><p class="ok">The result matches the target output. Now rewrite the query without looking at your first attempt.</p>':'<h4 class="error">Not quite.</h4><p class="hint">Your query runs, but its result does not match the target. Check columns, row order, filters and aggregation grain.</p>';if(!ok&&got.length)render(db.exec($('sql').value))}catch(e){$('result').innerHTML='<h4 class="error">Fix the SQL first.</h4><p class="error">'+escapeHtml(e.message)+'</p>';}}
+function seed(){db.run("CREATE TABLE customers(customer_id INTEGER PRIMARY KEY,name TEXT,country TEXT);INSERT INTO customers VALUES (1,'Aarav Mehta','India'),(2,'Kabir Singh','India'),(3,'Maya Chen','Singapore'),(4,'Isha Rao','India'),(5,'Rohan Das','UAE'),(6,'Neha Shah','India');CREATE TABLE orders(order_id INTEGER PRIMARY KEY,customer_id INTEGER,amount INTEGER,order_date TEXT);INSERT INTO orders VALUES (101,1,1200,'2026-01-12'),(102,2,800,'2026-01-15'),(103,3,1850,'2026-01-21'),(104,1,2750,'2026-02-03'),(105,2,2650,'2026-02-08'),(106,4,2100,'2026-02-11'),(107,3,250,'2026-02-14'),(108,6,2650,'2026-02-19'),(109,5,1725,'2026-02-23'),(110,4,825,'2026-03-02');CREATE TABLE employees(employee_id INTEGER PRIMARY KEY,name TEXT,department TEXT,salary INTEGER);INSERT INTO employees VALUES (1,'Priya Nair','Analytics',145000),(2,'Arjun Rao','Analytics',118000),(3,'Meera Shah','Analytics',97000),(4,'Daniel Kim','Engineering',152000),(5,'Lena Ortiz','Engineering',139000),(6,'Omar Ali','Engineering',121000),(7,'Sofia Chen','Product',128000),(8,'Vikram Das','Product',111000);");}
+async function init(){try{const SQL=await initSqlJs({locateFile:f=>'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.13.0/'+f});db=new SQL.Database();seed();$('result').innerHTML='<h4>Ready</h4><p class="hint">SQLite is running locally in your browser. Choose a challenge and run your query.</p>';}catch(e){$('result').innerHTML='<h4 class="error">Engine could not load</h4><p class="hint">The page needs access to the SQL.js WebAssembly library. Reload the page if your connection briefly failed.</p>';}}
+document.querySelectorAll('.challenge-list button').forEach(b=>b.addEventListener('click',()=>setChallenge(Number(b.dataset.challenge))));
+$('run').addEventListener('click',runQuery);$('check').addEventListener('click',check);$('hint').addEventListener('click',()=>{$('hintbox').textContent=challenges[current].hint;$('hintbox').hidden=!$('hintbox').hidden});$('reset').addEventListener('click',()=>{if(db){db.close();db=null;init();}});
+init();
+</script>
 </body>
 </html>
