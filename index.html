@@ -17,39 +17,28 @@ header{display:flex;justify-content:space-between;align-items:center;padding:22p
 .guides{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.principles{font-size:clamp(1.6rem,3vw,2.5rem);line-height:1.25;max-width:800px;letter-spacing:-.025em}
 footer{padding:24px 0 40px;display:flex;justify-content:space-between;gap:20px;color:var(--muted);font-size:.8rem}
 @media(max-width:780px){.shell{padding:0 18px}.section-head,.lesson,.practice-wrap{grid-template-columns:1fr;gap:16px}.roadmap,.guides{grid-template-columns:1fr}.hero{padding:65px 0 70px}.section{padding:55px 0}nav a{margin-left:12px}}@media(max-width:560px){nav{display:none}.hero h1{font-size:3.2rem}.practice-top,.editor,.result{padding-left:16px;padding-right:16px}.schema{padding-left:16px;padding-right:16px}}
+
+.menu-btn{display:none;background:none;border:0;padding:8px;cursor:pointer}.menu-btn span{display:block;width:20px;height:1px;background:var(--ink);margin:4px 0}nav{transition:opacity .15s ease}.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:28px;overflow:auto}.tab{border:0;background:none;padding:11px 14px;color:var(--muted);font:inherit;font-weight:650;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent}.tab.active{color:var(--ink);border-bottom-color:var(--ink)}.tab-panel{display:none}.tab-panel.active{display:block}
+@media(max-width:780px){.menu-btn{display:block}nav{position:absolute;right:0;top:64px;background:var(--paper);border:1px solid var(--line);padding:7px;min-width:150px;box-shadow:0 8px 24px rgba(0,0,0,.06);display:none}nav.open{display:block}nav a{display:block;margin:0;padding:10px 12px}.tabs{margin-left:-2px;margin-right:-2px}}
 </style>
 </head>
 <body>
 <div class="shell">
 <header>
 <a class="brand" href="#">The<span>Analyst</span> / SQL</a>
-<nav><a href="#roadmap">Roadmap</a><a href="#lesson">Day 0</a><a href="#practice">Practice</a><a href="#guide">Guide</a></nav>
+<button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+<nav id="navMenu"><a href="#learn">Learn</a><a href="#practice">Practice</a><a href="#roadmap">Roadmap</a><a href="#guide">Guide</a></nav>
 </header>
 
-<main>
-<section class="hero">
-<div class="eyebrow">SQL Zero → Advanced · Daily curriculum</div>
-<h1>Learn SQL.<br>One step at a time.</h1>
-<p class="lead">A simple path from your first <code class="inline">SELECT</code> to advanced SQL. Learn one small idea, retrieve it from memory, practice it immediately, and build on it tomorrow.</p>
-<div class="actions"><a class="btn primary" href="#practice">Open practice engine</a><a class="btn secondary" href="#roadmap">See the roadmap</a></div>
-</section>
-
-<section class="section" id="roadmap">
-<div class="section-head"><div class="label">01 — Roadmap</div><div><h2>Small steps. Real skill.</h2><p class="section-intro">Short lessons. Active recall. Immediate feedback. Spaced practice. Each day adds only what you need for the next step.</p></div></div>
-<div class="roadmap">
-<article class="day"><strong>Days 0–4 · Foundations</strong><h3>Think in tables</h3><p>Databases, tables, rows, columns, SELECT, WHERE, ORDER BY, LIMIT and NULL.</p><span class="tag">Beginner</span></article>
-<article class="day"><strong>Days 5–8 · Core SQL</strong><h3>Transform data</h3><p>Expressions, CASE, DISTINCT, string/date functions, aliases and clean result sets.</p><span class="tag">Beginner</span></article>
-<article class="day"><strong>Days 9–12 · Aggregation</strong><h3>Summarize</h3><p>COUNT, SUM, AVG, MIN, MAX, GROUP BY, HAVING and conditional aggregation.</p><span class="tag">Intermediate</span></article>
-<article class="day"><strong>Days 13–16 · Joins</strong><h3>Connect tables</h3><p>INNER, LEFT, CROSS and self joins; join keys, cardinality and avoiding accidental row multiplication.</p><span class="tag">Intermediate</span></article>
-<article class="day"><strong>Days 17–20 · Query design</strong><h3>Compose</h3><p>Subqueries, correlated subqueries, CTEs, set operations and readable multi-step queries.</p><span class="tag">Intermediate</span></article>
-<article class="day"><strong>Days 21–24 · Analytics</strong><h3>Think over rows</h3><p>Window functions, PARTITION BY, ranking, running totals, LAG/LEAD and cohort-style analysis.</p><span class="tag">Advanced</span></article>
-<article class="day"><strong>Days 25–27 · Data modeling</strong><h3>Understand the system</h3><p>Keys, constraints, normalization, transactions, views and the shape of analytical data.</p><span class="tag">Advanced</span></article>
-<article class="day"><strong>Days 28–30 · Performance</strong><h3>Make it scale</h3><p>Indexes, query plans, sargability, filtering strategy and practical optimization.</p><span class="tag">Advanced</span></article>
-<article class="day"><strong>After Day 30</strong><h3>Real-world SQL</h3><p>Interview problems, business cases, messy datasets, database-specific features and production habits.</p><span class="tag">Mastery</span></article>
+<section class="section" id="learn">
+<div class="section-head"><div class="label">Learning</div><div><h2>Learn one thing well.</h2><p class="section-intro">Use the tabs to move through the course without scrolling through a long page.</p></div></div>
+<div class="tabs" role="tablist">
+<button class="tab active" data-tab="today">Today</button>
+<button class="tab" data-tab="practice-tab">Practice</button>
+<button class="tab" data-tab="roadmap-tab">Roadmap</button>
+<button class="tab" data-tab="guide-tab">Guide</button>
 </div>
-</section>
-
-<section class="section" id="lesson">
+<div class="tab-panel active" id="today"><section class="section" id="lesson">
 <div class="section-head"><div class="label">02 — Day 0 · Deployed</div><div><h2>Start with the mental model.</h2><p class="section-intro">Today is not about memorizing syntax. It is about understanding what a query is asking the database to produce. Day 0 is your first complete lesson: learn the table model, write your first queries, validate the output, and build the habit of thinking in result sets.</p></div></div>
 <div class="lesson">
 <article class="lesson-card">
@@ -79,18 +68,15 @@ LIMIT 5;</pre>
 <p>The database first identifies rows from <code class="inline">orders</code>, then returns the requested columns, sorts the result by amount from high to low, and keeps the first five rows.</p>
 </article>
 </div>
-</section>
-
-<section class="section" id="day0-practice">
+</section><section class="section" id="day0-practice">
 <div class="section-head"><div class="label">Day 0</div><div><h2>Learn → recall → practice.</h2><p class="section-intro">Do not try to memorize everything. Read the example, close it, write the query yourself, run it, and fix one mistake at a time.</p></div></div>
 <div class="guides">
 <article class="guide-card"><div class="label">1 · Learn</div><h3>One idea</h3><p>Today: <code class="inline">SELECT</code>, <code class="inline">FROM</code>, <code class="inline">WHERE</code>, and <code class="inline">ORDER BY</code>.</p></article>
 <article class="guide-card"><div class="label">2 · Recall</div><h3>Hide the example</h3><p>Write a query from the question before looking back. Retrieval makes the idea easier to remember later.</p></article>
 <article class="guide-card"><div class="label">3 · Feedback</div><h3>Fix one thing</h3><p>Run it. If it is wrong, change one part and run again. Small corrections beat passive rereading.</p></article>
 </div>
-</section>
-
-<section class="section" id="practice">
+</section></div>
+<div class="tab-panel" id="practice-tab"><section class="section" id="practice">
 <div class="section-head"><div class="label">03 — Practice engine</div><div><h2>Write SQL. Run SQL. Get feedback.</h2><p class="section-intro">The engine runs locally in your browser using SQLite. Your queries stay in the browser; no database account is required.</p></div></div>
 <div class="practice-wrap">
 <aside class="challenge-list">
@@ -117,7 +103,22 @@ ORDER BY name;</textarea>
 </div>
 </section>
 
-<section class="section" id="guide">
+</div>
+<div class="tab-panel" id="roadmap-tab"><section class="section" id="roadmap">
+<div class="section-head"><div class="label">01 — Roadmap</div><div><h2>Small steps. Real skill.</h2><p class="section-intro">Short lessons. Active recall. Immediate feedback. Spaced practice. Each day adds only what you need for the next step.</p></div></div>
+<div class="roadmap">
+<article class="day"><strong>Days 0–4 · Foundations</strong><h3>Think in tables</h3><p>Databases, tables, rows, columns, SELECT, WHERE, ORDER BY, LIMIT and NULL.</p><span class="tag">Beginner</span></article>
+<article class="day"><strong>Days 5–8 · Core SQL</strong><h3>Transform data</h3><p>Expressions, CASE, DISTINCT, string/date functions, aliases and clean result sets.</p><span class="tag">Beginner</span></article>
+<article class="day"><strong>Days 9–12 · Aggregation</strong><h3>Summarize</h3><p>COUNT, SUM, AVG, MIN, MAX, GROUP BY, HAVING and conditional aggregation.</p><span class="tag">Intermediate</span></article>
+<article class="day"><strong>Days 13–16 · Joins</strong><h3>Connect tables</h3><p>INNER, LEFT, CROSS and self joins; join keys, cardinality and avoiding accidental row multiplication.</p><span class="tag">Intermediate</span></article>
+<article class="day"><strong>Days 17–20 · Query design</strong><h3>Compose</h3><p>Subqueries, correlated subqueries, CTEs, set operations and readable multi-step queries.</p><span class="tag">Intermediate</span></article>
+<article class="day"><strong>Days 21–24 · Analytics</strong><h3>Think over rows</h3><p>Window functions, PARTITION BY, ranking, running totals, LAG/LEAD and cohort-style analysis.</p><span class="tag">Advanced</span></article>
+<article class="day"><strong>Days 25–27 · Data modeling</strong><h3>Understand the system</h3><p>Keys, constraints, normalization, transactions, views and the shape of analytical data.</p><span class="tag">Advanced</span></article>
+<article class="day"><strong>Days 28–30 · Performance</strong><h3>Make it scale</h3><p>Indexes, query plans, sargability, filtering strategy and practical optimization.</p><span class="tag">Advanced</span></article>
+<article class="day"><strong>After Day 30</strong><h3>Real-world SQL</h3><p>Interview problems, business cases, messy datasets, database-specific features and production habits.</p><span class="tag">Mastery</span></article>
+</div>
+</section></div>
+<div class="tab-panel" id="guide-tab"><section class="section" id="guide">
 <div class="section-head"><div class="label">04 — Best practices</div><div><h2>How to become good at SQL.</h2><p class="section-intro">Syntax is the easy part. The durable skill is translating a question into a correct, testable result.</p></div></div>
 <div class="guides">
 <article class="guide-card"><div class="label">01</div><h3>Think in result sets</h3><p>Before writing SQL, state exactly what one output row represents. This prevents many join and aggregation errors.</p><ul><li>Define the grain.</li><li>Choose required columns.</li><li>Then choose joins and filters.</li></ul></article>
@@ -126,12 +127,15 @@ ORDER BY name;</textarea>
 </div>
 <p class="principles" style="margin-top:60px">The fastest route to advanced SQL is not more syntax. It is more deliberate practice on increasingly difficult questions.</p>
 </section>
-</main>
+</div>
+</section>
 
 <footer><span>© 2026 The Analyst · SQL Zero → Advanced</span><span>theanalyst.in</span></footer>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.13.0/sql-wasm.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.13.0/sql-wasm.js">
+const menuBtn=document.getElementById('menuBtn'),navMenu=document.getElementById('navMenu');menuBtn.addEventListener('click',()=>{const open=navMenu.classList.toggle('open');menuBtn.setAttribute('aria-expanded',open)});document.querySelectorAll('#navMenu a').forEach(a=>a.addEventListener('click',()=>navMenu.classList.remove('open')));document.querySelectorAll('.tab').forEach(tab=>tab.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t===tab));document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id===tab.dataset.tab))}));
+</script>
 <script>
 const challenges=[
 {level:"Beginner",title:"Return all customers from India.",prompt:"Select customer_id and name for customers whose country is India. Sort by name.",hint:"Use SELECT, FROM, WHERE and ORDER BY.",expected:[["customer_id","name"],[1,"Aarav Mehta"],[4,"Isha Rao"],[6,"Neha Shah"]],starter:"SELECT customer_id, name\nFROM customers\nWHERE country = 'India'\nORDER BY name;"},
