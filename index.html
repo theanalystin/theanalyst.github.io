@@ -3,39 +3,64 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>The Analyst</title>
-<meta name="description" content="The Analyst — analysis, research, and notes.">
+<title>The Analyst — Clarity in a noisy world</title>
+<meta name="description" content="The Analyst — independent analysis, research and ideas for people who want to understand what matters.">
 <style>
-:root{--bg:#0b0f14;--card:#111821;--text:#eef2f6;--muted:#9aa6b2;--line:#26303a;--accent:#d7a35a}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6}
-.wrap{max-width:1000px;margin:0 auto;padding:28px 22px 64px}
-nav{display:flex;justify-content:space-between;align-items:center;padding:8px 0 54px}
-.logo{font-weight:700;letter-spacing:.08em;text-transform:uppercase}
-nav a{color:var(--muted);text-decoration:none;margin-left:24px}nav a:hover{color:var(--text)}
-.hero{padding:48px 0 70px;border-bottom:1px solid var(--line)}
-.kicker{color:var(--accent);font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
-h1{font-size:clamp(3.2rem,9vw,6.8rem);line-height:.95;margin:14px 0 22px;letter-spacing:-.045em}
-.lead{max-width:700px;color:var(--muted);font-size:1.18rem}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding:54px 0}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px;min-height:210px}
-.card h2{margin:0 0 10px;font-size:1.15rem}.card p{color:var(--muted);margin:0}
-footer{border-top:1px solid var(--line);padding-top:24px;color:var(--muted);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
-@media(max-width:760px){.grid{grid-template-columns:1fr}nav{padding-bottom:34px}nav a{margin-left:14px}.hero{padding-top:30px}}
+:root{--bg:#f6f4ef;--ink:#101318;--muted:#666b73;--paper:#fff;--line:#ddd9d0;--accent:#b36a2c}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+a{color:inherit}.shell{max-width:1180px;margin:auto;padding:0 28px}
+header{display:flex;justify-content:space-between;align-items:center;padding:28px 0;border-bottom:1px solid var(--line)}
+.brand{font-weight:800;letter-spacing:-.03em;font-size:1.15rem}.brand span{color:var(--accent)}
+nav a{text-decoration:none;color:var(--muted);margin-left:28px;font-size:.92rem}nav a:hover{color:var(--ink)}
+.hero{min-height:690px;display:flex;align-items:center;border-bottom:1px solid var(--line)}
+.hero-inner{max-width:930px;padding:80px 0}
+.eyebrow{font-size:.78rem;text-transform:uppercase;letter-spacing:.18em;color:var(--accent);font-weight:800}
+h1{font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:clamp(4rem,9vw,8.4rem);line-height:.88;letter-spacing:-.065em;margin:22px 0 32px;max-width:1000px}
+.sub{font-size:1.25rem;line-height:1.6;color:var(--muted);max-width:680px}
+.actions{display:flex;gap:12px;margin-top:38px;flex-wrap:wrap}.btn{padding:14px 20px;border-radius:999px;text-decoration:none;font-weight:700;font-size:.9rem;border:1px solid var(--ink)}.primary{background:var(--ink);color:#fff}.secondary{border-color:var(--line);color:var(--ink)}
+.section{padding:100px 0;border-bottom:1px solid var(--line)}
+.section-head{display:grid;grid-template-columns:1fr 2fr;gap:50px;margin-bottom:45px}.section-label{font-size:.78rem;text-transform:uppercase;letter-spacing:.16em;color:var(--accent);font-weight:800}.section h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(2.4rem,5vw,4.5rem);font-weight:500;letter-spacing:-.05em;margin:0}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{background:var(--paper);padding:30px;border:1px solid var(--line);min-height:270px;display:flex;flex-direction:column;justify-content:space-between}.num{color:var(--accent);font-size:.8rem;font-weight:800}.card h3{font-family:Georgia,serif;font-size:1.7rem;font-weight:500;margin:0 0 12px}.card p{color:var(--muted);line-height:1.65;margin:0}
+.statement{font-family:Georgia,serif;font-size:clamp(2.1rem,4vw,3.8rem);line-height:1.15;max-width:900px;letter-spacing:-.035em}
+footer{padding:28px 0 45px;display:flex;justify-content:space-between;gap:20px;color:var(--muted);font-size:.85rem}
+@media(max-width:760px){.shell{padding:0 20px}nav a{margin-left:14px}.hero{min-height:auto}.hero-inner{padding:85px 0}.section{padding:70px 0}.section-head{grid-template-columns:1fr;gap:18px}.cards{grid-template-columns:1fr}footer{flex-direction:column}}
 </style>
 </head>
 <body>
-<div class="wrap">
-<nav><div class="logo">The Analyst</div><div><a href="#analysis">Analysis</a><a href="#research">Research</a><a href="#notes">Notes</a></div></nav>
+<div class="shell">
+<header><a class="brand" href="#">The<span>Analyst</span></a><nav><a href="#work">Work</a><a href="#about">About</a><a href="#contact">Contact</a></nav></header>
+
+<main>
 <section class="hero">
-<div class="kicker">theanalyst.in</div>
-<h1>Think clearly.<br>Decide better.</h1>
-<p class="lead">Independent analysis, research, and concise notes focused on understanding what matters — without the noise.</p>
+<div class="hero-inner">
+<div class="eyebrow">Independent analysis · theanalyst.in</div>
+<h1>Clarity in a<br>noisy world.</h1>
+<p class="sub">The Analyst turns complex information into clear thinking — through research, business analysis, market observations and ideas worth paying attention to.</p>
+<div class="actions"><a class="btn primary" href="#work">Explore the work</a><a class="btn secondary" href="#about">What is The Analyst?</a></div>
+</div>
 </section>
-<section class="grid">
-<article class="card" id="analysis"><h2>Analysis</h2><p>Structured breakdowns of markets, businesses, technology, and the forces shaping decisions.</p></article>
-<article class="card" id="research"><h2>Research</h2><p>Evidence-led work that turns scattered information into useful conclusions and practical insight.</p></article>
-<article class="card" id="notes"><h2>Notes</h2><p>Short observations, frameworks, and working ideas worth keeping close.</p></article>
+
+<section class="section" id="work">
+<div class="section-head"><div class="section-label">01 — The work</div><h2>Understand first.<br>Decide second.</h2></div>
+<div class="cards">
+<article class="card"><div class="num">01</div><div><h3>Analysis</h3><p>Break down markets, companies, technology and trends into the underlying drivers that actually matter.</p></div></article>
+<article class="card"><div class="num">02</div><div><h3>Research</h3><p>Go beyond headlines. Follow the evidence, connect the dots and build a sharper view of the subject.</p></div></article>
+<article class="card"><div class="num">03</div><div><h3>Ideas</h3><p>Frameworks, observations and original thinking designed to make better questions easier to ask.</p></div></article>
+</div>
 </section>
+
+<section class="section" id="about">
+<div class="section-head"><div class="section-label">02 — The idea</div><h2>A place for signal, not noise.</h2></div>
+<p class="statement">Good analysis does not make the world simpler. It makes the important parts easier to see.</p>
+</section>
+
+<section class="section" id="contact">
+<div class="section-head"><div class="section-label">03 — Stay close</div><h2>More to come.</h2></div>
+<p class="sub">The Analyst is being built as a home for thoughtful research and practical insight. Check back for new work.</p>
+<div class="actions"><a class="btn primary" href="mailto:hello@theanalyst.in">Get in touch</a></div>
+</section>
+</main>
+
 <footer><span>© 2026 The Analyst</span><span>theanalyst.in</span></footer>
 </div>
 </body>
