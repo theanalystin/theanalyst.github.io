@@ -94,7 +94,7 @@ ORDER BY customers DESC;</textarea>
         <article class="panel lesson"><span class="pill">05 · Window functions</span><h3>Rank and compare</h3><p>Use ROW_NUMBER, RANK and running totals.</p><button class="btn lesson-query" data-sql="SELECT order_id, customer_id, amount, RANK() OVER (PARTITION BY customer_id ORDER BY amount DESC) AS amount_rank FROM orders ORDER BY customer_id, amount_rank;">Try in editor</button></article>
         <article class="panel lesson"><span class="pill">06 · Business analysis</span><h3>Build an insight</h3><p>Use query results and charts to answer a business question.</p><button class="btn lesson-query" data-sql="SELECT substr(order_date,1,7) AS month, SUM(amount) AS revenue FROM orders GROUP BY month ORDER BY month;">Try in editor</button></article>
       </div>
-      <div class="panel" style="margin-top:12px"><div class="panel-head"><div><h2>Daily SQL course</h2><div class="muted small">Open the published lesson pages.</div></div><span class="pill">31 lessons</span></div><div class="lesson-grid" id="dailyLessons"></div></div>
+      <div class="panel" style="margin-top:12px"><div class="panel-head"><div><h2>Daily SQL course</h2><div class="muted small">Open the published lesson pages.</div></div><span class="pill">30 daily lessons</span></div><div class="lesson-grid" id="dailyLessons"></div></div>
     </section>
 
     <section id="saved" class="view" hidden>
@@ -115,8 +115,8 @@ ORDER BY customers DESC;</textarea>
 document.querySelectorAll(".lesson-query").forEach(b=>b.addEventListener("click",()=>{document.getElementById("sql").value=b.dataset.sql;document.querySelector('[data-view="query"]').click()}));
 document.getElementById("learnPractice").addEventListener("click",()=>document.querySelector('[data-view="query"]').click());
 document.getElementById("loadSample").addEventListener("click",()=>{document.getElementById("sql").value="SELECT c.country, COUNT(*) AS customers FROM customers c GROUP BY c.country ORDER BY customers DESC;";document.querySelector('[data-view="query"]').click()});
-const topics=["Foundations","SELECT & WHERE","Sorting & LIMIT","Text functions","Numeric functions","Date functions","NULL handling","CASE expressions","Aggregation","GROUP BY","HAVING","Conditional aggregation","JOIN basics","LEFT JOIN","Multi-table joins","Anti joins","Subqueries","CTEs","Set operations","Window functions","Ranking","Running totals","Time-series analysis","Data quality","Deduplication","Views","Transactions","Indexes","Query plans","Transactions practice","Revenue capstone"];
-document.getElementById("dailyLessons").innerHTML=topics.map((t,i)=>'<article class="panel lesson"><span class="pill">Day '+String(i).padStart(2,"0")+'</span><h3>'+t+'</h3><p>Practice the concept with a worked example and exercises.</p><a class="btn" href="/day-'+String(i).padStart(2,"0")+'.html">Open lesson</a></article>').join("");
+const topics=["Foundations","SELECT & WHERE","Sorting & LIMIT","Text functions","Numeric functions","Date functions","NULL handling","CASE expressions","Aggregation","GROUP BY","HAVING","Conditional aggregation","JOIN basics","LEFT JOIN","Multi-table joins","Anti joins","Subqueries","CTEs","Set operations","Window functions","Ranking","Running totals","Time-series analysis","Data quality","Deduplication","Views","Query plans","Indexes","Transactions","Capstone: revenue analysis"];
+document.getElementById("dailyLessons").innerHTML=topics.map((t,i)=>'<article class="panel lesson"><span class="pill">Day '+String(i+1).padStart(2,"0")+'</span><h3>'+t+'</h3><p>Practice the concept with a worked example and exercises.</p><a class="btn" href="/day-'+String(i+1).padStart(2,"0")+'.html">Open lesson</a></article>').join("");
 </script>
 </body>
 </html>
