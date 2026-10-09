@@ -28,7 +28,7 @@
     <h1 id="pageTitle">SQL Workspace</h1>
     <div class="top-actions">
       <label class="btn primary" for="upload">Upload CSV / Excel</label>
-      <input id="upload" type="file" accept=".csv,.xls,.xlsx,.txt" multiple hidden>
+      <input id="upload" type="file" accept=".csv,.xls,.xlsx,.txt,.sqlite,.db" multiple hidden>
       <button class="btn hide-mobile" id="exportDb">Export database</button>
     </div>
   </header>
@@ -74,8 +74,8 @@ ORDER BY customers DESC;</textarea>
 
     <section id="data" class="view" hidden>
       <div class="panel" style="margin-bottom:12px">
-        <div class="panel-head"><div><h2>Import data</h2><div class="muted small">CSV, XLS and XLSX. Each worksheet becomes its own table.</div></div><span class="pill">25 MB per file</span></div>
-        <div id="dropzone" class="dropzone"><strong>Drop CSV or Excel files here</strong><p class="muted small">Files are processed locally in your browser. No account or upload server required.</p><label class="btn primary" for="upload2">Choose files</label><input id="upload2" type="file" accept=".csv,.xls,.xlsx,.txt" multiple hidden><p class="muted small">Use clear column headers. Duplicate or blank headers are repaired automatically.</p></div>
+        <div class="panel-head"><div><h2>Import data</h2><div class="muted small">CSV, XLS, XLSX and SQLite backups. Each worksheet becomes its own table.</div></div><span class="pill">25 MB per file</span></div>
+        <div id="dropzone" class="dropzone"><strong>Drop CSV, Excel or SQLite backup files here</strong><p class="muted small">Files are processed locally in your browser. No account or upload server required.</p><label class="btn primary" for="upload2">Choose files</label><input id="upload2" type="file" accept=".csv,.xls,.xlsx,.txt,.sqlite,.db" multiple hidden><p class="muted small">Use clear column headers. Duplicate or blank headers are repaired automatically.</p></div>
       </div>
       <div class="panel">
         <div class="panel-head"><h2>Database tables</h2><button class="btn" id="refreshTables">Refresh tables</button></div>
