@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Day 1 — SELECT and WHERE | The Analyst SQL</title>
+<meta name="description" content="Day 1 SQL lesson: select columns and filter rows with WHERE. Includes browser SQL practice.">
+<style>
+:root{--bg:#fafafa;--ink:#151515;--muted:#6d6d6d;--paper:#fff;--line:#e8e8e8;--good:#166534;--bad:#a12626}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}.shell{width:min(900px,100%);padding:0 20px;margin:auto}header{height:68px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}a{color:inherit}.brand{font-weight:750;text-decoration:none}.brand span{color:#777}.back{font-size:.85rem}.hero{padding:55px 0 35px;border-bottom:1px solid var(--line)}.eyebrow,.kicker{font-size:.7rem;letter-spacing:.13em;text-transform:uppercase;font-weight:750;color:var(--muted)}h1{font-size:clamp(2.6rem,8vw,4.5rem);line-height:1;letter-spacing:-.06em;margin:12px 0 16px}h2{letter-spacing:-.035em;line-height:1.15;margin:0 0 10px;font-size:1.8rem}p{color:var(--muted)}.section{padding:30px 0;border-bottom:1px solid var(--line)}.card{background:var(--paper);border:1px solid var(--line);padding:22px;margin-top:12px}.code,textarea{background:#171717;color:#eee;border-radius:6px;padding:16px;font: .9rem/1.7 ui-monospace,SFMono-Regular,Consolas,monospace;overflow:auto}.code{white-space:pre-wrap}textarea{width:100%;min-height:145px;border:0;resize:vertical}.btn{border:1px solid var(--line);background:white;padding:9px 13px;border-radius:5px;font:inherit;font-weight:700;cursor:pointer}.primary{background:var(--ink);color:white}.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.result{margin-top:14px;overflow:auto}.result table{border-collapse:collapse;background:white;width:100%;font-size:.85rem}.result th,.result td{padding:8px;border-bottom:1px solid var(--line);text-align:left}.ok{color:var(--good)}.error{color:var(--bad)}footer{padding:25px 0;color:var(--muted);font-size:.8rem}@media(max-width:500px){.shell{padding:0 16px}.card{padding:17px}}
+</style>
+</head>
+<body><div class="shell">
+<header><a class="brand" href="/">The<span>Analyst</span> / SQL</a><a class="back" href="/#progress">All lessons ↗</a></header>
+<section class="hero"><div class="eyebrow">Day 1 · Core SQL · 10–15 minutes</div><h1>Choose columns.<br>Filter rows.</h1><p>Today you’ll use <code>SELECT</code> to choose what to see and <code>WHERE</code> to decide which records belong in the result.</p></section>
+<section class="section"><div class="kicker">01 · Learn</div><h2>Two questions make a query</h2><p><b>Which columns do I need?</b> Use SELECT. <b>Which rows qualify?</b> Use WHERE. Text values need single quotes; numbers usually do not.</p><pre class="code">SELECT name, country
+FROM customers
+WHERE country = 'India';</pre><div class="card"><b>Read it in plain English</b><p>From the customers table, return each person's name and country, but only for rows where country is India.</p></div></section>
+<section class="section"><div class="kicker">02 · Remember</div><h2>Recall before you practise</h2><p>Without looking above, complete this sentence: SELECT chooses ______; WHERE filters ______.</p><button class="btn" id="reveal">Reveal answer</button><p id="answer" hidden><b>SELECT chooses columns; WHERE filters rows.</b></p></section>
+<section class="section"><div class="kicker">03 · Solve</div><h2>Write and run SQL</h2><p>Task: return the <code>name</code> and <code>country</code> of customers from India. Sort names alphabetically. You can edit the starter query or clear it and write your own.</p><textarea id="sql" spellcheck="false">SELECT name, country
+FROM customers
+WHERE country = 'India'
+ORDER BY name;</textarea><div class="row"><button class="btn primary" id="run">Run query</button><button class="btn" id="check">Check answer</button><button class="btn" id="hint">Hint</button></div><p id="hintText" hidden>Use WHERE country = 'India', then ORDER BY name.</p><div class="result" id="result">Loading browser SQL engine…</div></section>
+<section class="section"><div class="kicker">04 · Keep it</div><h2>One-minute recap</h2><ul><li><code>SELECT</code> lists the columns you want returned.</li><li><code>FROM</code> names the source table.</li><li><code>WHERE</code> keeps rows that match a condition.</li><li><code>ORDER BY</code> sorts the result.</li></ul><p>Tomorrow’s lesson can build on this without replacing today’s page. Bookmark this page and return to it for review.</p><div class="row"><a class="btn" href="/">Back to course home</a><a class="btn primary" href="/#progress">View course progress</a></div></section>
+<footer>The Analyst · SQL learning path · Day 1</footer></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.13.0/sql-wasm.js"></script>
+<script>
+let db=null;const $=id=>document.getElementById(id);
+function esc(s){return String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]))}
+function render(res){if(!res.length){$("result").innerHTML="<p>Query ran successfully; no rows returned.</p>";return}const r=res[0];let h="<table><thead><tr>"+r.columns.map(c=>"<th>"+esc(c)+"</th>").join("")+"</tr></thead><tbody>";r.values.forEach(row=>h+="<tr>"+row.map(v=>"<td>"+esc(v===null?"NULL":v)+"</td>").join("")+"</tr>");$("result").innerHTML=h+"</tbody></table>"}
+function run(){if(!db){$("result").textContent="The SQL engine is still loading. Refresh if this persists.";return}try{render(db.exec($("sql").value))}catch(e){$("result").innerHTML="<p class='error'>SQL error: "+esc(e.message)+"</p>"}}
+$("run").onclick=run;$("check").onclick=()=>{run();try{const r=db.exec($("sql").value);const ok=r.length&&JSON.stringify(r[0].columns)===JSON.stringify(["name","country"])&&JSON.stringify(r[0].values)===JSON.stringify([["Aarav Mehta","India"],["Isha Rao","India"],["Kabir Singh","India"],["Neha Shah","India"]]);if(ok)$("result").insertAdjacentHTML("afterbegin","<p class='ok'><b>Correct.</b> You selected the right columns, filtered rows, and sorted the names.</p>");else $("result").insertAdjacentHTML("afterbegin","<p class='error'><b>Not quite.</b> Check the selected columns, filter, and sort order.</p>")}catch(e){}};
+$("hint").onclick=()=> $("hintText").hidden=!$("hintText").hidden;$("reveal").onclick=()=> $("answer").hidden=!$("answer").hidden;
+initSqlJs({locateFile:f=>"https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.13.0/"+f}).then(SQL=>{db=new SQL.Database();db.run("CREATE TABLE customers(customer_id INTEGER PRIMARY KEY,name TEXT,country TEXT);INSERT INTO customers VALUES (1,'Aarav Mehta','India'),(2,'Kabir Singh','India'),(3,'Maya Chen','Singapore'),(4,'Isha Rao','India'),(5,'Rohan Das','UAE'),(6,'Neha Shah','India');");$("result").textContent="SQL engine ready. Run your query."}).catch(()=>{$("result").innerHTML="<p class='error'>Could not load the SQL engine. Check your connection and refresh.</p>"});
+</script></body></html>
