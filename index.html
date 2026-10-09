@@ -57,7 +57,7 @@ ORDER BY customers DESC;</textarea>
             <div id="suggestions" class="suggestions" hidden></div>
           </div>
           <div class="editor-toolbar">
-            <div class="toolbar-group"><button class="btn primary" id="run">Run query</button><button class="btn" id="export">Export results CSV</button><button class="btn" id="exportTable">Export selected table</button></div>
+            <div class="toolbar-group"><label class="field" style="min-width:180px">Query starter<select id="queryTemplate"><option value="">Choose a template…</option><option value="customers">Customers by country</option><option value="revenue">Revenue by month</option><option value="join">Orders with customer names</option><option value="ranking">Rank employee salaries</option><option value="quality">Check for missing values</option></select></label><button class="btn primary" id="run">Run query</button><button class="btn" id="formatSql">Format SQL</button><button class="btn" id="copySql">Copy SQL</button><button class="btn" id="clearSql">Clear</button><button class="btn" id="export">Export results CSV</button><button class="btn" id="exportTable">Export selected table</button></div>
             <div class="toolbar-group"><label class="field" style="min-width:145px">Table<select id="tableExportSelect"><option value="">Export table…</option></select></label></div>
           </div>
           <div class="editor-foot"><span id="status" class="status">Loading SQLite engine…</span><span class="result-meta small"><b id="meta">—</b><span id="time">—</span></span></div>
@@ -78,7 +78,7 @@ ORDER BY customers DESC;</textarea>
         <div id="dropzone" class="dropzone"><strong>Drop CSV, Excel or SQLite backup files here</strong><p class="muted small">Files are processed locally in your browser. No account or upload server required.</p><label class="btn primary" for="upload2">Choose files</label><input id="upload2" type="file" accept=".csv,.xls,.xlsx,.txt,.sqlite,.db" multiple hidden><p class="muted small">Use clear column headers. Duplicate or blank headers are repaired automatically.</p></div>
       </div>
       <div class="panel">
-        <div class="panel-head"><h2>Database tables</h2><button class="btn" id="refreshTables">Refresh tables</button></div>
+        <div class="panel-head"><h2>Database tables</h2><div class="toolbar-group"><input id="tableSearch" type="search" placeholder="Filter tables…" aria-label="Filter database tables"><button class="btn" id="refreshTables">Refresh tables</button></div></div>
         <div id="tableList" class="data-table-list"><div class="empty">Loading tables…</div></div>
       </div>
       <div class="notice" style="margin-top:12px">Persistence is local to this browser. Export the database before clearing browser data or switching devices. Very large databases may exceed browser storage quotas.</div>
