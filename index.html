@@ -324,7 +324,7 @@ $("progressText").textContent=mastery?"Day 0 mastered":"Day 0 is ready";
 $("progressFill").style.width=(mastery?(100/31):0)+"%";
 const g=$("progressGrid");g.innerHTML="";
 const labels=["Foundations","Core SQL","Core SQL","Core SQL","Core SQL","Transform","Transform","Transform","Transform","Aggregation","Aggregation","Aggregation","Aggregation","Joins","Joins","Joins","Joins","Query design","Query design","Query design","Query design","Analytics","Analytics","Analytics","Analytics","Modeling","Modeling","Modeling","Performance","Performance","Performance"];
-labels.forEach((name,i)=>{const d=document.createElement("div");d.className="day-card "+(i===0&&mastery?"done":"")+(i>0?" locked":"");d.innerHTML="<small>Day "+i+"</small><strong>"+name+"</strong>"+(i===0?(mastery?"<span class='hint'>Mastered</span>":"<span class='hint'>Start here</span>"):"<span class='hint'>Unlocks daily</span>");g.appendChild(d)});
+labels.forEach((name,i)=>{const d=document.createElement(i===0?"button":"div");d.className="day-card "+(i===0&&mastery?"done":"")+(i>0?" locked":"");if(i===0){d.type="button";d.style.cssText="text-align:left;font:inherit;color:inherit;width:100%;cursor:pointer";d.setAttribute("aria-label","Open Day 0 Foundations lesson");d.addEventListener("click",()=>showTab("today"))}d.innerHTML="<small>Day "+i+"</small><strong>"+name+"</strong>"+(i===0?(mastery?"<span class='hint'>Mastered · Open lesson</span>":"<span class='hint'>Start here · Open lesson</span>"):"<span class='hint'>Unlocks daily</span>");g.appendChild(d)});
 const doneDate=localStorage.getItem("sql_mastery_date");
 if(mastery&&doneDate){
 const days=Math.floor((Date.now()-new Date(doneDate).getTime())/86400000);
