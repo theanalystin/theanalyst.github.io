@@ -255,7 +255,7 @@ LIMIT 3;</pre>
 "use strict";
 
 const challenges=[
-{day:0,level:"Beginner",title:"Return customers from India.",prompt:"Select customer_id and name for customers whose country is India. Sort by name.",hint:"Use SELECT, FROM, WHERE and ORDER BY.",starter:"SELECT customer_id, name\\nFROM customers\\nWHERE country = 'India'\\nORDER BY name;",expected:[["customer_id","name"],[1,"Aarav Mehta"],[4,"Isha Rao"],[6,"Neha Shah"]]},
+{day:0,level:"Beginner",title:"Return customers from India.",prompt:"Select customer_id and name for customers whose country is India. Sort by name.",hint:"Use SELECT, FROM, WHERE and ORDER BY.",starter:"SELECT customer_id, name\\nFROM customers\\nWHERE country = 'India'\\nORDER BY name;",expected:[["customer_id","name"],[1,"Aarav Mehta"],[4,"Isha Rao"],[2,"Kabir Singh"],[6,"Neha Shah"]]},
 {day:0,level:"Beginner",title:"Find the three largest orders.",prompt:"Return order_id and amount for the three largest orders. Highest amount first; break ties with order_id ascending.",hint:"Sort by amount DESC, then order_id ASC. Keep three rows.",starter:"SELECT order_id, amount\\nFROM orders\\nORDER BY amount DESC, order_id ASC\\nLIMIT 3;",expected:[["order_id","amount"],[104,2750],[105,2650],[108,2650]]},
 {day:0,level:"Beginner",title:"Find large orders.",prompt:"Return order_id and amount for orders above 2000, highest amount first.",hint:"Filter with WHERE amount > 2000, then sort with ORDER BY amount DESC.",starter:"SELECT order_id, amount\\nFROM orders\\nWHERE amount > 2000\\nORDER BY amount DESC;",expected:[["order_id","amount"],[104,2750],[105,2650],[108,2650],[106,2100]]},
 {day:0,level:"Intermediate",title:"Revenue by customer.",prompt:"Return each customer_id and their total order value. Sort highest revenue first.",hint:"Group by customer_id and SUM(amount).",starter:"SELECT customer_id, SUM(amount) AS total_revenue\\nFROM orders\\nGROUP BY customer_id\\nORDER BY total_revenue DESC;",expected:[["customer_id","total_revenue"],[1,3950],[2,3450],[4,2925],[6,2650],[3,2100],[5,1725]]},
@@ -296,10 +296,17 @@ const got=rows(db.exec($("sql").value)),want=challenges[current].expected;
 if(equal(got,want)){
 $("result").innerHTML="<h4 class='ok'>Correct.</h4><p class='ok'>Good. Now close the example and write it once more from memory.</p>";
 localStorage.setItem("sql_last_success",new Date().toISOString());
-if(current===2){localStorage.setItem("sql_day0_mastery","done");updateProgress()}
+if(current===2){localStorage.setItem("sql_day0_mastery","done");localStorage.setItem("sql_mastery_date",new Date().toISOString());updateProgress()}
 }else{
-$("result").innerHTML="<h4 class='error'>Not quite.</h4><p class='hint'>The query runs, but the result is different. Check the columns, filter, sort order or grouping.</p>";
-if(got.length)render(db.exec($("sql").value));
+const queryResult=got.length?got:null;
+let html="<h4 class='error'>Not quite.</h4><p class='hint'>The query runs, but the result is different. Check the columns, filter, sort order or grouping.</p>";
+if(queryResult){
+const cols=queryResult[0], vals=queryResult.slice(1);
+html+="<div class='table-scroll'><table><thead><tr>"+cols.map(v=>"<th>"+escapeHtml(v)+"</th>").join("")+"</tr></thead><tbody>";
+vals.forEach(row=>{html+="<tr>"+row.map(v=>"<td>"+escapeHtml(v===null?"NULL":v)+"</td>").join("")+"</tr>"});
+html+="</tbody></table></div>";
+}
+$("result").innerHTML=html;
 }
 }catch(e){$("result").innerHTML="<h4 class='error'>Fix the SQL first.</h4><p class='error'>"+escapeHtml(e.message)+"</p>"}
 }
