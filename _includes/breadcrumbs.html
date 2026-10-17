@@ -1,0 +1,1 @@
+{% unless page.url == '/' %}<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="{{ '/' | relative_url }}">Home</a><span aria-hidden="true"> / </span><span aria-current="page">{{ page.title | default: site.title }}</span></nav>{% endunless %}
