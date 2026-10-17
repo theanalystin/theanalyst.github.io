@@ -1,1 +1,24 @@
-<!doctype html><html lang="{{ site.lang | default: 'en' }}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">{% seo %}<link rel="stylesheet" href="{{ '/assets/css/blog.css' | relative_url }}"><link rel="alternate" type="application/atom+xml" href="{{ '/feed.xml' | relative_url }}"></head><body><header class="site-header"><a class="brand" href="{{ '/' | relative_url }}">theanalyst<span>.in</span></a><nav><a href="{{ '/' | relative_url }}">Home</a><a href="{{ '/beginner/' | relative_url }}">Beginner</a><a href="{{ '/intermediate/' | relative_url }}">Intermediate</a><a href="{{ '/advanced/' | relative_url }}">Advanced</a><a href="{{ '/curriculum/' | relative_url }}">Curriculum</a></nav></header><main class="container">{{ content }}</main><footer class="site-footer">Learn data analytics by doing · <a href="{{ '/sitemap.xml' | relative_url }}">Sitemap</a> · <a href="{{ '/feed.xml' | relative_url }}">RSS feed</a></footer></body></html>
+<!doctype html>
+<html lang="{{ site.lang | default: 'en' }}">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f7f8f6">
+{% seo %}
+<link rel="stylesheet" href="{{ '/assets/css/blog.css' | relative_url }}">
+<link rel="alternate" type="application/atom+xml" href="{{ '/feed.xml' | relative_url }}">
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="{{ '/' | relative_url }}">theanalyst<span>.in</span></a>
+<nav aria-label="Main navigation">
+<a href="{{ '/' | relative_url }}">Home</a>
+<a href="{{ '/projects/' | relative_url }}">Projects</a>
+<a href="{{ '/career-roadmap/' | relative_url }}">Career roadmap</a>
+<a href="{{ '/beginner/' | relative_url }}">Learn</a>
+<a href="{{ '/editorial-calendar/' | relative_url }}">Editorial</a>
+<a href="{{ '/about/' | relative_url }}">About</a>
+</nav>
+</header>
+<main class="container">{{ content }}</main>
+<footer class="site-footer"><span>Practical analytics. Clear decisions.</span><span><a href="{{ '/sitemap.xml' | relative_url }}">Sitemap</a> · <a href="{{ '/feed.xml' | relative_url }}">RSS</a> · <a href="https://github.com/theanalystin/theanalyst.github.io">GitHub</a></span></footer>
+</body></html>
