@@ -16,7 +16,7 @@
 {% endif %}
 {% if page.url == '/about/' %}
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Person","name":"[AUTHOR NAME — replace before publishing]","url":"{{ '/about/' | absolute_url }}","image":"{{ '/assets/img/author-placeholder.svg' | absolute_url }}","sameAs":["[LINKEDIN URL — replace before publishing]"],"worksFor":{"@type":"Organization","name":"The Analyst","url":"{{ '/' | absolute_url }}"}}
+{"@context":"https://schema.org","@type":"Organization","name":"The Analyst","url":"{{ '/' | absolute_url }}","logo":"{{ '/assets/img/og-default.svg' | absolute_url }}","description":{{ site.description | jsonify }},"founder":{"@type":"Person","name":"[AUTHOR NAME — replace before publishing]","image":"{{ '/assets/img/author-placeholder.svg' | absolute_url }}","sameAs":["[LINKEDIN URL — replace before publishing]"]}}
 </script>
 {% endif %}
 {% if page.layout == 'post' %}
