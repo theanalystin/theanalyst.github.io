@@ -11,7 +11,7 @@
 </style>
 </head>
 <body><div class="shell">
-<header><a class="brand" href="/">The<span>Analyst</span> / SQL</a><a class="back" href="/#progress">All lessons ↗</a></header>
+<header><a class="brand" href="/beginner/">The<span>Analyst</span> / SQL</a><a class="back" href="/beginner/">All lessons ↗</a></header>
 <section class="hero"><div class="eyebrow">Day 1 · Core SQL · 10–15 minutes</div><h1>Choose columns.<br>Filter rows.</h1><p>Today you’ll use <code>SELECT</code> to choose what to see and <code>WHERE</code> to decide which records belong in the result.</p></section>
 <section class="section"><div class="kicker">01 · Learn</div><h2>Two questions make a query</h2><p><b>Which columns do I need?</b> Use SELECT. <b>Which rows qualify?</b> Use WHERE. Text values need single quotes; numbers usually do not.</p><pre class="code">SELECT name, country
 FROM customers
@@ -21,7 +21,7 @@ WHERE country = 'India';</pre><div class="card"><b>Read it in plain English</b><
 FROM customers
 WHERE country = 'India'
 ORDER BY name;</textarea><div class="row"><button class="btn primary" id="run">Run query</button><button class="btn" id="check">Check answer</button><button class="btn" id="hint">Hint</button></div><p id="hintText" hidden>Use WHERE country = 'India', then ORDER BY name.</p><div class="result" id="result">Loading browser SQL engine…</div></section>
-<section class="section"><div class="kicker">04 · Keep it</div><h2>One-minute recap</h2><ul><li><code>SELECT</code> lists the columns you want returned.</li><li><code>FROM</code> names the source table.</li><li><code>WHERE</code> keeps rows that match a condition.</li><li><code>ORDER BY</code> sorts the result.</li></ul><p>Tomorrow’s lesson can build on this without replacing today’s page. Bookmark this page and return to it for review.</p><div class="row"><a class="btn" href="/">Back to course home</a><a class="btn primary" href="/#progress">View course progress</a></div></section>
+<section class="section"><div class="kicker">04 · Keep it</div><h2>One-minute recap</h2><ul><li><code>SELECT</code> lists the columns you want returned.</li><li><code>FROM</code> names the source table.</li><li><code>WHERE</code> keeps rows that match a condition.</li><li><code>ORDER BY</code> sorts the result.</li></ul><p>Tomorrow’s lesson can build on this without replacing today’s page. Bookmark this page and return to it for review.</p><div class="row"><a class="btn" href="/beginner/">Back to course home</a><a class="btn primary" href="/beginner/">View course progress</a></div></section>
 <footer>The Analyst · SQL learning path · Day 1</footer></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.13.0/sql-wasm.js"></script>
 <script>
