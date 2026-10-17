@@ -1,0 +1,31 @@
+day,title,objective,sample_dataset,exercise
+1,What Data Analytics Really Is,Frame a question and distinguish evidence from interpretation,/data/performance_kpis.csv,Write one finding and one limitation
+2,Ask Better Business Questions,Turn a vague request into a decision question,/data/performance_kpis.csv,Rewrite a vague prompt as a measurable question
+3,Data Types and Measurement Scales,Recognise categorical and numeric variables,/data/performance_kpis.csv,Classify each column by type
+4,Meet Your Dataset: Rows and Columns,Understand observations fields and grain,/data/performance_kpis.csv,State what one row represents
+5,Collecting Data Responsibly,Check purpose provenance and sensitive fields,/data/performance_kpis.csv,Write a short data provenance note
+6,Spreadsheet Basics for Analysts,Inspect and navigate a small tabular dataset,/data/performance_kpis.csv,Freeze headers and format numeric columns
+7,Clean Messy Data,Find blanks duplicates and inconsistent labels,/data/performance_kpis.csv,Describe three checks before analysis
+8,Sort Filter and Freeze Panes,Subset data without changing its meaning,/data/performance_kpis.csv,Filter one KPI and explain your selection
+9,Formulas SUM AVERAGE MIN MAX,Use basic aggregation formulas,/data/performance_kpis.csv,Calculate a mean and range
+10,Percentages and Percentage Change,Calculate relative variance with the correct denominator,/data/performance_kpis.csv,Calculate order variance percentage
+11,COUNT COUNTA and COUNTIF,Count records and conditions,/data/performance_kpis.csv,Count KPIs below target
+12,IF Logic and Categories,Translate a rule into a transparent category,/data/performance_kpis.csv,Label each KPI above or below target
+13,Lookups and Joining Tables,Match keys across two tables,/data/performance_kpis.csv,Explain what a lookup key should be
+14,Dates and Time Periods,Choose a consistent reporting period,/data/performance_kpis.csv,Document the period required for a KPI
+15,Pivot Tables for Quick Answers,Summarise data by useful groups,/data/performance_kpis.csv,Sketch a pivot table design
+16,Charts That Tell the Truth,Choose a chart that matches the comparison,/data/performance_kpis.csv,Choose a chart and justify the scale
+17,Mean Median and Mode,Compare common measures of centre,/data/performance_kpis.csv,Describe when a median is more useful
+18,Range Quartiles and IQR,Describe spread and identify potential outliers,/data/performance_kpis.csv,Explain one limit of small-sample summaries
+19,Spot Outliers Carefully,Investigate unusual values before removing them,/data/performance_kpis.csv,Write a validation question for an outlier
+20,Correlation Is Not Causation,Separate association from causal evidence,/data/performance_kpis.csv,State what this dataset cannot prove
+21,Sampling and Representativeness,Explain why four hand-picked KPIs are not representative,/data/performance_kpis.csv,Write a sampling limitation
+22,Ask Useful Questions of Data,Convert a gap into testable follow-up questions,/data/performance_kpis.csv,Propose two hypotheses and required evidence
+23,SQL Tables and SELECT,Select columns from a relational table,/data/performance_kpis.csv,Write a SELECT statement
+24,SQL WHERE and ORDER BY,Filter and sort query results,/data/performance_kpis.csv,Write a WHERE clause for a KPI
+25,SQL Aggregations and GROUP BY,Aggregate metrics by group,/data/performance_kpis.csv,Group synthetic KPIs by unit
+26,SQL CASE WHEN,Build readable conditional labels,/data/performance_kpis.csv,Write a CASE expression for target status
+27,SQL NULL Values,Handle absent values without hiding data issues,/data/performance_kpis.csv,Explain why NULL is not always zero
+28,SQL JOIN Fundamentals,Join tables with verified keys,/data/performance_kpis.csv,Describe a safe join key and grain
+29,Build Your First KPI Report,Combine definitions actuals targets and variance,/data/performance_kpis.csv,Write a three-line management summary
+30,Beginner Capstone Retail Sales Story,Present a repeatable question analysis and conclusion,/data/performance_kpis.csv,Submit a short finding assumptions and next step
