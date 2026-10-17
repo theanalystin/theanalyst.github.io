@@ -1,0 +1,19 @@
+title: The Analyst — Data Analytics Academy
+description: A friendly 90-day data analytics course from beginner to advanced.
+url: "https://theanalyst.in"
+baseurl: ""
+lang: en
+timezone: Asia/Kolkata
+markdown: kramdown
+permalink: /:categories/:title/
+future: false
+show_excerpts: true
+plugins: [jekyll-seo-tag, jekyll-sitemap, jekyll-feed]
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+      author: The Analyst
+exclude: [README.md, Gemfile, Gemfile.lock, scripts/, vendor/]
