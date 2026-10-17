@@ -1,5 +1,5 @@
-title: The Analyst — Data Analytics Academy
-description: A friendly 90-day data analytics course from beginner to advanced.
+title: The Analyst
+description: Practical business analytics, SQL, BI and performance analysis tutorials for aspiring analysts and decision-makers.
 url: "https://theanalyst.in"
 baseurl: ""
 lang: en
@@ -8,6 +8,14 @@ markdown: kramdown
 permalink: /:categories/:title/
 future: false
 show_excerpts: true
+twitter:
+  card: summary_large_image
+logo: /assets/img/og-default.svg
+image: /assets/img/og-default.svg
+social:
+  name: The Analyst
+  links:
+    - https://github.com/theanalystin/theanalyst.github.io
 plugins: [jekyll-seo-tag, jekyll-sitemap, jekyll-feed]
 defaults:
   - scope:
@@ -16,4 +24,4 @@ defaults:
     values:
       layout: post
       author: The Analyst
-exclude: [README.md, Gemfile, Gemfile.lock, scripts/, vendor/]
+exclude: [README.md, Gemfile, Gemfile.lock, scripts/, vendor/, content-calendar.md]

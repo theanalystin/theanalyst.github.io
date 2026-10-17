@@ -1,40 +1,40 @@
 ---
 layout: default
-title: Business Performance Intelligence
-description: An illustrative KPI variance case study with transparent calculations and management recommendations.
+title: Business Performance Intelligence — Worked Case Study
+description: An end-to-end illustrative KPI variance case with synthetic CSV data, SQL, an accessible visual, assumptions and limitations.
 permalink: /projects/business-performance-intelligence/
+last_modified_at: 2026-10-17
 ---
-<p class="eyebrow">Case study 01 · Performance analytics</p>
+<p class="eyebrow">Case study 01 · Worked illustrative example</p>
+<h1>Business Performance Intelligence</h1>
 
-# Business Performance Intelligence
+**Business question:** Which monthly performance gaps deserve attention first, and what should a management team investigate next?
 
-**Business question:** Which performance gaps deserve attention first, and what should a management team investigate next?
+<p class="note"><strong>Data status: synthetic and illustrative.</strong> All rows and values are created for this example. The result demonstrates a calculation and analysis workflow; it is not a verified result from a company, client or employer.</p>
 
-This illustrative case demonstrates a disciplined workflow for reviewing a monthly business scorecard. All values are synthetic and are included to explain the method, not to represent a real employer or client.
+## 1. Download the sample data
 
-## 1. Sample data
+The [CSV sample dataset]({{ '/data/performance_kpis.csv' | relative_url }}) contains the KPI, target, actual, unit and whether a higher value is favourable. Use it to reproduce the calculations below.
 
-| KPI | Target | Actual | Variance | Variance % |
-|---|---:|---:|---:|---:|
-| Orders processed | 10,000 | 9,200 | -800 | -8.0% |
-| On-time completion | 95% | 91% | -4 percentage points | — |
-| Average handling cost | ₹120 | ₹126 | +₹6 | +5.0% |
-| Customer satisfaction | 4.5/5 | 4.3/5 | -0.2 | — |
+## 2. Results from the synthetic sample
 
-For count and cost measures, variance percentage is (actual minus target) divided by target, multiplied by 100. For rate measures, report the percentage-point difference separately so readers do not confuse percentage points with relative percentage change.
+<figure class="chart-figure">
+<img src="{{ '/assets/img/performance-kpi-chart.svg' | relative_url }}" alt="Indexed bar chart comparing target and actual for four synthetic KPIs: order volume is 8 percent below target, on-time completion is 4 percentage points below target, handling cost is 5 percent higher than target where lower is favourable, and satisfaction is 0.2 points below target." loading="lazy">
+<figcaption>Illustrative target and actual values. Bars are indexed to each KPI's target; original values and units are written alongside. Cost above target is unfavourable.</figcaption>
+</figure>
 
-## 2. Step-by-step analysis
+| KPI | Target | Actual | Absolute variance | Interpretation |
+|---|---:|---:|---:|---|
+| Orders processed | 10,000 | 9,200 | -800 | 8% below target |
+| On-time completion | 95% | 91% | -4 percentage points | Below target |
+| Handling cost per order | ₹120 | ₹126 | +₹6 | 5% above target; higher cost is unfavourable |
+| Customer satisfaction | 4.5/5 | 4.3/5 | -0.2 points | Below target |
 
-1. **Validate definitions.** Confirm the period, unit, numerator, denominator and source for each metric.
-2. **Compare actuals with targets.** Identify gaps by size, direction and business importance.
-3. **Segment the gaps.** Break order processing down by region, product, team or time period where data supports it.
-4. **Test explanations.** Check whether volume mix, capacity, rework, downtime or input quality plausibly explains the variance.
-5. **Prioritise investigation.** Rank opportunities by estimated impact, confidence in evidence and effort required.
-6. **Assign action and follow-up.** Give each action an owner, due date, expected result and a metric to monitor.
+For count and cost measures, relative variance is (actual − target) / target × 100. Rate changes are shown in percentage points, and rating changes in rating points. The unit and direction matter: a positive cost variance is not a favourable result.
 
-## 3. Example SQL
+## 3. Reproduce the analysis with SQL
 
-The query assumes a table named monthly_kpis with columns kpi_name, target_value and actual_value. The schema is illustrative.
+The query assumes a table named `monthly_kpis` with columns `kpi_name`, `target_value`, `actual_value` and `favourable_direction`. The schema is illustrative; load the CSV into a table with these columns first.
 
 ~~~sql
 SELECT
@@ -42,40 +42,43 @@ SELECT
   target_value,
   actual_value,
   actual_value - target_value AS variance,
-  100.0 * (actual_value - target_value)
-    / NULLIF(target_value, 0) AS variance_pct
+  CASE
+    WHEN target_value = 0 THEN NULL
+    ELSE ROUND(100.0 * (actual_value - target_value) / target_value, 2)
+  END AS relative_variance_pct,
+  favourable_direction
 FROM monthly_kpis
 ORDER BY ABS(actual_value - target_value) DESC;
 ~~~
 
-This query ranks absolute variances, which is useful for triage but not sufficient for prioritisation. A small gap in a critical service metric may matter more than a large gap in a low-impact measure. Rate metrics and costs also need direction-aware interpretation.
+The query ranks absolute numerical differences. This is useful for triage, but not sufficient for priority-setting because units differ. A rigorous priority model also considers business impact, risk, confidence in evidence, and effort.
 
-## 4. What the analyst should conclude
+## 4. What this sample tells us
 
-The sample shows missed order volume, weaker on-time completion, higher handling cost and lower satisfaction. These metrics may be connected, but the table alone does not prove a cause. The next step is to segment and test the relationships rather than claim that one metric caused another.
+The sample shows four misses against target. It does **not** explain why they occurred. The next useful step is to segment orders and on-time completion by region, day, order complexity or team, then test whether the same segments also have higher costs or lower satisfaction. These are hypotheses to test, not established causes.
 
-A management-ready summary should state the gap, the evidence, the leading hypotheses, the data needed to confirm them, and the recommended next action.
+## 5. Assumptions and limitations
 
-## 5. Common mistakes
+- The data are fictional and small; values are manually chosen for teaching.
+- Targets are treated as agreed and comparable with actuals for the same period.
+- There is no row-level transaction data to verify the figures or perform a true driver decomposition.
+- The example does not prove a causal relationship between throughput, cost, timing and satisfaction.
+- The chart is a static teaching visual; no live data or dashboard refresh is connected.
+- Relative variance can be misleading across units, so the analysis shows percentage points for rates and rating points for customer satisfaction.
 
-- Comparing metrics with inconsistent definitions or reporting periods.
-- Ranking every KPI by percentage variance without considering business impact.
-- Treating correlation as proof of causation.
-- Presenting a dashboard without a clear action or owner.
-- Reporting synthetic examples as observed business outcomes.
+## 6. Suggested management follow-up
 
-## 6. Practice exercise
+1. Validate metric definitions, data completeness and reporting period.
+2. Locate the largest operational gaps by meaningful segments.
+3. Test potential drivers rather than assume causes.
+4. Assign an owner, due date and follow-up metric to each investigation.
+5. Revisit the scorecard after actions are taken and record whether the gap changed.
 
-**Question:** Handling cost increased from a target of ₹120 to an actual of ₹126. What is the absolute and relative variance?
+## 7. Practice exercise
 
-**Answer:** The absolute variance is ₹6 per unit. The relative variance is 6 divided by 120, multiplied by 100: 5% above target.
+Orders target 10,000 and actual 9,200. Calculate absolute and relative variance.
 
-## 7. Takeaways
+**Answer:** Absolute variance = 9,200 − 10,000 = −800 orders. Relative variance = −800 / 10,000 × 100 = −8%.
 
-- Establish trusted definitions before comparing performance.
-- Separate the observed gap from the explanation for that gap.
-- Use SQL to make calculations reproducible.
-- Prioritise by impact and evidence, not variance alone.
-- Close the loop with an owner and a follow-up measure.
-
-**Next step:** add a CSV sample, validate the query in a database, and attach a dashboard screenshot before presenting this as a completed technical project.
+{% include newsletter.html %}
+<p class="updated">Last updated: 17 October 2026</p>

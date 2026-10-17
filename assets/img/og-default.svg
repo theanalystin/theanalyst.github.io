@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+<title id="title">The Analyst — Business analytics</title><desc id="desc">Minimal editorial social image in green, off-white and black.</desc>
+<rect width="1200" height="630" fill="#f6f8f5"/>
+<rect x="54" y="54" width="1092" height="522" rx="10" fill="#ffffff" stroke="#dce2dc" stroke-width="2"/>
+<rect x="54" y="54" width="12" height="522" rx="6" fill="#28664f"/>
+<text x="104" y="144" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="700" fill="#28664f" letter-spacing="3">THEANALYST.IN</text>
+<text x="104" y="290" font-family="Arial, Helvetica, sans-serif" font-size="78" font-weight="700" fill="#1d2521">Make data</text>
+<text x="104" y="382" font-family="Arial, Helvetica, sans-serif" font-size="78" font-weight="700" fill="#28664f">useful.</text>
+<text x="108" y="456" font-family="Arial, Helvetica, sans-serif" font-size="27" fill="#68736c">Business performance · Analytics · Decision-making</text>
+<g fill="none" stroke="#dce2dc" stroke-width="3"><path d="M858 440V340h56v100z"/><path d="M932 440V286h56v154z"/><path d="M1006 440V222h56v218z"/></g>
+<path d="M858 319l74-55 74-52 74-42" fill="none" stroke="#28664f" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+<g fill="#28664f"><circle cx="858" cy="319" r="7"/><circle cx="932" cy="264" r="7"/><circle cx="1006" cy="212" r="7"/><circle cx="1080" cy="170" r="7"/></g>
+</svg>
