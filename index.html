@@ -1,8 +1,30 @@
 ---
 layout: default
-title: Learn Data Analytics — One Practical Lesson Every Day
-description: A free 90-day data analytics course from spreadsheet basics to SQL, statistics, experimentation, forecasting, and analytics engineering.
+title: Business Performance Analytics, SQL and BI
+description: Practical business analytics, performance reporting, SQL, BI dashboards and consulting case studies by The Analyst.
 ---
-<section class="hero"><p class="eyebrow">A practical 90-day course · Starts 18 October 2026</p><h1>Turn data into<br><em>better decisions.</em></h1><p class="dek">One friendly, hands-on lesson every day. Learn with sample data, real-life analogies, worked examples, practice answers, and quizzes — from your first spreadsheet to advanced analytics.</p><p><a class="button" href="{{ '/beginner/' | relative_url }}">Start learning →</a> <a href="{{ '/curriculum/' | relative_url }}">Explore all 90 days</a></p></section>
-<section class="level-grid"><a class="level-card" href="{{ '/beginner/' | relative_url }}"><span>01–30</span><h2>Beginner</h2><p>Data thinking, spreadsheets, cleaning, charts, statistics, and SQL foundations.</p></a><a class="level-card" href="{{ '/intermediate/' | relative_url }}"><span>31–60</span><h2>Intermediate</h2><p>Data modelling, dashboards, cohorts, experiments, regression, and forecasting.</p></a><a class="level-card" href="{{ '/advanced/' | relative_url }}"><span>61–90</span><h2>Advanced</h2><p>Causal inference, pipelines, governance, monitoring, and capstone work.</p></a></section>
-<section><p class="eyebrow">Daily lessons</p><h2>Latest published articles</h2>{% assign published = site.posts | sort: "date" | reverse %}{% if published.size > 0 %}<div class="post-list">{% for post in published limit: 10 %}<a class="post-row" href="{{ post.url | relative_url }}"><span>{{ post.level }} · Day {{ post.day }}</span><strong>{{ post.title }}</strong><span>{{ post.date | date: "%b %-d, %Y" }} ↗</span></a>{% endfor %}</div>{% else %}<p>The first lesson is scheduled for 18 October 2026. Explore the full curriculum while daily lessons are prepared.</p>{% endif %}</section>
+<section class="hero">
+<p class="eyebrow">Business performance · Analytics · Decision-making</p>
+<h1>Make data<br><em>useful.</em></h1>
+<p class="dek">Practical analysis for people who need to understand performance, explain what changed and decide what to do next.</p>
+<div class="hero-actions"><a class="button" href="{{ '/projects/' | relative_url }}">Explore case studies</a><a class="text-link" href="{{ '/career-roadmap/' | relative_url }}">View career roadmap →</a></div>
+</section>
+<section class="intro-grid">
+<div><p class="eyebrow">The approach</p><h2>Business questions first.</h2></div>
+<p>Learn through worked examples, transparent assumptions and reproducible methods. Explore how SQL, BI and Python can support KPI governance, performance analysis and operational improvement.</p>
+</section>
+<section class="feature-grid">
+<a class="feature-card" href="{{ '/projects/' | relative_url }}"><span class="feature-index">01</span><h2>Case studies</h2><p>Business performance, commercial profitability and reporting quality.</p><span class="card-link">Explore projects →</span></a>
+<a class="feature-card" href="{{ '/beginner/' | relative_url }}"><span class="feature-index">02</span><h2>Learn by doing</h2><p>Structured lessons with sample data, practical exercises and clear explanations.</p><span class="card-link">Browse lessons →</span></a>
+<a class="feature-card" href="{{ '/editorial-calendar/' | relative_url }}"><span class="feature-index">03</span><h2>Field notes</h2><p>Weekly articles on metrics, SQL, dashboards and consulting methods.</p><span class="card-link">View editorial plan →</span></a>
+</section>
+<section class="statement">
+<p class="eyebrow">A working portfolio</p>
+<h2>Analysis should end with a better question—or a better decision.</h2>
+<p>Every case study distinguishes sample results from verified outcomes and documents assumptions and limitations.</p>
+<a href="{{ '/about/' | relative_url }}">About The Analyst →</a>
+</section>
+<section class="latest">
+<div><p class="eyebrow">Latest writing</p><h2>From the notebook</h2></div>
+<ul class="post-list">{% for post in site.posts limit:5 %}<li><span>{{ post.date | date: "%d %b %Y" }}</span><a href="{{ post.url | relative_url }}">{{ post.title }}</a></li>{% else %}<li>New articles begin 18 October 2026. Explore the project pages in the meantime.</li>{% endfor %}</ul>
+</section>
