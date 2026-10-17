@@ -1,0 +1,722 @@
+[
+  {
+    "day": 1,
+    "date": "2026-10-18",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "What Data Analytics Really Is",
+    "objective": "Learn to apply what data analytics really is to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 2,
+    "date": "2026-10-19",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "Ask Better Business Questions",
+    "objective": "Learn to apply ask better business questions to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 3,
+    "date": "2026-10-20",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "Data Types and Measurement Scales",
+    "objective": "Learn to apply data types and measurement scales to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 4,
+    "date": "2026-10-21",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "Meet Your Dataset: Rows and Columns",
+    "objective": "Learn to apply meet your dataset: rows and columns to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 5,
+    "date": "2026-10-22",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "Collecting Data Responsibly",
+    "objective": "Learn to apply collecting data responsibly to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 6,
+    "date": "2026-10-23",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "Spreadsheet Basics for Analysts",
+    "objective": "Learn to apply spreadsheet basics for analysts to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 7,
+    "date": "2026-10-24",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "Clean Messy Data",
+    "objective": "Learn to apply clean messy data to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 8,
+    "date": "2026-10-25",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "Sort, Filter, and Freeze Panes",
+    "objective": "Learn to apply sort, filter, and freeze panes to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 9,
+    "date": "2026-10-26",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "Formulas: SUM, AVERAGE, MIN, MAX",
+    "objective": "Learn to apply formulas: sum, average, min, max to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 10,
+    "date": "2026-10-27",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "Percentages and Percentage Change",
+    "objective": "Learn to apply percentages and percentage change to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 11,
+    "date": "2026-10-28",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "COUNT, COUNTA, and COUNTIF",
+    "objective": "Learn to apply count, counta, and countif to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 12,
+    "date": "2026-10-29",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "IF Logic and Categories",
+    "objective": "Learn to apply if logic and categories to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 13,
+    "date": "2026-10-30",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "Lookups and Joining Tables",
+    "objective": "Learn to apply lookups and joining tables to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 14,
+    "date": "2026-10-31",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "Dates and Time Periods",
+    "objective": "Learn to apply dates and time periods to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 15,
+    "date": "2026-11-01",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "Pivot Tables for Quick Answers",
+    "objective": "Learn to apply pivot tables for quick answers to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 16,
+    "date": "2026-11-02",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "Charts That Tell the Truth",
+    "objective": "Learn to apply charts that tell the truth to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 17,
+    "date": "2026-11-03",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "Mean, Median, and Mode",
+    "objective": "Learn to apply mean, median, and mode to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 18,
+    "date": "2026-11-04",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "Range, Quartiles, and IQR",
+    "objective": "Learn to apply range, quartiles, and iqr to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 19,
+    "date": "2026-11-05",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "Spot Outliers Carefully",
+    "objective": "Learn to apply spot outliers carefully to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 20,
+    "date": "2026-11-06",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "Correlation Is Not Causation",
+    "objective": "Learn to apply correlation is not causation to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 21,
+    "date": "2026-11-07",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "Sampling and Representativeness",
+    "objective": "Learn to apply sampling and representativeness to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 22,
+    "date": "2026-11-08",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "Ask Useful Questions of Data",
+    "objective": "Learn to apply ask useful questions of data to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 23,
+    "date": "2026-11-09",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "SQL: Tables and SELECT",
+    "objective": "Learn to apply sql: tables and select to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 24,
+    "date": "2026-11-10",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "SQL: WHERE and ORDER BY",
+    "objective": "Learn to apply sql: where and order by to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 25,
+    "date": "2026-11-11",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "SQL: Aggregations and GROUP BY",
+    "objective": "Learn to apply sql: aggregations and group by to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 26,
+    "date": "2026-11-12",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "SQL: CASE WHEN",
+    "objective": "Learn to apply sql: case when to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 27,
+    "date": "2026-11-13",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "SQL: NULL Values",
+    "objective": "Learn to apply sql: null values to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 28,
+    "date": "2026-11-14",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "SQL: JOIN Fundamentals",
+    "objective": "Learn to apply sql: join fundamentals to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 29,
+    "date": "2026-11-15",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "Build Your First KPI Report",
+    "objective": "Learn to apply build your first kpi report to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 30,
+    "date": "2026-11-16",
+    "level": "Beginner",
+    "category": "beginner",
+    "title": "Beginner Capstone: Retail Sales Story",
+    "objective": "Learn to apply beginner capstone: retail sales story to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 31,
+    "date": "2026-11-17",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Analytical Thinking and Problem Framing",
+    "objective": "Learn to apply analytical thinking and problem framing to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 32,
+    "date": "2026-11-18",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Advanced Spreadsheet Functions",
+    "objective": "Learn to apply advanced spreadsheet functions to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 33,
+    "date": "2026-11-19",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Power Query: Repeatable Cleaning",
+    "objective": "Learn to apply power query: repeatable cleaning to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 34,
+    "date": "2026-11-20",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Data Modelling Basics",
+    "objective": "Learn to apply data modelling basics to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 35,
+    "date": "2026-11-21",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "SQL: Subqueries and CTEs",
+    "objective": "Learn to apply sql: subqueries and ctes to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 36,
+    "date": "2026-11-22",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "SQL: Window Functions",
+    "objective": "Learn to apply sql: window functions to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 37,
+    "date": "2026-11-23",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "SQL: Date and Time Analysis",
+    "objective": "Learn to apply sql: date and time analysis to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 38,
+    "date": "2026-11-24",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "SQL: Conditional Aggregation",
+    "objective": "Learn to apply sql: conditional aggregation to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 39,
+    "date": "2026-11-25",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "SQL Query Performance Basics",
+    "objective": "Learn to apply sql query performance basics to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 40,
+    "date": "2026-11-26",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Dashboard Design Principles",
+    "objective": "Learn to apply dashboard design principles to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 41,
+    "date": "2026-11-27",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Choose Metrics and KPI Definitions",
+    "objective": "Learn to apply choose metrics and kpi definitions to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 42,
+    "date": "2026-11-28",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Build an Interactive Dashboard",
+    "objective": "Learn to apply build an interactive dashboard to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 43,
+    "date": "2026-11-29",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Data Storytelling with a Narrative",
+    "objective": "Learn to apply data storytelling with a narrative to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 44,
+    "date": "2026-11-30",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Segmentation and Cohort Analysis",
+    "objective": "Learn to apply segmentation and cohort analysis to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 45,
+    "date": "2026-12-01",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Funnel Analysis",
+    "objective": "Learn to apply funnel analysis to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 46,
+    "date": "2026-12-02",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Retention and Churn",
+    "objective": "Learn to apply retention and churn to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 47,
+    "date": "2026-12-03",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Customer Lifetime Value Basics",
+    "objective": "Learn to apply customer lifetime value basics to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 48,
+    "date": "2026-12-04",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "A/B Testing: The Core Idea",
+    "objective": "Learn to apply a/b testing: the core idea to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 49,
+    "date": "2026-12-05",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Statistical Significance and Confidence",
+    "objective": "Learn to apply statistical significance and confidence to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 50,
+    "date": "2026-12-06",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Confidence Intervals in Practice",
+    "objective": "Learn to apply confidence intervals in practice to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 51,
+    "date": "2026-12-07",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Hypothesis Testing Workflow",
+    "objective": "Learn to apply hypothesis testing workflow to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 52,
+    "date": "2026-12-08",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Regression to the Mean",
+    "objective": "Learn to apply regression to the mean to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 53,
+    "date": "2026-12-09",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Linear Regression Intuition",
+    "objective": "Learn to apply linear regression intuition to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 54,
+    "date": "2026-12-10",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Multiple Regression and Confounding",
+    "objective": "Learn to apply multiple regression and confounding to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 55,
+    "date": "2026-12-11",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Forecasting and Seasonality",
+    "objective": "Learn to apply forecasting and seasonality to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 56,
+    "date": "2026-12-12",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Missing Data Strategies",
+    "objective": "Learn to apply missing data strategies to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 57,
+    "date": "2026-12-13",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Data Quality Tests",
+    "objective": "Learn to apply data quality tests to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 58,
+    "date": "2026-12-14",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Reproducible Analysis",
+    "objective": "Learn to apply reproducible analysis to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 59,
+    "date": "2026-12-15",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Intermediate Capstone: Product Growth",
+    "objective": "Learn to apply intermediate capstone: product growth to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 60,
+    "date": "2026-12-16",
+    "level": "Intermediate",
+    "category": "intermediate",
+    "title": "Causal Inference: Beyond Correlation",
+    "objective": "Learn to apply causal inference: beyond correlation to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 61,
+    "date": "2026-12-17",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Difference-in-Differences",
+    "objective": "Learn to apply difference-in-differences to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 62,
+    "date": "2026-12-18",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Propensity Scores and Matching",
+    "objective": "Learn to apply propensity scores and matching to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 63,
+    "date": "2026-12-19",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Experiment Design and Power",
+    "objective": "Learn to apply experiment design and power to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 64,
+    "date": "2026-12-20",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Sequential Testing Pitfalls",
+    "objective": "Learn to apply sequential testing pitfalls to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 65,
+    "date": "2026-12-21",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Bayesian Thinking for Analysts",
+    "objective": "Learn to apply bayesian thinking for analysts to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 66,
+    "date": "2026-12-22",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Time-Series Decomposition",
+    "objective": "Learn to apply time-series decomposition to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 67,
+    "date": "2026-12-23",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Forecast Evaluation and Backtesting",
+    "objective": "Learn to apply forecast evaluation and backtesting to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 68,
+    "date": "2026-12-24",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Anomaly Detection",
+    "objective": "Learn to apply anomaly detection to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 69,
+    "date": "2026-12-25",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Optimisation and Decision Analysis",
+    "objective": "Learn to apply optimisation and decision analysis to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 70,
+    "date": "2026-12-26",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Pricing and Elasticity Analysis",
+    "objective": "Learn to apply pricing and elasticity analysis to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 71,
+    "date": "2026-12-27",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Marketing Mix and Attribution",
+    "objective": "Learn to apply marketing mix and attribution to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 72,
+    "date": "2026-12-28",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Advanced SQL: Recursive CTEs",
+    "objective": "Learn to apply advanced sql: recursive ctes to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 73,
+    "date": "2026-12-29",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Advanced SQL: Query Plans",
+    "objective": "Learn to apply advanced sql: query plans to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 74,
+    "date": "2026-12-30",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Large-Scale Data Processing",
+    "objective": "Learn to apply large-scale data processing to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 75,
+    "date": "2026-12-31",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Dimensional Modelling and SCDs",
+    "objective": "Learn to apply dimensional modelling and scds to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 76,
+    "date": "2027-01-01",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Data Warehouse Architecture",
+    "objective": "Learn to apply data warehouse architecture to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 77,
+    "date": "2027-01-02",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Analytics Engineering and dbt Concepts",
+    "objective": "Learn to apply analytics engineering and dbt concepts to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 78,
+    "date": "2027-01-03",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Orchestration and Data Pipelines",
+    "objective": "Learn to apply orchestration and data pipelines to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 79,
+    "date": "2027-01-04",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Data Contracts and Schema Changes",
+    "objective": "Learn to apply data contracts and schema changes to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 80,
+    "date": "2027-01-05",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Privacy, Governance, and Access",
+    "objective": "Learn to apply privacy, governance, and access to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 81,
+    "date": "2027-01-06",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Fairness and Bias Audits",
+    "objective": "Learn to apply fairness and bias audits to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 82,
+    "date": "2027-01-07",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Communicating Uncertainty to Leaders",
+    "objective": "Learn to apply communicating uncertainty to leaders to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 83,
+    "date": "2027-01-08",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Build an Analytics Portfolio Project",
+    "objective": "Learn to apply build an analytics portfolio project to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 84,
+    "date": "2027-01-09",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Peer Review and Analytical QA",
+    "objective": "Learn to apply peer review and analytical qa to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 85,
+    "date": "2027-01-10",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Monitoring Metrics in Production",
+    "objective": "Learn to apply monitoring metrics in production to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 86,
+    "date": "2027-01-11",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Advanced Capstone: End-to-End Decision",
+    "objective": "Learn to apply advanced capstone: end-to-end decision to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 87,
+    "date": "2027-01-12",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Present Your Findings Like a Consultant",
+    "objective": "Learn to apply present your findings like a consultant to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 88,
+    "date": "2027-01-13",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Your 90-Day Learning Review",
+    "objective": "Learn to apply your 90-day learning review to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 89,
+    "date": "2027-01-14",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Ethics, Accessibility, and Inclusive Analytics",
+    "objective": "Learn to apply ethics, accessibility, and inclusive analytics to a realistic business question, work through a small example, and explain the result and its limitations."
+  },
+  {
+    "day": 90,
+    "date": "2027-01-15",
+    "level": "Advanced",
+    "category": "advanced",
+    "title": "Build a Personal Analytics Development Plan",
+    "objective": "Learn to apply build a personal analytics development plan to a realistic business question, work through a small example, and explain the result and its limitations."
+  }
+]
