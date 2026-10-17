@@ -19,8 +19,8 @@ The [CSV sample dataset]({{ '/data/performance_kpis.csv' | relative_url }}) cont
 ## 2. Results from the synthetic sample
 
 <figure class="chart-figure">
-<img src="{{ '/assets/img/performance-kpi-chart.svg' | relative_url }}" alt="Bar chart of actual versus target for four synthetic KPIs: orders are below target, on-time completion and satisfaction are below target, and handling cost is above target where lower is favourable." loading="lazy">
-<figcaption>Illustrative target and actual values. The chart compares each KPI in its stated unit; rate and satisfaction values are not combined into a single scale.</figcaption>
+<img src="{{ '/assets/img/performance-kpi-chart.svg' | relative_url }}" alt="Indexed bar chart comparing target and actual for four synthetic KPIs: order volume is 8 percent below target, on-time completion is 4 percentage points below target, handling cost is 5 percent higher than target where lower is favourable, and satisfaction is 0.2 points below target." loading="lazy">
+<figcaption>Illustrative target and actual values. Bars are indexed to each KPI's target; original values and units are written alongside. Cost above target is unfavourable.</figcaption>
 </figure>
 
 | KPI | Target | Actual | Absolute variance | Interpretation |
