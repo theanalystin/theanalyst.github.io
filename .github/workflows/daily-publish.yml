@@ -1,0 +1,54 @@
+name: Daily publish
+on:
+  schedule:
+    - cron: "30 1 * * *" # 07:00 IST = 01:30 UTC
+  workflow_dispatch:
+    inputs:
+      publish_date:
+        description: "Curriculum date YYYY-MM-DD; use 2026-10-18 for the first lesson"
+        required: false
+        type: string
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Generate today's lesson
+        env:
+          PUBLISH_DATE: ${{ inputs.publish_date || '' }}
+        run: |
+          if [ -z "$PUBLISH_DATE" ]; then PUBLISH_DATE="$(date -u +%F)"; export PUBLISH_DATE; fi
+          python3 scripts/generate_daily_post.py
+      - name: Commit generated lesson
+        run: |
+          if git diff --quiet -- _posts; then
+            echo "No new article to commit."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add _posts
+            git commit -m "Publish daily analytics lesson"
+            git push
+          fi
+      - uses: actions/configure-pages@v5
+      - name: Build Jekyll site
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+      - uses: actions/upload-pages-artifact@v3
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
