@@ -50,8 +50,7 @@ jobs:
           for post in Path("_posts").glob("*.md"):
               text = post.read_text()
               assert text.startswith("---"), f"Missing front matter: {post}"
-              assert "
-title:" in text, f"Missing title: {post}"
+              assert "title:" in text, f"Missing title: {post}"
               assert len(text.split()) >= 300, f"Article looks too short: {post}"
           print(f"Validated {len(curriculum)} curriculum entries and Markdown posts.")
           PY
