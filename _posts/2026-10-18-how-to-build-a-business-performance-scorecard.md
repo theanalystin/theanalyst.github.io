@@ -2,7 +2,7 @@
 layout: post
 title: How to Build a Business Performance Scorecard
 date: 2026-10-18 07:00:00 +0530
-categories: [beginner, performance-analytics]
+categories: [beginner]
 level: Beginner
 day: 1
 objective: Define useful KPIs, compare actual performance with targets, and turn a reporting gap into a clear next action.
