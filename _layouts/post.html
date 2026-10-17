@@ -1,4 +1,12 @@
 ---
 layout: default
 ---
-<article class="article"><p class="eyebrow">{{ page.level }} · Day {{ page.day }} of 90 · {{ page.date | date: "%B %-d, %Y" }}</p><h1>{{ page.title }}</h1><p class="dek">{{ page.objective }}</p><div class="article-body">{{ content }}</div><aside class="take-next"><strong>Keep learning</strong><div>{% if page.previous_url %}<a href="{{ page.previous_url | relative_url }}">← Previous lesson</a>{% else %}<span>First lesson</span>{% endif %}{% if page.next_url %}<a href="{{ page.next_url | relative_url }}">Next lesson →</a>{% else %}<span>Course complete 🎉</span>{% endif %}</div></aside></article>
+<article class="article">
+<p class="eyebrow">{{ page.level }}{% if page.day %} · Day {{ page.day }} of 90{% endif %} · {{ page.date | date: "%B %-d, %Y" }}</p>
+<h1>{{ page.title }}</h1>
+<p class="dek">{{ page.objective }}</p>
+<div class="article-body">{{ content }}</div>
+<p class="updated">Published {{ page.date | date: "%B %-d, %Y" }} · <a href="{{ '/how-i-work/' | relative_url }}">How this analysis is labelled</a></p>
+{% include newsletter.html %}
+<aside class="take-next"><strong>Keep learning</strong><div>{% if page.previous_url %}<a href="{{ page.previous_url | relative_url }}">← Previous lesson</a>{% else %}<span>First lesson</span>{% endif %}{% if page.next_url %}<a href="{{ page.next_url | relative_url }}">Next lesson →</a>{% else %}<a href="{{ '/beginner/' | relative_url }}">Browse all lessons →</a>{% endif %}</div></aside>
+</article>
