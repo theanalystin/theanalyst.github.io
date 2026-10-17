@@ -1,21 +1,12 @@
 ---
 layout: default
-title: Internal editorial calendar
-description: Internal publication schedule. Not intended for reader-facing navigation.
+title: Internal editorial checklist
+description: Internal publishing quality checklist; excluded from reader-facing navigation and sitemap.
 permalink: /internal-editorial-calendar/
 published: false
 sitemap: false
 robots: noindex
 ---
-<section class="page-intro"><p class="eyebrow">Internal planning · Not public navigation</p><h1>Editorial schedule</h1><p class="dek">This is an internal planning document, not a reader-facing content page.</p></section>
+<section class="page-intro"><p class="eyebrow">Internal planning · Not public navigation</p><h1>Publishing quality checklist</h1><p class="dek">This internal note is deliberately excluded from reader-facing navigation and the sitemap. Do not use it as an article landing page.</p></section>
 
-## Publishing rhythm
-
-- Monday: flagship article or case study.
-- Wednesday: SQL, Python or BI walkthrough.
-- Friday: concise LinkedIn summary.
-- Monthly: review quality, engagement and learning priorities.
-
-## Editorial quality gate
-
-Before publishing, check that each article has a clear objective, original explanation, reproducible sample, validated calculations, limitations, meaningful takeaways and working internal links. Clearly distinguish synthetic results from verified findings.
+Before publishing, check that each article has a clear objective, original explanation, reproducible sample, validated calculations, limitations, meaningful takeaways and working internal links. Distinguish synthetic results from verified findings. If a scheduled post is not ready, do not expose a publication promise on the homepage.
