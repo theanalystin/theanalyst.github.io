@@ -18,7 +18,7 @@ last_modified_at: 2026-10-17
 {% for lesson in lessons %}
 {% assign lesson_week = lesson.day | minus: 1 | divided_by: 7 | plus: 1 | append: "" %}
 {% if lesson_week == week %}
-<li><div><strong>Day {{ lesson.day }} · {{ lesson.title }}</strong><p>{{ lesson.objective }}</p><p class="lesson-meta">Objective: explain the result and one limitation. Sample data: <a href="{{ '/data/performance_kpis.csv' | relative_url }}">synthetic KPI dataset</a>. Exercise: write one finding and one follow-up question.</p></div><a class="lesson-link" href="{% if lesson.day == 1 %}{{ '/beginner/what-data-analytics-really-is/' | relative_url }}{% else %}{{ '/day-' | append: lesson.day | prepend: '' | relative_url }}{% endif %}">Lesson ↗</a></li>
+<li><div><strong>Day {{ lesson.day }} · {{ lesson.title }}</strong><p>{{ lesson.objective }}</p><p class="lesson-meta">Practice objective: explain a result and one limitation. Data: <a href="{{ '/data/performance_kpis.csv' | relative_url }}">synthetic KPI CSV</a>. Exercise: write one finding and one follow-up question.</p></div><a class="lesson-link" href="{% if lesson.day == 1 %}{{ '/beginner/what-data-analytics-really-is/' | relative_url }}{% elsif lesson.day == 2 %}{{ '/day-02.html' | relative_url }}{% else %}{{ '/day-' | append: lesson.day | prepend: '' | relative_url }}{% endif %}">Lesson ↗</a></li>
 {% endif %}
 {% endfor %}
 </ul>
