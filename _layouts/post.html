@@ -1,0 +1,4 @@
+---
+layout: default
+---
+<article class="article"><p class="eyebrow">{{ page.level }} · Day {{ page.day }} of 90 · {{ page.date | date: "%B %-d, %Y" }}</p><h1>{{ page.title }}</h1><p class="dek">{{ page.objective }}</p><div class="article-body">{{ content }}</div><aside class="take-next"><strong>Keep learning</strong><div>{% if page.previous_url %}<a href="{{ page.previous_url | relative_url }}">← Previous lesson</a>{% else %}<span>First lesson</span>{% endif %}{% if page.next_url %}<a href="{{ page.next_url | relative_url }}">Next lesson →</a>{% else %}<span>Course complete 🎉</span>{% endif %}</div></aside></article>
