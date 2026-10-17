@@ -1,56 +1,75 @@
 ---
 layout: default
-title: Career Roadmap | The Analyst
-description: A practical 12-month roadmap toward business analytics consulting and performance analytics.
+title: How to Become a Performance Analyst
+description: A practical reader guide to the skills, tools, study schedule and portfolio evidence needed for performance analytics roles.
 permalink: /career-roadmap/
+last_modified_at: 2026-10-17
 ---
 <section class="page-intro">
-<p class="eyebrow">Career development</p>
-<h1>From reporting to <em>business impact.</em></h1>
-<p class="dek">A practical roadmap for building analytical depth, consulting judgement and portfolio evidence for business analytics and performance analytics roles.</p>
+<p class="eyebrow">Career guide</p>
+<h1>Become a <em>performance analyst.</em></h1>
+<p class="dek">A practical route from reporting basics to trusted KPI analysis, BI dashboards and evidence-led recommendations.</p>
 </section>
 
-## Professional direction
+## Who this guide is for
 
-**Business Performance & Analytics Consultant**
+Beginners and early-career analysts who want to work with business KPIs, operational performance, commercial questions or management reporting. You do not need a computer science degree; curiosity, careful reasoning and consistent practice matter. Comfort with spreadsheets is useful but can be learned along the way.
 
-Turn operational and financial data into trusted KPIs, clear explanations of performance, and practical improvement recommendations.
+**Suggested weekly time:** 5–7 hours. If you have less time, keep the same sequence and stretch the schedule. Treat the roadmap as a guide, not a job guarantee.
 
-This plan builds on experience in business reporting and governance, operations, category management, and business education. It is a development plan, not a claim that every listed skill is already mastered.
+## Stage 1 · Foundations (Weeks 1–4)
 
-## 12-month plan
+**Learn:** business questions, rows and columns, data types, spreadsheet formulas, cleaning, summary statistics and clear charts.
 
-| Period | Focus | Evidence to produce |
-|---|---|---|
-| Months 1–3 | KPI governance, SQL, variance analysis, executive reporting | Performance scorecard, two reproducible SQL analyses, first case study |
-| Months 4–6 | Python automation, BI modelling, profitability and cost drivers | Commercial analysis, validated dashboard, repeatable reporting workflow |
-| Months 7–9 | Consulting methods, issue trees, hypothesis-led analysis, stakeholder communication | End-to-end consulting case, benefits scorecard, executive presentation |
-| Months 10–12 | Interview readiness, portfolio refinement, targeted applications | Five polished projects, project walkthroughs, role-specific CV and interview stories |
+**Build:** a one-page KPI scorecard and a short note that explains one trend and one limitation.
 
-## Core skill priorities
+**Resources:** [Beginner course]({{ '/beginner/' | relative_url }}), [Google Sheets training](https://support.google.com/a/users/answer/9282959), [Khan Academy statistics](https://www.khanacademy.org/math/statistics-probability).
 
-1. **SQL:** joins, CTEs, window functions, date logic, reconciliation and query performance.
-2. **Business intelligence:** data models, KPI definitions, drill-downs and dashboards designed around decisions.
-3. **Python:** pandas, data validation, repeatable analysis and reporting automation.
-4. **Performance management:** actual-versus-target analysis, variance decomposition, KPI trees and benefits tracking.
-5. **Consulting communication:** issue trees, hypotheses, prioritisation, executive summaries and defensible recommendations.
+## Stage 2 · SQL and trustworthy metrics (Weeks 5–10)
 
-## Monthly scorecard
+**Learn:** SELECT, filtering, aggregation, joins, CTEs, window functions, date logic and reconciliation. Practise writing queries from a business question rather than copying syntax.
 
-- Publish four useful articles or case notes per month.
-- Make steady progress on one portfolio project at a time.
-- Complete two timed SQL or business-case exercises each week.
-- Record one project walkthrough and request feedback each month.
-- Review job descriptions quarterly and adjust learning priorities to recurring requirements.
+**Build:** a repeatable report with a KPI dictionary, validation checks and documented assumptions.
 
-## Interview preparation
+**Resources:** [SQLBolt interactive lessons](https://sqlbolt.com/), [PostgreSQL tutorial](https://www.postgresql.org/docs/current/tutorial.html), and the site's [SQL course pages]({{ '/curriculum/' | relative_url }}).
 
-Prepare authentic STAR stories about finding a performance gap, resolving a data inconsistency, improving a process, supporting a decision and handling stakeholder disagreement. Use real experiences and quantify results only when substantiated.
+## Stage 3 · BI and dashboarding (Weeks 11–16)
 
-For case interviews, clarify the objective, structure the drivers, identify needed data, test explanations, and close with prioritised actions, expected benefits and limitations.
+**Tool to learn first:** Microsoft Power BI. Practise importing data, modelling relationships, writing basic DAX measures, designing drill-downs and checking that totals reconcile.
 
-## Working principles
+**Build:** a dashboard for a clear audience and decision. Include definitions, refresh date, target comparisons and a short executive summary.
 
-Use public or synthetic datasets. Clearly label illustrative findings, document assumptions, test calculations, and never disclose confidential employer data or internal processes.
+**Resources:** [Microsoft Learn: Power BI](https://learn.microsoft.com/en-us/training/powerplatform/power-bi/).
 
-**The goal:** demonstrate how you think, validate evidence and turn analysis into decisions—not merely list tools or certificates.
+## Stage 4 · Analysis and automation (Weeks 17–24)
+
+**Learn:** Python with pandas, data-quality checks, segmentation, variance analysis, descriptive statistics and simple automation.
+
+**Build:** an analysis notebook or script that can be run again on a fresh input file.
+
+**Resources:** [Python tutorial](https://docs.python.org/3/tutorial/), [pandas getting started](https://pandas.pydata.org/docs/getting_started/intro_tutorials/).
+
+## Stage 5 · Portfolio and consulting communication (Weeks 25–36)
+
+**Learn:** hypothesis-led analysis, issue trees, prioritisation, stakeholder questions, limitations and clear writing.
+
+**Build:** two end-to-end case studies with code, sample data, a visual, calculations, recommendations and a section on what the evidence cannot prove.
+
+**Resources:** [The Analyst projects]({{ '/projects/' | relative_url }}) and [Google's technical writing courses](https://developers.google.com/tech-writing).
+
+## Stage 6 · Job readiness (Weeks 37–52)
+
+Review relevant job descriptions, identify repeated skill requirements, practise timed SQL and business cases, and prepare honest project walkthroughs. Tailor your CV to evidence you can explain and demonstrate. Quantify outcomes only when they are real and substantiated.
+
+## A weekly routine (5–7 hours)
+
+- 2 hours: learn one topic and take short notes.
+- 2 hours: solve a practical task using sample data.
+- 1 hour: check calculations, assumptions and data quality.
+- 1–2 hours: explain the result in writing and improve portfolio evidence.
+
+## What makes a strong portfolio project?
+
+It has a clear question, documented dataset provenance, reproducible code, meaningful checks, a useful visual, an actionable conclusion and honest limitations. Synthetic data is entirely acceptable for demonstrating a method when it is labelled plainly.
+
+<p class="updated">Last updated: 17 October 2026</p>
