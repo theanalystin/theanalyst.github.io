@@ -1,0 +1,5 @@
+kpi_name,target_value,actual_value,unit,favourable_direction
+Orders processed,10000,9200,orders,higher
+On-time completion,95,91,percent,higher
+Handling cost per order,120,126,INR per order,lower
+Customer satisfaction,4.5,4.3,rating out of 5,higher
