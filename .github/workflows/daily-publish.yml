@@ -1,11 +1,11 @@
 name: Daily publish
 on:
   schedule:
-    - cron: "30 1 * * *" # 07:00 IST = 01:30 UTC
+    - cron: "30 1 * * *" # 07:00 Asia/Kolkata = 01:30 UTC
   workflow_dispatch:
     inputs:
       publish_date:
-        description: "Curriculum date YYYY-MM-DD; use 2026-10-18 for the first lesson"
+        description: "Curriculum date YYYY-MM-DD"
         required: false
         type: string
 permissions:
@@ -25,12 +25,36 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Generate today's lesson
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Generate scheduled lesson
         env:
           PUBLISH_DATE: ${{ inputs.publish_date || '' }}
+          TZ: Asia/Kolkata
         run: |
-          if [ -z "$PUBLISH_DATE" ]; then PUBLISH_DATE="$(date -u +%F)"; export PUBLISH_DATE; fi
-          python3 scripts/generate_daily_post.py
+          if [ -z "$PUBLISH_DATE" ]; then PUBLISH_DATE="$(date +%F)"; fi
+          PUBLISH_DATE="$PUBLISH_DATE" python3 scripts/generate_daily_post.py
+      - name: Validate curriculum and lesson files
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          curriculum = json.loads(Path("_data/curriculum.json").read_text())
+          assert len(curriculum) == 90, f"Expected 90 lessons, found {len(curriculum)}"
+          dates = [x["date"] for x in curriculum]
+          assert len(set(dates)) == len(dates), "Duplicate curriculum dates"
+          for i, item in enumerate(curriculum, 1):
+              assert item["day"] == i, f"Incorrect day index: {item}"
+              assert item.get("title") and item.get("objective"), f"Missing title/objective: {item}"
+          for post in Path("_posts").glob("*.md"):
+              text = post.read_text()
+              assert text.startswith("---"), f"Missing front matter: {post}"
+              assert "
+title:" in text, f"Missing title: {post}"
+              assert len(text.split()) >= 300, f"Article looks too short: {post}"
+          print(f"Validated {len(curriculum)} curriculum entries and Markdown posts.")
+          PY
       - name: Commit generated lesson
         run: |
           if git diff --quiet -- _posts; then
@@ -48,6 +72,13 @@ jobs:
         with:
           source: ./
           destination: ./_site
+      - name: Verify generated site
+        run: |
+          test -f _site/index.html
+          test -f _site/sitemap.xml
+          test -f _site/feed.xml
+          test -f _site/projects/index.html
+          test -f _site/career-roadmap/index.html
       - uses: actions/upload-pages-artifact@v3
       - name: Deploy to GitHub Pages
         id: deployment
