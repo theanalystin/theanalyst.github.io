@@ -18,7 +18,7 @@ try {
         const status = document.querySelector('#sqlp-status');
         const note = document.querySelector('#sqlp-chart-note')?.textContent || '';
         return (engine.includes('DuckDB ready') && document.querySelector('#sqlp-chart canvas')) ||
-          status?.classList.contains('error') || note.includes('Chart modules could not load');
+          status?.classList.contains('error') || /Chart (error|renderer)|could not load/i.test(note);
       }, null, { timeout: 60000 });
     } catch (error) {
       await page.screenshot({ path: `${output}/sql-playground-${viewport.width}-startup-timeout.png`, fullPage: true });
@@ -42,13 +42,17 @@ try {
     if (tileColumns !== expectedColumns) throw new Error(`Expected ${expectedColumns} chart tiles per row at ${viewport.width}px, got ${tileColumns}`);
     await page.screenshot({ path: `${output}/sql-playground-${viewport.width}.png`, fullPage: true });
     if (viewport.width === 1280) {
-      await page.locator('#sqlp-more-toggle').click();
+      const chartTypes = await page.locator('#sqlp-chart-picker [data-chart]').count();
+      if (chartTypes !== 10) throw new Error(`Expected exactly 10 primary chart types, got ${chartTypes}`);
+      const previewBeforeExport = await page.locator('#sqlp-chart').evaluate(el =>
+        Boolean(el.compareDocumentPosition(document.querySelector('#sqlp-png')) & Node.DOCUMENT_POSITION_FOLLOWING)
+      );
+      if (!previewBeforeExport) throw new Error('Live chart preview must appear before export controls');
       const cases = [
         ['headcount','bar'], ['topLocations','horizontalBar'], ['monthlyHiring','line'],
         ['cumulativeHiring','area'], ['genderHeadcount','stackedBar'], ['attritionShare','pie'],
         ['salaryTenure','scatter'], ['performanceHeatmap','heatmap'], ['salaryHistogram','histogram'],
-        ['salaryBoxplot','boxplot'], ['combo','combo'], ['waterfall','waterfall'],
-        ['treemap','treemap'], ['funnel','funnel'], ['radar','radar'], ['gauge','gauge'], ['sankey','sankey']
+        ['salaryBoxplot','boxplot']
       ];
       for (const [queryKey, chartType] of cases) {
         await page.locator('#sqlp-query-examples').selectOption(queryKey);
@@ -101,7 +105,7 @@ try {
     await page.close();
   }
   if (errors.length) throw new Error(errors.join('\n'));
-  console.log('SQL Playground browser checks passed at 375px and 1280px; all 17 chart types and CSV/PNG/SVG/PPTX exports rendered.');
+  console.log('SQL Playground browser checks passed at 375px and 1280px; 10 chart types and CSV/PNG/SVG/PPTX exports rendered.');
 } finally {
   await browser.close();
 }
