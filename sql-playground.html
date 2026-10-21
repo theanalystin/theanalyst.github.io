@@ -13,6 +13,13 @@ permalink: /sql-playground/
 #sqlp button,#sqlp select,#sqlp input,#sqlp textarea{font:inherit}#sqlp button{border:1px solid #cfcfcf;border-radius:7px;background:#fff;color:#111;padding:.58rem .78rem;cursor:pointer;transition:background .15s}#sqlp button:hover{background:#f2f2f2}#sqlp button.primary{background:#111;color:#fff;border-color:#111}#sqlp button.primary:hover{background:#333}#sqlp button:disabled{opacity:.45;cursor:not-allowed}#sqlp select,#sqlp input[type=text],#sqlp input[type=file]{width:100%;border:1px solid #d2d2d2;border-radius:7px;padding:.55rem;background:#fff;color:#111;min-width:0}#sqlp label{display:block;font-size:.78rem;font-weight:650;margin:.55rem 0 .3rem}
 #sqlp .row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}#sqlp .row>*{min-width:0}#sqlp .dataset{flex:1;text-align:left;min-width:140px}#sqlp .dataset strong{display:block}#sqlp .dataset small{display:block;color:var(--muted);font-size:.75rem;margin-top:.2rem}
 #sqlp .workspace{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);gap:.8rem;align-items:start}#sqlp textarea{width:100%;min-height:215px;resize:vertical;padding:.85rem;border:1px solid #333;border-radius:7px;background:#111;color:#f5f5f5;font:.88rem/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2}#sqlp .status{font-size:.82rem;color:var(--muted);min-height:1.2em;margin:.65rem 0 0;overflow-wrap:anywhere}#sqlp .status.error{color:#a32020}#sqlp .drop{border:1px dashed #cfcfcf;border-radius:7px;padding:.7rem}#sqlp .table-wrap{overflow:auto;max-height:360px;border:1px solid var(--line);border-radius:7px}#sqlp table{border-collapse:collapse;width:100%;font-size:.8rem;white-space:nowrap}#sqlp th,#sqlp td{padding:.5rem .65rem;text-align:left;border-bottom:1px solid #e9e9e9}#sqlp th{background:#f7f7f7;position:sticky;top:0}#sqlp .result-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:.8rem}#sqlp .chart-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}#sqlp .chart-controls .wide{grid-column:span 2}#sqlp #sqlp-chart{width:100%;height:390px;min-height:280px}#sqlp .hint{font-size:.78rem;color:var(--muted);margin:.5rem 0 0}#sqlp .table-list{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 0}#sqlp .table-list button{font-size:.78rem;padding:.35rem .5rem}#sqlp .file-note{font-size:.76rem;color:var(--muted);margin:.45rem 0 0}
+#sqlp .chart-picker{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.45rem;margin:.6rem 0 .9rem}
+#sqlp .chart-tile{min-width:0;min-height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.35rem;padding:.55rem .25rem;text-align:center;border:1px solid var(--line);border-radius:8px;background:#fff}
+#sqlp .chart-tile .chart-glyph{font-size:1.25rem;line-height:1.1;font-weight:700}#sqlp .chart-tile .chart-label{font-size:.73rem;line-height:1.2}
+#sqlp .chart-tile[aria-pressed=true]{background:#111;color:#fff;border-color:#111}#sqlp .chart-tile:disabled{opacity:.35;cursor:not-allowed;background:#f7f7f7}
+#sqlp .chart-more{margin:.15rem 0 .8rem}#sqlp .chart-more[hidden]{display:none}#sqlp .chart-more-toggle{font-size:.8rem}
+#sqlp .chart-note{font-size:.76rem;color:var(--muted);min-height:1.1em;margin:.4rem 0 .7rem}
+@media(max-width:780px){#sqlp .chart-picker{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:780px){#sqlp .steps{grid-template-columns:repeat(2,minmax(0,1fr))}#sqlp .workspace{grid-template-columns:1fr}#sqlp .chart-controls{grid-template-columns:repeat(2,minmax(0,1fr))}#sqlp #sqlp-chart{height:320px}}@media(max-width:420px){#sqlp .panel{padding:.75rem}#sqlp .chart-controls{grid-template-columns:1fr}#sqlp .chart-controls .wide{grid-column:auto}#sqlp .steps{gap:.35rem}#sqlp .step{padding:.6rem}}
 </style>
 
@@ -69,11 +76,37 @@ ORDER BY avg_salary DESC;</textarea>
 
     <section class="panel">
       <div class="panel-head"><h2>03 — Build your chart</h2><span class="pill">Apache ECharts</span></div>
+      <div class="panel-head" style="margin-top:.25rem"><h2>Chart type</h2><span class="muted">Auto-matched to result columns</span></div>
+      <div id="sqlp-chart-picker" class="chart-picker" aria-label="Chart type picker">
+        <button type="button" class="chart-tile" data-chart="bar" aria-pressed="true" title="Compare values across categories"><span class="chart-glyph">▮▮▮</span><span class="chart-label">Bar</span></button>
+        <button type="button" class="chart-tile" data-chart="horizontalBar" aria-pressed="false" title="Horizontal comparison of categories"><span class="chart-glyph">☰</span><span class="chart-label">Horizontal bar</span></button>
+        <button type="button" class="chart-tile" data-chart="line" aria-pressed="false" title="Trend across an ordered axis"><span class="chart-glyph">⌁</span><span class="chart-label">Line</span></button>
+        <button type="button" class="chart-tile" data-chart="area" aria-pressed="false" title="Trend magnitude over an axis"><span class="chart-glyph">◢</span><span class="chart-label">Area</span></button>
+        <button type="button" class="chart-tile" data-chart="stackedBar" aria-pressed="false" title="Needs two categories and a numeric value"><span class="chart-glyph">▥</span><span class="chart-label">Stacked bar</span></button>
+        <button type="button" class="chart-tile" data-chart="pie" aria-pressed="false" title="Parts of a whole"><span class="chart-glyph">◕</span><span class="chart-label">Pie / Donut</span></button>
+        <button type="button" class="chart-tile" data-chart="scatter" aria-pressed="false" title="Needs two numeric columns"><span class="chart-glyph">⠿</span><span class="chart-label">Scatter</span></button>
+        <button type="button" class="chart-tile" data-chart="heatmap" aria-pressed="false" title="Needs two categories and a numeric value"><span class="chart-glyph">▦</span><span class="chart-label">Heatmap</span></button>
+        <button type="button" class="chart-tile" data-chart="histogram" aria-pressed="false" title="SQL automatically bins a numeric column"><span class="chart-glyph">▥</span><span class="chart-label">Histogram</span></button>
+        <button type="button" class="chart-tile" data-chart="boxplot" aria-pressed="false" title="SQL computes min, quartiles, median and max"><span class="chart-glyph">⊟</span><span class="chart-label">Boxplot</span></button>
+      </div>
+      <div class="chart-more"><button id="sqlp-more-toggle" type="button" class="chart-more-toggle" aria-expanded="false">More chart types +</button>
+        <div id="sqlp-more-charts" class="chart-picker" hidden>
+          <button type="button" class="chart-tile" data-chart="combo" aria-pressed="false" title="Needs one category and two numeric series"><span class="chart-glyph">╱▮</span><span class="chart-label">Combo (dual axis)</span></button>
+          <button type="button" class="chart-tile" data-chart="waterfall" aria-pressed="false" title="Cumulative increases and decreases"><span class="chart-glyph">▥↗</span><span class="chart-label">Waterfall</span></button>
+          <button type="button" class="chart-tile" data-chart="treemap" aria-pressed="false" title="Hierarchical proportions"><span class="chart-glyph">▧</span><span class="chart-label">Treemap</span></button>
+          <button type="button" class="chart-tile" data-chart="funnel" aria-pressed="false" title="Descending stage values"><span class="chart-glyph">▽</span><span class="chart-label">Funnel</span></button>
+          <button type="button" class="chart-tile" data-chart="radar" aria-pressed="false" title="Needs multiple numeric metrics"><span class="chart-glyph">◇</span><span class="chart-label">Radar</span></button>
+          <button type="button" class="chart-tile" data-chart="gauge" aria-pressed="false" title="Aggregate numeric value as a gauge"><span class="chart-glyph">◴</span><span class="chart-label">Gauge</span></button>
+          <button type="button" class="chart-tile" data-chart="sankey" aria-pressed="false" title="Needs two categories and a numeric flow value"><span class="chart-glyph">⇢</span><span class="chart-label">Sankey</span></button>
+        </div>
+      </div>
+      <p id="sqlp-chart-note" class="chart-note" aria-live="polite">Run a query to see which chart types fit your columns.</p>
       <div class="chart-controls">
-        <div><label for="sqlp-chart-type">Chart type</label><select id="sqlp-chart-type"><option value="bar">Bar</option><option value="line">Line</option><option value="pie">Pie</option><option value="scatter">Scatter</option></select></div>
         <div><label for="sqlp-palette">Style palette</label><select id="sqlp-palette"><option value="mono">Monochrome</option><option value="mck">McKinsey-inspired blue</option><option value="bcg">BCG-inspired green</option><option value="bain">Bain-inspired red</option><option value="big4">Big Four mix</option><option value="pwc">PwC-inspired warm</option></select></div>
         <div><label for="sqlp-x">Category / X axis</label><select id="sqlp-x"><option value="">Run a query first</option></select></div>
         <div><label for="sqlp-y">Value / Y axis</label><select id="sqlp-y"><option value="">Run a query first</option></select></div>
+        <div><label for="sqlp-group">Group / second category</label><select id="sqlp-group"><option value="">Optional</option></select></div>
+        <div><label for="sqlp-extra">Second numeric series</label><select id="sqlp-extra"><option value="">Optional</option></select></div>
         <div class="wide"><label for="sqlp-title">Chart title</label><input id="sqlp-title" type="text" value="Average salary by department"></div>
         <div><label for="sqlp-x-title">X-axis title</label><input id="sqlp-x-title" type="text" value="Department"></div>
         <div><label for="sqlp-y-title">Y-axis title</label><input id="sqlp-y-title" type="text" value="Average salary"></div>
@@ -87,13 +120,11 @@ ORDER BY avg_salary DESC;</textarea>
 </div>
 
 <script type="module">
-import * as duckdb from 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.29.0/+esm';
-import * as echarts from 'https://cdn.jsdelivr.net/npm/echarts@5.6.0/+esm';
-import pptxgen from 'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/+esm';
+let duckdb, echarts, pptxgen;
 
 (() => {
 const $ = id => document.getElementById(id);
-const state = {db:null,conn:null,ready:false,columns:[],rows:[],chart:null};
+const state = {db:null,conn:null,ready:false,columns:[],rows:[],chart:null,loadedSamples:new Set(),queryText:''};
 const palettes = {
   mono:['#111111','#555555','#888888','#b0b0b0','#d2d2d2'],
   mck:['#003f6b','#0077a8','#4b9fca','#82bfdc','#b7d9e9'],
@@ -126,7 +157,7 @@ function employeeCSV(){
  return out.join('\n');
 }
 const samples={
- employees:{name:'employees',csv:employeeCSV()},
+ employees:{name:'employees',csv:null},
  sales:{name:'sales',csv:'order_id,region,product,category,quantity,revenue\n1001,South,Notebook,Stationery,4,480\n1002,West,Desk,Office,1,8500\n1003,North,Pen,Stationery,12,180\n1004,East,Chair,Furniture,2,6400\n1005,South,Desk,Office,1,8500\n1006,West,Notebook,Stationery,8,960\n1007,North,Chair,Furniture,1,3200\n1008,East,Pen,Stationery,20,300\n1009,South,Chair,Furniture,2,6400\n1010,West,Desk,Office,1,8500\n1011,North,Notebook,Stationery,6,720\n1012,East,Desk,Office,1,8500'},
  web:{name:'web_events',csv:'event_id,channel,device,visitors,conversions\n1,Organic,Mobile,1200,96\n2,Paid Search,Desktop,850,71\n3,Email,Mobile,640,58\n4,Organic,Desktop,970,83\n5,Paid Search,Mobile,1100,77\n6,Email,Desktop,520,49\n7,Organic,Mobile,1380,112\n8,Paid Search,Desktop,900,74\n9,Email,Mobile,710,67'}
 };
@@ -143,10 +174,11 @@ async function refreshTables(){
  $('sqlp-tables').innerHTML=names.map(n=>'<button type="button" data-table="'+esc(n)+'">'+esc(n)+'</button>').join('');
  $('sqlp-tables').querySelectorAll('[data-table]').forEach(b=>b.addEventListener('click',()=>{$('sqlp-query').value='SELECT * FROM '+quote(b.dataset.table)+' LIMIT 100;';}));
 }
-function fillSelect(id,cols,preferred){
+function fillSelect(id,cols,preferred,blank=false){
  const el=$(id),old=el.value;el.innerHTML='';
- cols.forEach((c,i)=>{const o=document.createElement('option');o.value=c.name;o.textContent=c.name;el.appendChild(o);});
- if(cols.some(c=>c.name===old))el.value=old;else if(cols.some(c=>c.name===preferred))el.value=preferred;else if(cols.length)el.selectedIndex=Math.min(id==='sqlp-x'?0:1,cols.length-1);
+ if(blank){const o=document.createElement('option');o.value='';o.textContent='— None —';el.appendChild(o);}
+ cols.forEach(c=>{const o=document.createElement('option');o.value=c.name;o.textContent=c.name;el.appendChild(o);});
+ if(cols.some(c=>c.name===old))el.value=old;else if(cols.some(c=>c.name===preferred))el.value=preferred;else if(!blank&&cols.length)el.selectedIndex=Math.min(id==='sqlp-x'?0:1,cols.length-1);
 }
 function renderRows(cols,rows){
  state.columns=cols;state.rows=rows;
@@ -155,10 +187,14 @@ function renderRows(cols,rows){
  if(!rows.length){$('sqlp-results').textContent='Query returned zero rows.';return;}
  const visible=rows.slice(0,200);
  $('sqlp-results').innerHTML='<div class="table-wrap"><table><thead><tr>'+cols.map(c=>'<th>'+esc(c.name)+'</th>').join('')+'</tr></thead><tbody>'+visible.map(row=>'<tr>'+row.map(v=>'<td>'+esc(toText(v))+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>'+(rows.length>visible.length?'<p class="muted">Showing 200 rows; exports include the complete result.</p>':'');
- fillSelect('sqlp-x',cols,cols[0]?.name);
- const numeric=cols.find(c=>rows.some(r=>typeof r[c.index]==='number'||typeof r[c.index]==='bigint'||(r[c.index]!=null&&r[c.index]!==''&&!Number.isNaN(Number(r[c.index])))));
- fillSelect('sqlp-y',cols,numeric?.name||cols[1]?.name);
- $('sqlp-render').disabled=!cols.length;$('sqlp-download').disabled=!cols.length;
+ cols.forEach(c=>{c.numeric=rows.some(r=>{const v=r[c.index];return typeof v==='number'||typeof v==='bigint'||(typeof v==='string'&&v.trim()!==''&&Number.isFinite(Number(v));});});
+ const nums=cols.filter(c=>c.numeric),cats=cols.filter(c=>!c.numeric);
+ fillSelect('sqlp-x',cols,cats[0]?.name||cols[0]?.name);
+ fillSelect('sqlp-y',cols,nums[0]?.name||cols[1]?.name);
+ fillSelect('sqlp-group',cats,cats[1]?.name,true);
+ fillSelect('sqlp-extra',nums,nums[1]?.name,true);
+ selectChart(nums.length>=2&&cols[0]?.numeric&&cols[1]?.numeric?'scatter':cats.length>=2&&nums.length?'stackedBar':nums.length?'bar':'treemap');
+ updateChartAvailability();$('sqlp-render').disabled=!cols.length;$('sqlp-download').disabled=!cols.length;
 }
 function csvDownload(){
  const cell=v=>{const s=toText(v);return /[",\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
@@ -171,39 +207,86 @@ async function run(){
  $('sqlp-run').disabled=true;status('Running query…');const t=performance.now();
  try{
   const result=await state.conn.query(sql),cols=result.schema.fields.map((f,i)=>({name:f.name,index:i}));
+  state.queryText=sql;
   const rows=result.toArray().map(row=>cols.map(c=>row[c.name]));
   renderRows(cols,rows);status('Query completed in '+((performance.now()-t)/1000).toFixed(2)+'s.');await refreshTables();drawChart();
  }catch(e){status(e.message||String(e),true);}
  finally{$('sqlp-run').disabled=!state.ready;}
 }
-function chartData(){
- const x=$('sqlp-x').value,y=$('sqlp-y').value,xi=state.columns.findIndex(c=>c.name===x),yi=state.columns.findIndex(c=>c.name===y);
- return {x,y,xi,yi,items:state.rows.filter(r=>r[xi]!=null).map(r=>({name:toText(r[xi]),value:Number(r[yi])})).filter(d=>Number.isFinite(d.value)).slice(0,500)};
+function selectedChart(){return document.querySelector('#sqlp [data-chart][aria-pressed="true"]')?.dataset.chart||'bar';}
+function selectChart(type){document.querySelectorAll('#sqlp [data-chart]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.chart===type)));if($('sqlp-chart-note'))$('sqlp-chart-note').textContent='Selected: '+type+'.';}
+function col(name){return state.columns.find(c=>c.name===name);}
+function isNum(name){return !!col(name)?.numeric;}
+function compatibility(type){
+ const nums=state.columns.filter(c=>c.numeric),x=$('sqlp-x').value,y=$('sqlp-y').value,g=$('sqlp-group').value,e=$('sqlp-extra').value;
+ let ok=false,why='Choose compatible columns for this chart.';
+ if(!state.rows.length||!state.columns.length)return {valid:false,why:'Run a query with rows first.'};
+ if(['bar','horizontalBar','line','area','pie','waterfall','treemap','funnel'].includes(type)){ok=!!col(x)&&isNum(y);why='Needs a category and a numeric value.';}
+ if(type==='gauge'||type==='histogram'||type==='boxplot'){ok=isNum(y);why='Choose a numeric column for Value / Y axis.';}
+ if(type==='scatter'){ok=isNum(x)&&isNum(y)&&x!==y;why='Needs two different numeric columns; choose numeric X and Y.';}
+ if(['stackedBar','heatmap','sankey'].includes(type)){ok=!!col(x)&&!!col(g)&&x!==g&&!isNum(x)&&!isNum(g)&&isNum(y);why='Needs two different categorical columns and one numeric value.';}
+ if(type==='combo'){ok=!!col(x)&&isNum(y)&&isNum(e)&&e!==y;why='Needs a category and two different numeric series.';}
+ if(type==='radar'){ok=nums.length>=2&&isNum(y);why='Needs at least two numeric columns.';}
+ return {valid:ok,why};
 }
-function drawChart(){
- if(!state.chart||!state.columns.length)return;
- const d=chartData();if(d.xi<0||d.yi<0||!d.items.length)return;
- const type=$('sqlp-chart-type').value,pal=palettes[$('sqlp-palette').value]||palettes.mono;
- const title=$('sqlp-title').value.trim(),xt=$('sqlp-x-title').value.trim(),yt=$('sqlp-y-title').value.trim();
- const base={backgroundColor:'#ffffff',animation:false,color:pal,title:{text:title,left:'center',top:8,textStyle:{fontSize:16,fontWeight:600,color:'#111'}},tooltip:{trigger:type==='pie'?'item':'axis'},grid:{left:65,right:25,top:65,bottom:65,containLabel:false},toolbox:{show:false}};
- let series=[];
- if(type==='pie'){
-  base.legend={bottom:5,type:'scroll',textStyle:{color:'#444'}};
-  series=[{type:'pie',radius:['0%','65%'],center:['50%','54%'],data:d.items.map(v=>({name:v.name,value:v.value})),label:{color:'#111'},itemStyle:{borderColor:'#fff',borderWidth:2}}];
- }else{
-  base.xAxis={type:'category',name:xt,nameLocation:'middle',nameGap:42,data:d.items.map(v=>v.name),axisLabel:{color:'#444',rotate:d.items.length>7?25:0,hideOverlap:true},nameTextStyle:{color:'#333',padding:[12,0,0,0]},axisLine:{lineStyle:{color:'#aaa'}},axisTick:{show:false}};
-  base.yAxis={type:'value',name:yt,nameLocation:'middle',nameGap:48,nameTextStyle:{color:'#333'},axisLabel:{color:'#555'},splitLine:{lineStyle:{color:'#eee'}},axisLine:{show:false}};
-  const s={name:d.y,type:type==='scatter'?'scatter':type,data:d.items.map(v=>v.value),symbolSize:9};
-  if(type==='bar')s.itemStyle={borderRadius:[3,3,0,0]};
-  if(type==='line'){s.smooth:false;s.symbolSize:7;s.lineStyle={width:3};s.areaStyle={opacity:.07};}
-  series=[s];
+function updateChartAvailability(){
+ let first=null;
+ document.querySelectorAll('#sqlp [data-chart]').forEach(b=>{const a=compatibility(b.dataset.chart);b.disabled=!a.valid;if(!a.valid)b.title=a.why;else b.title=b.dataset.baseTitle||b.title;if(a.valid&&!first)first=b.dataset.chart;});
+ if(!compatibility(selectedChart()).valid&&first)selectChart(first);
+ const a=compatibility(selectedChart());$('sqlp-chart-note').textContent=a.valid?'Selected: '+selectedChart()+'.':a.why;
+}
+function chartData(){
+ const x=$('sqlp-x').value,y=$('sqlp-y').value,g=$('sqlp-group').value,e=$('sqlp-extra').value;
+ const xi=state.columns.findIndex(c=>c.name===x),yi=state.columns.findIndex(c=>c.name===y),gi=state.columns.findIndex(c=>c.name===g),ei=state.columns.findIndex(c=>c.name===e);
+ const rows=state.rows.filter(r=>r[xi]!=null&&r[yi]!=null&&Number.isFinite(Number(r[yi])));
+ return {x,y,g,e,xi,yi,gi,ei,rows,items:rows.map(r=>({name:String(r[xi]),group:gi>=0?String(r[gi]):'',value:Number(r[yi]),extra:ei>=0?Number(r[ei]):null})).slice(0,500)};
+}
+async function chartSql(type){
+ const y=quote($('sqlp-y').value),query=state.queryText.replace(/;\s*$/,'').trim();
+ if(type==='histogram'){
+  const sql=`WITH src AS (${query}), stats AS (SELECT MIN(TRY_CAST(${y} AS DOUBLE)) mn, MAX(TRY_CAST(${y} AS DOUBLE)) mx FROM src), b AS (SELECT CASE WHEN mx=mn THEN 0 ELSE LEAST(9,GREATEST(0,CAST(FLOOR((TRY_CAST(s.${y} AS DOUBLE)-mn)/NULLIF(mx-mn,0)*10) AS INTEGER))) END n,mn,mx FROM src s CROSS JOIN stats WHERE TRY_CAST(s.${y} AS DOUBLE) IS NOT NULL) SELECT CAST(n AS VARCHAR)||' ('||ROUND(mn+n*(mx-mn)/10,2)||'–'||ROUND(mn+(n+1)*(mx-mn)/10,2)||')' AS bin,COUNT(*) frequency FROM b GROUP BY n,mn,mx ORDER BY n`;
+  const r=await state.conn.query(sql);return {items:r.toArray().map(v=>({name:String(v.bin),value:Number(v.frequency)}))};
  }
- base.series=series;state.chart.setOption(base,true);$('sqlp-png').disabled=false;$('sqlp-ppt').disabled=false;
+ if(type==='boxplot'){
+  const g=$('sqlp-group').value,qg=g?quote(g):null;
+  const sql=`WITH src AS (${query}) SELECT ${qg?qg+',':''} MIN(TRY_CAST(${y} AS DOUBLE)) mn,quantile_cont(TRY_CAST(${y} AS DOUBLE),0.25) q1,quantile_cont(TRY_CAST(${y} AS DOUBLE),0.5) med,quantile_cont(TRY_CAST(${y} AS DOUBLE),0.75) q3,MAX(TRY_CAST(${y} AS DOUBLE)) mx FROM src WHERE TRY_CAST(${y} AS DOUBLE) IS NOT NULL ${qg?'GROUP BY '+qg:''}`;
+  const r=await state.conn.query(sql);return {rows:r.toArray().map(v=>({name:g?String(v[g]):$('sqlp-y').value,value:[Number(v.mn),Number(v.q1),Number(v.med),Number(v.q3),Number(v.mx)]}))};
+ }
+}
+async function drawChart(){
+ if(!state.chart||!state.columns.length)return;updateChartAvailability();
+ const type=selectedChart(),a=compatibility(type);if(!a.valid){$('sqlp-chart-note').textContent=a.why;return;}
+ const d=chartData(),pal=palettes[$('sqlp-palette').value]||palettes.mono,title=$('sqlp-title').value.trim(),xt=$('sqlp-x-title').value.trim(),yt=$('sqlp-y-title').value.trim();
+ try{
+  const sp=['histogram','boxplot'].includes(type)?await chartSql(type):null;
+  const base={backgroundColor:'#fff',animation:false,color:pal,title:{text:title,left:'center',top:8,textStyle:{fontSize:16,color:'#111'}},tooltip:{trigger:['pie','treemap','funnel','gauge','radar'].includes(type)?'item':'axis'},grid:{left:60,right:25,top:65,bottom:65,containLabel:true}};
+  const cat={type:'category',name:xt,nameLocation:'middle',nameGap:38,data:d.items.map(v=>v.name),axisLabel:{color:'#444',rotate:d.items.length>7?25:0,hideOverlap:true},axisLine:{lineStyle:{color:'#aaa'}}},val={type:'value',name:yt,nameLocation:'middle',nameGap:45,axisLabel:{color:'#555'},splitLine:{lineStyle:{color:'#eee'}}};
+  let series=[];
+  if(type==='pie')series=[{type:'pie',radius:['42%','68%'],data:d.items.map(v=>({name:v.name,value:v.value})),label:{color:'#111'},itemStyle:{borderColor:'#fff',borderWidth:2}}];
+  else if(type==='treemap')series=[{type:'treemap',data:d.items.map(v=>({name:v.name,value:v.value})),label:{color:'#fff'}}];
+  else if(type==='funnel')series=[{type:'funnel',sort:'descending',data:d.items.map(v=>({name:v.name,value:v.value})),label:{color:'#fff',position:'inside'}}];
+  else if(type==='gauge'){const v=d.items.reduce((s,v)=>s+v.value,0)/Math.max(1,d.items.length);series=[{type:'gauge',max:Math.max(1,...d.items.map(v=>v.value))*1.15,progress:{show:true},detail:{formatter:v=>Number(v).toLocaleString()},data:[{value:v,name:d.y}]}];}
+  else if(type==='radar'){const items=d.items.slice(0,12);base.radar={indicator:items.map(v=>({name:v.name,max:Math.max(1,...items.map(a=>a.value))*1.1}))};series=[{type:'radar',data:[{value:items.map(v=>v.value),name:d.y}],areaStyle:{opacity:.18}}];}
+  else if(type==='scatter'){base.xAxis={type:'value',name:xt};base.yAxis={type:'value',name:yt};series=[{type:'scatter',data:d.rows.slice(0,1000).map(r=>[Number(r[d.xi]),Number(r[d.yi])]).filter(v=>v.every(Number.isFinite)),symbolSize:8}];}
+  else if(type==='heatmap'||type==='sankey'){
+   const pairs=new Map();d.items.forEach(v=>{const k=v.name+'|||'+v.group;pairs.set(k,(pairs.get(k)||0)+v.value);});
+   if(type==='sankey'){base.grid={left:20,right:20,top:55,bottom:20};series=[{type:'sankey',data:[...new Set(d.items.flatMap(v=>[v.name,v.group]))].map(name=>({name})),links:[...pairs].map(([k,value])=>{const [source,target]=k.split('|||');return {source,target,value};}),lineStyle:{color:'source',curveness:.5}}];}
+   else{const xs=[...new Set(d.items.map(v=>v.name))],ys=[...new Set(d.items.map(v=>v.group))];base.xAxis={type:'category',data:xs};base.yAxis={type:'category',data:ys};base.visualMap={min:0,max:Math.max(1,...pairs.values()),calculable:true,orient:'horizontal',left:'center',bottom:5};series=[{type:'heatmap',data:[...pairs].map(([k,value])=>{const [x,y]=k.split('|||');return [xs.indexOf(x),ys.indexOf(y),value];})}];}
+  }
+  else if(type==='histogram'){base.xAxis={...cat,data:sp.items.map(v=>v.name),name:xt||'Bins'};base.yAxis={...val,name:yt||'Frequency'};series=[{type:'bar',data:sp.items.map(v=>v.value)}];}
+  else if(type==='boxplot'){base.xAxis={type:'category',data:sp.rows.map(v=>v.name),name:xt};base.yAxis=val;series=[{type:'boxplot',data:sp.rows.map(v=>v.value)}];}
+  else if(type==='combo'){base.xAxis=cat;base.yAxis=[val,{type:'value',name:$('sqlp-extra').value,position:'right',splitLine:{show:false}}];series=[{type:'bar',name:d.y,data:d.items.map(v=>v.value)},{type:'line',name:d.e,yAxisIndex:1,data:d.items.map(v=>v.extra),lineStyle:{width:3}}];base.legend={top:38};}
+  else if(type==='stackedBar'){base.xAxis=cat;base.yAxis=val;const groups=[...new Set(d.items.map(v=>v.group))];series=groups.map(g=>({name:g,type:'bar',stack:'total',data:d.items.filter(v=>v.group===g).map(v=>v.value)}));base.legend={top:38};}
+  else if(type==='waterfall'){base.xAxis=cat;base.yAxis=val;let total=0;series=[{type:'bar',data:d.items.map(v=>{total+=v.value;return total;})}];}
+  else{base.xAxis=type==='horizontalBar'?{...cat,inverse:true}:cat;base.yAxis=val;const ct=type==='horizontalBar'||type==='bar'?'bar':type==='area'?'line':type;series=[{type:ct,name:d.y,data:d.items.map(v=>v.value),symbolSize:7,...(type==='area'?{areaStyle:{opacity:.2}}:{})}];}
+  base.series=series;state.chart.setOption(base,true);$('sqlp-png').disabled=false;$('sqlp-ppt').disabled=false;
+ }catch(e){$('sqlp-chart-note').textContent='Chart error: '+(e.message||String(e));}
 }
 async function exportPpt(){
  try{
   drawChart();
   const png=state.chart.getDataURL({type:'png',pixelRatio:2,backgroundColor:'#ffffff'});
+  if(!pptxgen)({default:pptxgen}=await import('https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/+esm'));
   const pptx=new pptxgen();pptx.layout='LAYOUT_WIDE';pptx.author='The Analyst';pptx.subject='SQL Playground chart';pptx.title=$('sqlp-title').value||'SQL chart';
   const slide=pptx.addSlide();slide.background={color:'FFFFFF'};
   slide.addText($('sqlp-title').value||'SQL chart',{x:.55,y:.25,w:12.2,h:.45,fontFace:'Aptos Display',fontSize:22,bold:true,color:'111111',margin:0});
@@ -224,17 +307,22 @@ async function importFiles(){
  }catch(e){$('sqlp-import-status').textContent='Import failed: '+(e.message||String(e));}
  finally{$('sqlp-import').disabled=!state.ready;}
 }
+async function loadSample(key){
+ const s=samples[key];if(!s||state.loadedSamples.has(key))return;
+ $('sqlp-engine').textContent='Loading '+s.name+'…';if(!s.csv)s.csv=employeeCSV();
+ await addTable(s.name,s.csv,'sample');state.loadedSamples.add(key);await refreshTables();$('sqlp-engine').textContent='DuckDB ready';
+}
 async function init(){
  try{
+  status('Loading DuckDB engine…');duckdb=await import('https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.29.0/+esm');
   const bundle=await duckdb.selectBundle(duckdb.getJsDelivrBundles());
   const workerUrl=URL.createObjectURL(new Blob(['importScripts("'+bundle.mainWorker+'");'],{type:'text/javascript'}));
   const worker=new Worker(workerUrl);state.db=new duckdb.AsyncDuckDB(new duckdb.ConsoleLogger(),worker);
   await state.db.instantiate(bundle.mainModule,bundle.pthreadWorker);URL.revokeObjectURL(workerUrl);
-  state.conn=await state.db.connect();
-  for(const key of Object.keys(samples))await addTable(samples[key].name,samples[key].csv,'sample');
-  state.ready=true;$('sqlp-engine').textContent='DuckDB ready';$('sqlp-run').disabled=false;$('sqlp-import').disabled=false;
-  await refreshTables();state.chart=echarts.init($('sqlp-chart'),null,{renderer:'canvas'});window.addEventListener('resize',()=>state.chart&&state.chart.resize());
-  await run();
+  state.conn=await state.db.connect();state.ready=true;$('sqlp-engine').textContent='Preparing employee sample…';
+  await loadSample('employees');echarts=await import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/+esm');
+  state.chart=echarts.init($('sqlp-chart'),null,{renderer:'canvas'});window.addEventListener('resize',()=>state.chart&&state.chart.resize());
+  $('sqlp-run').disabled=false;$('sqlp-import').disabled=false;status('DuckDB ready. Run SQL or choose a sample dataset.');await run();
  }catch(e){$('sqlp-engine').textContent='Engine unavailable';status('Could not start DuckDB. Reload the page or check browser/CDN restrictions. '+(e.message||String(e)),true);}
 }
 $('sqlp-run').addEventListener('click',run);
@@ -244,13 +332,15 @@ $('sqlp-clear').addEventListener('click',()=>{$('sqlp-query').value='';$('sqlp-q
 $('sqlp-download').addEventListener('click',csvDownload);
 $('sqlp-import').addEventListener('click',importFiles);
 $('sqlp-render').addEventListener('click',drawChart);
-['sqlp-chart-type','sqlp-palette','sqlp-x','sqlp-y','sqlp-title','sqlp-x-title','sqlp-y-title'].forEach(id=>$(id).addEventListener('change',drawChart));
+['sqlp-palette','sqlp-x','sqlp-y','sqlp-group','sqlp-extra','sqlp-title','sqlp-x-title','sqlp-y-title'].forEach(id=>$(id).addEventListener('change',()=>{updateChartAvailability();drawChart();}));
+document.querySelectorAll('#sqlp [data-chart]').forEach(b=>{b.dataset.baseTitle=b.title;b.addEventListener('click',()=>{if(!b.disabled){selectChart(b.dataset.chart);updateChartAvailability();drawChart();}});});
+$('sqlp-more-toggle').addEventListener('click',()=>{const el=$('sqlp-more-charts'),open=el.hidden;el.hidden=!open;$('sqlp-more-toggle').setAttribute('aria-expanded',String(open));$('sqlp-more-toggle').textContent=open?'Fewer chart types −':'More chart types +';});
 ['sqlp-title','sqlp-x-title','sqlp-y-title'].forEach(id=>$(id).addEventListener('input',()=>{if(state.chart)drawChart();}));
 $('sqlp-png').addEventListener('click',()=>{if(state.chart)downloadBlob(dataURItoBlob(state.chart.getDataURL({type:'png',pixelRatio:3,backgroundColor:'#ffffff'})),'sql-playground-chart.png');});
 $('sqlp-ppt').addEventListener('click',exportPpt);
-$('sqlp-chart-type').addEventListener('change',()=>{const pie=$('sqlp-chart-type').value==='pie';$('sqlp-x-title').disabled=pie;$('sqlp-y-title').disabled=pie;});
+
 function dataURItoBlob(uri){const parts=uri.split(','),mime=parts[0].match(/:(.*?);/)[1],raw=atob(parts[1]),arr=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)arr[i]=raw.charCodeAt(i);return new Blob([arr],{type:mime});}
-document.querySelectorAll('#sqlp [data-sample]').forEach(b=>b.addEventListener('click',()=>{$('sqlp-query').value=examples[b.dataset.sample];run();}));
+document.querySelectorAll('#sqlp [data-sample]').forEach(b=>b.addEventListener('click',async()=>{try{if(!state.ready){status('DuckDB is still loading.');return;}await loadSample(b.dataset.sample);$('sqlp-query').value=examples[b.dataset.sample];await run();}catch(e){status('Could not load sample: '+(e.message||String(e)),true);}}));
 init();
 })();
 </script>
