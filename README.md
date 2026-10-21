@@ -60,3 +60,7 @@ The repository includes a `CNAME` file for `theanalyst.in`. When configuring a n
 ## Privacy note
 
 The SQL Playground uses third-party CDNs to download the libraries required to run the tool. Data operations themselves are performed locally in the browser and the page does not intentionally transmit uploaded files or query results to a server.
+
+## Automated checks
+
+Pull requests run a Jekyll production build, a syntax check of the embedded SQL Playground module, and Playwright browser checks at **375px** and **1280px**. The browser suite exercises the 17 chart types and CSV, PNG, SVG, and PPTX exports. Responsive screenshots are uploaded as a workflow artifact named `sql-playground-responsive-screenshots`. The test-only Playwright dependency is installed in CI and is not part of the site's runtime bundle.
