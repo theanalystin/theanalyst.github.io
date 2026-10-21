@@ -45,6 +45,17 @@ try {
         const hasCanvas = await page.locator('#sqlp-chart canvas').count();
         if (!hasCanvas) throw new Error(`${chartType} did not render a chart canvas`);
       }
+      // Exercise the automatic SQL histogram and boxplot fallbacks on raw result rows.
+      await page.locator('.cm-content').fill('SELECT salary FROM employees;');
+      await page.locator('#sqlp-run').click();
+      await page.waitForFunction(() => (document.querySelector('#sqlp-status')?.textContent || '').startsWith('Query completed'), null, { timeout: 30000 });
+      await page.locator('#sqlp [data-chart="histogram"]').click();
+      await page.waitForFunction(type => document.querySelector('#sqlp-chart')?.dataset.chartType === type, 'histogram', { timeout: 15000 });
+      await page.locator('.cm-content').fill('SELECT grade, salary FROM employees;');
+      await page.locator('#sqlp-run').click();
+      await page.waitForFunction(() => (document.querySelector('#sqlp-status')?.textContent || '').startsWith('Query completed'), null, { timeout: 30000 });
+      await page.locator('#sqlp [data-chart="boxplot"]').click();
+      await page.waitForFunction(type => document.querySelector('#sqlp-chart')?.dataset.chartType === type, 'boxplot', { timeout: 15000 });
       const csvDownload = page.waitForEvent('download');
       await page.locator('#sqlp-download').click();
       if (!(await csvDownload).suggestedFilename().endsWith('.csv')) throw new Error('CSV export did not produce a CSV file');
