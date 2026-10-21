@@ -1,6 +1,8 @@
 name: SQL Playground checks
 
 on:
+  push:
+    branches: [fix/chart-compatibility-checks]
   pull_request:
     branches: [main]
 
