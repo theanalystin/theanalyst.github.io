@@ -149,7 +149,7 @@ permalink: /sql-playground/
         <div><label for="sqlp-y-multi">Additional Y series (multi-select)</label><select id="sqlp-y-multi" multiple size="3" aria-describedby="sqlp-y-help"></select><p id="sqlp-y-help" class="hint">Use Ctrl/Cmd to select multiple measures.</p></div>
         <div><label for="sqlp-group">Series / Group</label><select id="sqlp-group"><option value="">Optional</option></select></div>
         <div><label for="sqlp-extra">Second numeric series</label><select id="sqlp-extra"><option value="">Optional</option></select></div>
-        <div class="wide"><label for="sqlp-title">Action title</label><input id="sqlp-title" type="text" value="Average salary differs by department"></div>
+        <div class="wide"><label for="sqlp-title">Action title</label><input id="sqlp-title" type="text" value="Headcount is concentrated in a few departments"></div>
         <div class="wide"><label for="sqlp-subtitle">Subtitle</label><input id="sqlp-subtitle" type="text" value=""></div>
         <div><label for="sqlp-x-title">X-axis title</label><input id="sqlp-x-title" type="text" value="Department"></div>
         <div><label for="sqlp-y-title">Y-axis title</label><input id="sqlp-y-title" type="text" value="Average salary"></div>
@@ -251,7 +251,7 @@ async function refreshTables(){
  const r=await state.conn.query("SELECT table_name FROM information_schema.tables WHERE table_schema='main' AND table_type='BASE TABLE' ORDER BY table_name");
  const names=r.toArray().map(x=>String(x.table_name));
  $('sqlp-tables').innerHTML=names.map(n=>'<button type="button" data-table="'+esc(n)+'">'+esc(n)+'</button>').join('');
- $('sqlp-tables').querySelectorAll('[data-table]').forEach(b=>b.addEventListener('click',()=>{setQuery('SELECT * FROM '+quote(b.dataset.table)+' LIMIT 100;');}));
+ $('sqlp-tables').querySelectorAll('[data-table]').forEach(b=>b.addEventListener('click',()=>{state.pendingConfig=null;setQuery('SELECT * FROM '+quote(b.dataset.table)+' LIMIT 100;');}));
 }
 function fillSelect(id,cols,preferred,blank=false){
  const el=$(id),old=el.value;el.innerHTML='';
@@ -273,7 +273,7 @@ async function initCodeMirror(){
   ]);
   const initial=$('sqlp-query').value;
   state.editor=new view.EditorView({state:st.EditorState.create({doc:initial,extensions:[
-   view.lineNumbers(),view.highlightActiveLineGutter(),view.highlightSpecialChars(),cmd.history(),lang.foldGutter(),view.drawSelection(),view.dropCursor(),lang.indentOnInput(),lang.syntaxHighlighting(lang.defaultHighlightStyle),lang.bracketMatching(),view.rectangularSelection(),view.crosshairCursor(),view.highlightActiveLine(),view.keymap.of([{key:'Mod-Enter',run:()=>{run();return true;}},...cmd.defaultKeymap,...cmd.historyKeymap,cmd.indentWithTab]),sqlLang.sql(),view.EditorView.lineWrapping,view.EditorView.updateListener.of(update=>{if(update.docChanged){$('sqlp-query').value=update.state.doc.toString();persistConfig();}})
+   view.lineNumbers(),view.highlightActiveLineGutter(),view.highlightSpecialChars(),cmd.history(),lang.foldGutter(),view.drawSelection(),view.dropCursor(),lang.indentOnInput(),lang.syntaxHighlighting(lang.defaultHighlightStyle),lang.bracketMatching(),view.rectangularSelection(),view.crosshairCursor(),view.highlightActiveLine(),view.keymap.of([{key:'Mod-Enter',run:()=>{run();return true;}},...cmd.defaultKeymap,...cmd.historyKeymap,cmd.indentWithTab]),sqlLang.sql(),view.EditorView.contentAttributes.of({'aria-label':'SQL query editor'}),view.EditorView.lineWrapping,view.EditorView.updateListener.of(update=>{if(update.docChanged){$('sqlp-query').value=update.state.doc.toString();state.pendingConfig=null;persistConfig();}})
   ]}),parent:$('sqlp-editor-host')});
   $('sqlp-query').hidden=true;state.editor.focus();
  }catch(e){status('CodeMirror could not load; the plain SQL editor remains available.');}
@@ -352,7 +352,7 @@ async function run(){
  const sql=getQuery().trim();if(!sql){status('Enter a query first.',true);return;}
  $('sqlp-run').disabled=true;status('Running query…');const t=performance.now();
  try{
-  if(/\\bemployees\\b/i.test(sql)&&!state.loadedSamples.has('employees'))await loadSample('employees');
+  if(/\bemployees\b/i.test(sql)&&!state.loadedSamples.has('employees'))await loadSample('employees');
   const result=await state.conn.query(sql),cols=result.schema.fields.map((f,i)=>({name:f.name,index:i}));
   state.queryText=sql;
   const rows=result.toArray().map(row=>cols.map(c=>row[c.name]));
@@ -532,10 +532,11 @@ async function init(){
 $('sqlp-run').addEventListener('click',run);
 $('sqlp-query').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run();}});
 $('sqlp-query').addEventListener('focus',initCodeMirror,{once:true});
-$('sqlp-example').addEventListener('click',()=>{setQuery(examples[$('sqlp-query-examples').value]||examples.headcount);});
+$('sqlp-query').addEventListener('input',()=>{state.pendingConfig=null;persistConfig();});
+$('sqlp-example').addEventListener('click',()=>{state.pendingConfig=null;setQuery(examples[$('sqlp-query-examples').value]||examples.headcount);});
 $('sqlp-query-examples').addEventListener('change',()=>{state.pendingConfig=null;setQuery(examples[$('sqlp-query-examples').value]||examples.headcount);});
 $('sqlp-save-query').addEventListener('click',saveQuery);
-$('sqlp-saved-query').addEventListener('change',()=>{let saved=[];try{saved=JSON.parse(localStorage.getItem('theanalyst.sql.savedQueries')||'[]');}catch(_){}const q=saved[Number($('sqlp-saved-query').value)];if(q)setQuery(q.sql);});
+$('sqlp-saved-query').addEventListener('change',()=>{state.pendingConfig=null;let saved=[];try{saved=JSON.parse(localStorage.getItem('theanalyst.sql.savedQueries')||'[]');}catch(_){}const q=saved[Number($('sqlp-saved-query').value)];if(q)setQuery(q.sql);});
 refreshSavedQueries();
 $('sqlp-clear').addEventListener('click',()=>{setQuery('');state.editor?state.editor.focus():$('sqlp-query').focus();});
 $('sqlp-download').addEventListener('click',csvDownload);
