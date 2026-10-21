@@ -193,7 +193,7 @@ const examples = {
  salaryBoxplot:'SELECT grade, salary FROM employees ORDER BY grade;',
  genderPayGap:'SELECT grade, gender, ROUND(AVG(salary),0) AS avg_salary FROM employees GROUP BY grade, gender ORDER BY grade, gender;',
  attritionLocation:'SELECT location, ROUND(100.0*SUM(attrition_flag)/COUNT(*),1) AS attrition_pct FROM employees GROUP BY location ORDER BY attrition_pct DESC;',
- combo:'SELECT DATE_TRUNC(\\'month\\', CAST(join_date AS DATE)) AS month, COUNT(*) AS hires, ROUND(AVG(salary),0) AS avg_salary FROM employees GROUP BY month ORDER BY month;',
+ combo:'SELECT DATE_TRUNC(\'month\', CAST(join_date AS DATE)) AS month, COUNT(*) AS hires, ROUND(AVG(salary),0) AS avg_salary FROM employees GROUP BY month ORDER BY month;',
  waterfall:'SELECT department, -SUM(attrition_flag) AS attrition_impact FROM employees GROUP BY department ORDER BY attrition_impact;',
  treemap:'SELECT department, COUNT(*) AS headcount FROM employees GROUP BY department ORDER BY headcount DESC;',
  funnel:`SELECT * FROM (VALUES ('Applied',1000),('Screened',720),('Interviewed',350),('Offered',120),('Hired',85)) AS funnel(stage,candidates);`,
