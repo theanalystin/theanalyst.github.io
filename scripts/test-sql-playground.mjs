@@ -54,11 +54,14 @@ try {
       const svgDownload = page.waitForEvent('download');
       await page.locator('#sqlp-svg').click();
       if (!(await svgDownload).suggestedFilename().endsWith('.svg')) throw new Error('SVG export did not produce an SVG file');
+      const pptDownload = page.waitForEvent('download');
+      await page.locator('#sqlp-ppt').click();
+      if (!(await pptDownload).suggestedFilename().endsWith('.pptx')) throw new Error('PowerPoint export did not produce a PPTX file');
     }
     await page.close();
   }
   if (errors.length) throw new Error(errors.join('\n'));
-  console.log('SQL Playground browser checks passed at 375px and 1280px; all 17 chart types and CSV/PNG/SVG exports rendered.');
+  console.log('SQL Playground browser checks passed at 375px and 1280px; all 17 chart types and CSV/PNG/SVG/PPTX exports rendered.');
 } finally {
   await browser.close();
 }
