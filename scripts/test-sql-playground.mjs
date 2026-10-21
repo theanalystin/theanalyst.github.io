@@ -1,0 +1,63 @@
+import { chromium } from 'playwright';
+import fs from 'node:fs/promises';
+
+const baseURL = process.env.SQL_PLAYGROUND_URL || 'http://127.0.0.1:4000/sql-playground/';
+const output = process.env.SQL_PLAYGROUND_SCREENSHOTS || '/tmp/sql-playground-screenshots';
+await fs.mkdir(output, { recursive: true });
+const browser = await chromium.launch({ headless: true });
+const errors = [];
+try {
+  for (const viewport of [{ width: 375, height: 812 }, { width: 1280, height: 900 }]) {
+    const page = await browser.newPage({ viewport, acceptDownloads: true });
+    page.on('pageerror', error => errors.push(`pageerror at ${viewport.width}px: ${error.message}`));
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded', timeout: 45000 });
+    await page.waitForFunction(() => {
+      const engine = document.querySelector('#sqlp-engine')?.textContent || '';
+      return engine.includes('DuckDB ready') && document.querySelector('#sqlp-chart canvas');
+    }, { timeout: 150000 });
+    await page.locator('#sqlp-query').focus();
+    await page.locator('.cm-editor').waitFor({ state: 'visible', timeout: 30000 });
+    const tileColumns = await page.locator('#sqlp-chart-picker').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length);
+    const expectedColumns = viewport.width < 781 ? 2 : 5;
+    if (tileColumns !== expectedColumns) throw new Error(`Expected ${expectedColumns} chart tiles per row at ${viewport.width}px, got ${tileColumns}`);
+    await page.screenshot({ path: `${output}/sql-playground-${viewport.width}.png`, fullPage: true });
+    if (viewport.width === 1280) {
+      await page.locator('#sqlp-more-toggle').click();
+      const cases = [
+        ['headcount','bar'], ['topLocations','horizontalBar'], ['monthlyHiring','line'],
+        ['cumulativeHiring','area'], ['genderHeadcount','stackedBar'], ['attritionShare','pie'],
+        ['salaryTenure','scatter'], ['performanceHeatmap','heatmap'], ['salaryHistogram','histogram'],
+        ['salaryBoxplot','boxplot'], ['combo','combo'], ['waterfall','waterfall'],
+        ['treemap','treemap'], ['funnel','funnel'], ['radar','radar'], ['gauge','gauge'], ['sankey','sankey']
+      ];
+      for (const [queryKey, chartType] of cases) {
+        await page.locator('#sqlp-query-examples').selectOption(queryKey);
+        await page.locator('#sqlp-run').click();
+        await page.waitForFunction(() => (document.querySelector('#sqlp-status')?.textContent || '').startsWith('Query completed'), { timeout: 30000 });
+        const tile = page.locator(`#sqlp [data-chart="${chartType}"]`);
+        await tile.waitFor({ state: 'visible' });
+        if (await tile.isDisabled()) throw new Error(`Chart ${chartType} was disabled for sample query ${queryKey}`);
+        await tile.click();
+        await page.waitForTimeout(200);
+        const note = await page.locator('#sqlp-chart-note').textContent();
+        if ((note || '').includes('Chart error')) throw new Error(`${chartType} failed: ${note}`);
+        const hasCanvas = await page.locator('#sqlp-chart canvas').count();
+        if (!hasCanvas) throw new Error(`${chartType} did not render a chart canvas`);
+      }
+      const csvDownload = page.waitForEvent('download');
+      await page.locator('#sqlp-download').click();
+      if (!(await csvDownload).suggestedFilename().endsWith('.csv')) throw new Error('CSV export did not produce a CSV file');
+      const pngDownload = page.waitForEvent('download');
+      await page.locator('#sqlp-png').click();
+      if (!(await pngDownload).suggestedFilename().endsWith('.png')) throw new Error('PNG export did not produce a PNG file');
+      const svgDownload = page.waitForEvent('download');
+      await page.locator('#sqlp-svg').click();
+      if (!(await svgDownload).suggestedFilename().endsWith('.svg')) throw new Error('SVG export did not produce an SVG file');
+    }
+    await page.close();
+  }
+  if (errors.length) throw new Error(errors.join('\n'));
+  console.log('SQL Playground browser checks passed at 375px and 1280px; all 17 chart types and CSV/PNG/SVG exports rendered.');
+} finally {
+  await browser.close();
+}
