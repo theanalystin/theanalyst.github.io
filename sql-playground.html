@@ -500,8 +500,8 @@ async function initEcharts(){
    import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/radar/install.js')
   ]);
   const rendererModules=await Promise.all([
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/renderer/canvas/install.js'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/renderer/svg/install.js')
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/renderer/installCanvasRenderer.js'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/renderer/installSVGRenderer.js')
   ]);
   echarts.use([...chartModules,...componentModules,...rendererModules].map(module=>module.default));
   state.chart=echarts.init($('sqlp-chart'),null,{renderer:'canvas'});return state.chart;
