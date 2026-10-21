@@ -165,7 +165,7 @@ function csvText(file){
 }
 async function ensureSample(key){
   const sample=samples[key];
-  await state.conn.query('CREATE OR REPLACE TABLE '+quoteIdent(sample.name)+' AS SELECT * FROM read_csv_auto($1, header=true)', { '1': sample.csv });
+  await installSample(key);
 }
 async function installSample(key){
   const sample=samples[key];
