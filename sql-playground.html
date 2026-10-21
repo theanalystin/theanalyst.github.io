@@ -244,6 +244,19 @@ function fillSelect(id,cols,preferred,blank=false){
  cols.forEach(c=>{const o=document.createElement('option');o.value=c.name;o.textContent=c.name;el.appendChild(o);});
  if(cols.some(c=>c.name===old))el.value=old;else if(cols.some(c=>c.name===preferred))el.value=preferred;else if(!blank&&cols.length)el.selectedIndex=Math.min(id==='sqlp-x'?0:1,cols.length-1);
 }
+function selectedYNames(){const extra=Array.from($('sqlp-y-multi')?.selectedOptions||[]).map(o=>o.value);return [...new Set([$('sqlp-y').value,...extra].filter(Boolean))];}
+function configState(){return {query:$('sqlp-query').value,type:selectedChart(),x:$('sqlp-x').value,y:$('sqlp-y').value,ys:selectedYNames(),group:$('sqlp-group').value,extra:$('sqlp-extra').value,title:$('sqlp-title').value,subtitle:$('sqlp-subtitle').value,xTitle:$('sqlp-x-title').value,yTitle:$('sqlp-y-title').value,footnote:$('sqlp-footnote').value,palette:$('sqlp-palette').value,labels:$('sqlp-labels').checked,gridlines:$('sqlp-gridlines').checked,legend:$('sqlp-legend').checked,sort:$('sqlp-sort').value};}
+function persistConfig(){try{localStorage.setItem('theanalyst.sql.session',JSON.stringify(configState()));}catch(_){}}
+function restoreConfig(config){if(!config||typeof config!=='object')return;
+ if(config.query)$('sqlp-query').value=config.query;
+ for(const [key,id] of [['x','sqlp-x'],['y','sqlp-y'],['group','sqlp-group'],['extra','sqlp-extra'],['title','sqlp-title'],['subtitle','sqlp-subtitle'],['xTitle','sqlp-x-title'],['yTitle','sqlp-y-title'],['footnote','sqlp-footnote'],['palette','sqlp-palette'],['sort','sqlp-sort']])if(config[key]!=null&&$(id))$(id).value=config[key];
+ for(const key of ['labels','gridlines','legend'])if(config[key]!=null)$('sqlp-'+key).checked=!!config[key];
+ if(Array.isArray(config.ys))Array.from($('sqlp-y-multi').options).forEach(o=>o.selected=config.ys.includes(o.value));
+ if(config.type)selectChart(config.type);
+}
+function readHashConfig(){try{const h=location.hash.match(/#config=([^&]+)/);if(h)return JSON.parse(decodeURIComponent(escape(atob(h[1]))));}catch(_){}return null;}
+function copyConfigLink(){const cfg=configState();const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(cfg))));const url=location.href.split('#')[0]+'#config='+encoded;history.replaceState(null,'',url);if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>status('Shareable configuration link copied. The link contains no data.'),()=>status('Link updated in address bar; copy it from there.'));else status('Link updated in address bar; copy it from there.');}
+function setPalette(name){$('sqlp-palette').value=name;document.querySelectorAll('#sqlp [data-palette]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.palette===name)));}
 function renderRows(cols,rows){
  state.columns=cols;state.rows=rows;
  $('sqlp-result-meta').textContent=rows.length.toLocaleString()+' rows · '+cols.length+' columns';
@@ -256,9 +269,12 @@ function renderRows(cols,rows){
  const nums=cols.filter(c=>c.numeric),cats=cols.filter(c=>!c.numeric);
  fillSelect('sqlp-x',cols,cats[0]?.name||cols[0]?.name);
  fillSelect('sqlp-y',cols,nums[0]?.name||cols[1]?.name);
+ fillSelect('sqlp-y-multi',nums,nums[1]?.name,true);
  fillSelect('sqlp-group',cats,cats[1]?.name,true);
  fillSelect('sqlp-extra',nums,nums[1]?.name,true);
- selectChart(nums.length>=2&&cols[0]?.numeric&&cols[1]?.numeric?'scatter':cats.length>=2&&nums.length?'stackedBar':nums.length?'bar':'treemap');
+ const dateCol=cats.find(col=>/date|month|time/i.test(col.name)||rows.some(row=>row[col.index] instanceof Date||/^\\d{4}-\\d{2}/.test(String(row[col.index]??''))));
+ const auto=nums.length>=2&&cats.length===0?'scatter':dateCol&&nums.length?'line':cats.length>=2&&nums.length?'heatmap':cats.length===1&&nums.length&&rows.length<=6?'pie':nums.length?'bar':'treemap';
+ selectChart(auto);
  updateChartAvailability();$('sqlp-render').disabled=!cols.length;$('sqlp-download').disabled=!cols.length;
 }
 function updateProfile(cols,rows){
@@ -329,23 +345,25 @@ async function chartSql(type){
   const r=await state.conn.query(sql);return {items:r.toArray().map(v=>({name:String(v.bin),value:Number(v.frequency)}))};
  }
  if(type==='boxplot'){
-  const g=$('sqlp-group').value,qg=g?quote(g):null;
-  const sql=`WITH src AS (${query}) SELECT ${qg?qg+',':''} MIN(TRY_CAST(${y} AS DOUBLE)) mn,quantile_cont(TRY_CAST(${y} AS DOUBLE),0.25) q1,quantile_cont(TRY_CAST(${y} AS DOUBLE),0.5) med,quantile_cont(TRY_CAST(${y} AS DOUBLE),0.75) q3,MAX(TRY_CAST(${y} AS DOUBLE)) mx FROM src WHERE TRY_CAST(${y} AS DOUBLE) IS NOT NULL ${qg?'GROUP BY '+qg:''}`;
-  const r=await state.conn.query(sql);return {rows:r.toArray().map(v=>({name:g?String(v[g]):$('sqlp-y').value,value:[Number(v.mn),Number(v.q1),Number(v.med),Number(v.q3),Number(v.mx)]}))};
+  const group=$('sqlp-x').value||$('sqlp-group').value,qg=group?quote(group):null;
+  const sql=`WITH src AS (${query}) SELECT ${qg?qg+',':''} MIN(TRY_CAST(${y} AS DOUBLE)) mn,quantile_cont(TRY_CAST(${y} AS DOUBLE),0.25) q1,quantile_cont(TRY_CAST(${y} AS DOUBLE),0.5) med,quantile_cont(TRY_CAST(${y} AS DOUBLE),0.75) q3,MAX(TRY_CAST(${y} AS DOUBLE)) mx FROM src WHERE TRY_CAST(${y} AS DOUBLE) IS NOT NULL ${qg?'GROUP BY '+qg:''} ${qg?'ORDER BY '+qg:''}`;
+  const r=await state.conn.query(sql);return {rows:r.toArray().map(v=>({name:group?String(v[group]):$('sqlp-y').value,value:[Number(v.mn),Number(v.q1),Number(v.med),Number(v.q3),Number(v.mx)]}))};
  }
 }
 async function drawChart(){
  if(!state.chart||!state.columns.length)return;updateChartAvailability();
  const type=selectedChart(),a=compatibility(type);if(!a.valid){$('sqlp-chart-note').textContent=a.why;return;}
- const d=chartData(),pal=palettes[$('sqlp-palette').value]||palettes.mono,title=$('sqlp-title').value.trim(),xt=$('sqlp-x-title').value.trim(),yt=$('sqlp-y-title').value.trim();
+ const d=chartData(),pal=palettes[$('sqlp-palette').value]||palettes.mono,title=$('sqlp-title').value.trim(),subtitle=$('sqlp-subtitle').value.trim(),xt=$('sqlp-x-title').value.trim(),yt=$('sqlp-y-title').value.trim(),showLabels=$('sqlp-labels').checked,showGrid=$('sqlp-gridlines').checked,showLegend=$('sqlp-legend').checked,sort=$('sqlp-sort').value;
  try{
   const sp=['histogram','boxplot'].includes(type)?await chartSql(type):null;
-  const base={backgroundColor:'#fff',animation:false,color:pal,title:{text:title,left:'center',top:8,textStyle:{fontSize:16,color:'#111'}},tooltip:{trigger:['pie','treemap','funnel','gauge','radar'].includes(type)?'item':'axis'},grid:{left:60,right:25,top:65,bottom:65,containLabel:true}};
-  const cat={type:'category',name:xt,nameLocation:'middle',nameGap:38,data:d.items.map(v=>v.name),axisLabel:{color:'#444',rotate:d.items.length>7?25:0,hideOverlap:true},axisLine:{lineStyle:{color:'#aaa'}}},val={type:'value',name:yt,nameLocation:'middle',nameGap:45,axisLabel:{color:'#555'},splitLine:{lineStyle:{color:'#eee'}}};
+  let chartItems=d.items.slice();if(sort!=='none')chartItems.sort((a,b)=>sort==='asc'?a.value-b.value:b.value-a.value);
+  const base={backgroundColor:'#fff',animation:false,color:pal,title:{text:title,subtext:subtitle,left:'center',top:8,textStyle:{fontSize:16,color:'#111'},subtextStyle:{fontSize:11,color:'#666'}},tooltip:{trigger:['pie','treemap','funnel','gauge','radar'].includes(type)?'item':'axis'},legend:{show:showLegend,top:subtitle?52:38},grid:{left:60,right:25,top:subtitle?82:65,bottom:65,containLabel:true}};
+  const cat={type:'category',name:xt,nameLocation:'middle',nameGap:38,data:chartItems.map(v=>v.name),axisLabel:{color:'#444',rotate:chartItems.length>7?25:0,hideOverlap:true},axisLine:{lineStyle:{color:'#aaa'}}},val={type:'value',name:yt,nameLocation:'middle',nameGap:45,axisLabel:{color:'#555'},splitLine:{show:showGrid,lineStyle:{color:'#eee'}}};
+  const labelOpt=showLabels?{show:true,position:type==='horizontalBar'?'right':'top',color:'#111',fontSize:10}:{};
   let series=[];
-  if(type==='pie')series=[{type:'pie',radius:['42%','68%'],data:d.items.map(v=>({name:v.name,value:v.value})),label:{color:'#111'},itemStyle:{borderColor:'#fff',borderWidth:2}}];
-  else if(type==='treemap')series=[{type:'treemap',data:d.items.map(v=>({name:v.name,value:v.value})),label:{color:'#fff'}}];
-  else if(type==='funnel')series=[{type:'funnel',sort:'descending',data:d.items.map(v=>({name:v.name,value:v.value})),label:{color:'#fff',position:'inside'}}];
+  if(type==='pie')series=[{type:'pie',radius:['40%','70%'],data:chartItems.map(v=>({name:v.name,value:v.value})),label:{show:showLabels,color:'#111'},itemStyle:{borderColor:'#fff',borderWidth:2}}];
+  else if(type==='treemap')series=[{type:'treemap',data:chartItems.map(v=>({name:v.name,value:v.value})),label:{show:true,color:'#fff'}}];
+  else if(type==='funnel')series=[{type:'funnel',sort:'descending',data:chartItems.map(v=>({name:v.name,value:v.value})),label:{show:true,color:'#fff',position:'inside'}}];
   else if(type==='gauge'){const v=d.items.reduce((s,v)=>s+v.value,0)/Math.max(1,d.items.length);series=[{type:'gauge',max:Math.max(1,...d.items.map(v=>v.value))*1.15,progress:{show:true},detail:{formatter:v=>Number(v).toLocaleString()},data:[{value:v,name:d.y}]}];}
   else if(type==='radar'){const items=d.items.slice(0,12);base.radar={indicator:items.map(v=>({name:v.name,max:Math.max(1,...items.map(a=>a.value))*1.1}))};series=[{type:'radar',data:[{value:items.map(v=>v.value),name:d.y}],areaStyle:{opacity:.18}}];}
   else if(type==='scatter'){base.xAxis={type:'value',name:xt};base.yAxis={type:'value',name:yt};series=[{type:'scatter',data:d.rows.slice(0,1000).map(r=>[Number(r[d.xi]),Number(r[d.yi])]).filter(v=>v.every(Number.isFinite)),symbolSize:8}];}
@@ -354,13 +372,16 @@ async function drawChart(){
    if(type==='sankey'){base.grid={left:20,right:20,top:55,bottom:20};series=[{type:'sankey',data:[...new Set(d.items.flatMap(v=>[v.name,v.group]))].map(name=>({name})),links:[...pairs].map(([k,value])=>{const [source,target]=k.split('|||');return {source,target,value};}),lineStyle:{color:'source',curveness:.5}}];}
    else{const xs=[...new Set(d.items.map(v=>v.name))],ys=[...new Set(d.items.map(v=>v.group))];base.xAxis={type:'category',data:xs};base.yAxis={type:'category',data:ys};base.visualMap={min:0,max:Math.max(1,...pairs.values()),calculable:true,orient:'horizontal',left:'center',bottom:5};series=[{type:'heatmap',data:[...pairs].map(([k,value])=>{const [x,y]=k.split('|||');return [xs.indexOf(x),ys.indexOf(y),value];})}];}
   }
-  else if(type==='histogram'){base.xAxis={...cat,data:sp.items.map(v=>v.name),name:xt||'Bins'};base.yAxis={...val,name:yt||'Frequency'};series=[{type:'bar',data:sp.items.map(v=>v.value)}];}
+  else if(type==='histogram'){base.xAxis={...cat,data:sp.items.map(v=>v.name),name:xt||'Bins'};base.yAxis={...val,name:yt||'Frequency'};series=[{type:'bar',data:sp.items.map(v=>v.value),label:labelOpt}];}
   else if(type==='boxplot'){base.xAxis={type:'category',data:sp.rows.map(v=>v.name),name:xt};base.yAxis=val;series=[{type:'boxplot',data:sp.rows.map(v=>v.value)}];}
-  else if(type==='combo'){base.xAxis=cat;base.yAxis=[val,{type:'value',name:$('sqlp-extra').value,position:'right',splitLine:{show:false}}];series=[{type:'bar',name:d.y,data:d.items.map(v=>v.value)},{type:'line',name:d.e,yAxisIndex:1,data:d.items.map(v=>v.extra),lineStyle:{width:3}}];base.legend={top:38};}
-  else if(type==='stackedBar'){base.xAxis=cat;base.yAxis=val;const groups=[...new Set(d.items.map(v=>v.group))];series=groups.map(g=>({name:g,type:'bar',stack:'total',data:d.items.filter(v=>v.group===g).map(v=>v.value)}));base.legend={top:38};}
-  else if(type==='waterfall'){base.xAxis=cat;base.yAxis=val;let total=0;series=[{type:'bar',data:d.items.map(v=>{total+=v.value;return total;})}];}
-  else{base.xAxis=type==='horizontalBar'?{...cat,inverse:true}:cat;base.yAxis=val;const ct=type==='horizontalBar'||type==='bar'?'bar':type==='area'?'line':type;series=[{type:ct,name:d.y,data:d.items.map(v=>v.value),symbolSize:7,...(type==='area'?{areaStyle:{opacity:.2}}:{})}];}
-  base.series=series;state.chart.setOption(base,true);$('sqlp-png').disabled=false;$('sqlp-ppt').disabled=false;
+  else if(type==='combo'){base.xAxis=cat;base.yAxis=[val,{type:'value',name:$('sqlp-extra').value,position:'right',splitLine:{show:false}}];series=[{type:'bar',name:d.y,data:chartItems.map(v=>v.value),label:labelOpt},{type:'line',name:d.e,yAxisIndex:1,data:chartItems.map(v=>v.extra),lineStyle:{width:3},label:labelOpt}];}
+  else if(type==='stackedBar'){base.xAxis=cat;base.yAxis=val;const groups=[...new Set(chartItems.map(v=>v.group))];series=groups.map(g=>({name:g,type:'bar',stack:'total',data:chartItems.map(v=>v.group===g?v.value:0),label:labelOpt}));}
+  else if(type==='waterfall'){base.xAxis=cat;base.yAxis=val;let total=0;const baseVals=[],deltaVals=[];chartItems.forEach(v=>{baseVals.push(v.value>=0?total:total+v.value);total+=v.value;deltaVals.push(Math.abs(v.value));});series=[{name:'Offset',type:'bar',stack:'wf',itemStyle:{color:'transparent',borderColor:'transparent'},emphasis:{itemStyle:{color:'transparent'}},data:baseVals},{name:'Change',type:'bar',stack:'wf',data:chartItems.map((v,i)=>({value:deltaVals[i],itemStyle:{color:v.value>=0?pal[1]:pal[0]}})),label:labelOpt}];}
+  else{if(type==='horizontalBar'){base.xAxis={...val,name:yt};base.yAxis={...cat,inverse:true,name:xt};}else{base.xAxis=cat;base.yAxis=val;}
+   const ct=type==='horizontalBar'||type==='bar'?'bar':type==='area'?'line':type;
+   const ys=selectedYNames().filter(n=>n!==d.y&&state.columns.some(c=>c.name===n&&c.numeric));
+   series=[{type:ct,name:d.y,data:chartItems.map(v=>v.value),symbolSize:7,label:labelOpt,...(type==='area'?{areaStyle:{opacity:.2}}:{})},...ys.map(name=>{const idx=state.columns.findIndex(c=>c.name===name);return {type:ct,name,data:state.rows.map(r=>Number(r[idx])),symbolSize:7,label:labelOpt,...(type==='area'?{areaStyle:{opacity:.2}}:{})};})];}
+  base.series=series;state.chart.setOption(base,true);$('sqlp-png').disabled=false;$('sqlp-svg').disabled=false;$('sqlp-ppt').disabled=false;persistConfig();
  }catch(e){$('sqlp-chart-note').textContent='Chart error: '+(e.message||String(e));}
 }
 async function exportPpt(){
@@ -372,7 +393,7 @@ async function exportPpt(){
   const slide=pptx.addSlide();slide.background={color:'FFFFFF'};
   slide.addText($('sqlp-title').value||'SQL chart',{x:.55,y:.25,w:12.2,h:.45,fontFace:'Aptos Display',fontSize:22,bold:true,color:'111111',margin:0});
   slide.addImage({data:png,x:.55,y:.9,w:12.2,h:5.8,sizingCrop:false});
-  slide.addText('Created with theanalyst.in SQL Playground',{x:.55,y:7.05,w:12,h:.2,fontSize:8,color:'777777',margin:0});
+  slide.addText($('sqlp-footnote').value||'Created with theanalyst.in SQL Playground',{x:.55,y:7.05,w:12,h:.2,fontSize:8,color:'777777',margin:0});
   await pptx.writeFile({fileName:'sql-playground-chart.pptx'});
   status('PowerPoint exported.');
  }catch(e){status('PowerPoint export failed: '+(e.message||String(e)),true);}
@@ -401,9 +422,16 @@ async function init(){
   const worker=new Worker(workerUrl);state.db=new duckdb.AsyncDuckDB(new duckdb.ConsoleLogger(),worker);
   await state.db.instantiate(bundle.mainModule,bundle.pthreadWorker);URL.revokeObjectURL(workerUrl);
   state.conn=await state.db.connect();state.ready=true;$('sqlp-engine').textContent='Preparing employee sample…';
-  await loadSample('employees');echarts=await import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/+esm');
-  state.chart=echarts.init($('sqlp-chart'),null,{renderer:'canvas'});window.addEventListener('resize',()=>state.chart&&state.chart.resize());
-  $('sqlp-run').disabled=false;$('sqlp-import').disabled=false;status('DuckDB ready. Run SQL or choose a sample dataset.');await run();
+  await loadSample('employees');
+  echarts=await import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/core.js');
+  const charts=await import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/charts.js');
+  const components=await import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/components.js');
+  const renderers=await import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/renderers.js');
+  echarts.use([charts.BarChart,charts.LineChart,charts.PieChart,charts.ScatterChart,charts.HeatmapChart,charts.BoxplotChart,charts.TreemapChart,charts.FunnelChart,charts.RadarChart,charts.GaugeChart,charts.SankeyChart,components.TitleComponent,components.TooltipComponent,components.GridComponent,components.LegendComponent,components.VisualMapComponent,renderers.CanvasRenderer,renderers.SVGRenderer]);
+  state.chart=echarts.init($('sqlp-chart'),null,{renderer:'canvas'});
+  $('sqlp-run').disabled=false;$('sqlp-import').disabled=false;
+  const hashConfig=readHashConfig();if(hashConfig)restoreConfig(hashConfig);else{try{restoreConfig(JSON.parse(localStorage.getItem('theanalyst.sql.session')||'null'));}catch(_){}}
+  setPalette($('sqlp-palette').value||'mono');status('DuckDB ready. Run SQL or choose a sample dataset.');await run();
  }catch(e){$('sqlp-engine').textContent='Engine unavailable';status('Could not start DuckDB. Reload the page or check browser/CDN restrictions. '+(e.message||String(e)),true);}
 }
 $('sqlp-run').addEventListener('click',run);
@@ -417,11 +445,15 @@ $('sqlp-clear').addEventListener('click',()=>{$('sqlp-query').value='';$('sqlp-q
 $('sqlp-download').addEventListener('click',csvDownload);
 $('sqlp-import').addEventListener('click',importFiles);
 $('sqlp-render').addEventListener('click',drawChart);
-['sqlp-palette','sqlp-x','sqlp-y','sqlp-group','sqlp-extra','sqlp-title','sqlp-x-title','sqlp-y-title'].forEach(id=>$(id).addEventListener('change',()=>{updateChartAvailability();drawChart();}));
-document.querySelectorAll('#sqlp [data-chart]').forEach(b=>{b.dataset.baseTitle=b.title;b.addEventListener('click',()=>{if(!b.disabled){selectChart(b.dataset.chart);updateChartAvailability();drawChart();}});});
+['sqlp-x','sqlp-y','sqlp-y-multi','sqlp-group','sqlp-extra','sqlp-title','sqlp-subtitle','sqlp-x-title','sqlp-y-title','sqlp-footnote','sqlp-sort','sqlp-labels','sqlp-gridlines','sqlp-legend'].forEach(id=>$(id).addEventListener('change',()=>{updateChartAvailability();drawChart();persistConfig();}));
+document.querySelectorAll('#sqlp [data-palette]').forEach(b=>b.addEventListener('click',()=>{setPalette(b.dataset.palette);drawChart();persistConfig();}));
+document.querySelectorAll('#sqlp [data-chart]').forEach(b=>{b.dataset.baseTitle=b.title;b.addEventListener('click',()=>{if(!b.disabled){selectChart(b.dataset.chart);updateChartAvailability();drawChart();persistConfig();}});});
+$('sqlp-copy-link').addEventListener('click',copyConfigLink);
+$('sqlp-svg').addEventListener('click',()=>{if(!state.chart)return;try{const svg=state.chart.getDataURL({type:'svg',pixelRatio:1,backgroundColor:'#ffffff'});downloadBlob(dataURItoBlob(svg),'sql-playground-chart.svg');}catch(e){status('SVG export unavailable for this renderer. Try PNG.',true);}});
+new ResizeObserver(()=>state.chart&&state.chart.resize()).observe($('sqlp-chart'));
 $('sqlp-more-toggle').addEventListener('click',()=>{const el=$('sqlp-more-charts'),open=el.hidden;el.hidden=!open;$('sqlp-more-toggle').setAttribute('aria-expanded',String(open));$('sqlp-more-toggle').textContent=open?'Fewer chart types −':'More chart types +';});
-['sqlp-title','sqlp-x-title','sqlp-y-title'].forEach(id=>$(id).addEventListener('input',()=>{if(state.chart)drawChart();}));
-$('sqlp-png').addEventListener('click',()=>{if(state.chart)downloadBlob(dataURItoBlob(state.chart.getDataURL({type:'png',pixelRatio:3,backgroundColor:'#ffffff'})),'sql-playground-chart.png');});
+['sqlp-title','sqlp-subtitle','sqlp-x-title','sqlp-y-title','sqlp-footnote'].forEach(id=>$(id).addEventListener('input',()=>{if(state.chart)drawChart();persistConfig();}));
+$('sqlp-png').addEventListener('click',()=>{if(state.chart)downloadBlob(dataURItoBlob(state.chart.getDataURL({type:'png',pixelRatio:2,backgroundColor:'#ffffff'})),'sql-playground-chart.png');});
 $('sqlp-ppt').addEventListener('click',exportPpt);
 
 function dataURItoBlob(uri){const parts=uri.split(','),mime=parts[0].match(/:(.*?);/)[1],raw=atob(parts[1]),arr=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)arr[i]=raw.charCodeAt(i);return new Blob([arr],{type:mime});}
