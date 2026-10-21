@@ -506,7 +506,7 @@ async function initEcharts(){
    import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/renderer/installCanvasRenderer.js/+esm'),
    import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/renderer/installSVGRenderer.js/+esm')
   ]);
-  echarts.use([...chartModules,...componentModules,...rendererModules].map(module=>module.install));
+  echarts.use([...chartModules,...componentModules,...rendererModules].map(module=>({install:module.install})));
   state.chart=echarts.init($('sqlp-chart'),null,{renderer:'canvas'});return state.chart;
  })();
  try{return await state.chartPromise;}catch(e){state.chartPromise=null;throw e;}
