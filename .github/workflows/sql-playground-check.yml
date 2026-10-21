@@ -18,15 +18,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: ruby/setup-ruby@v1
+      - name: Build static Jekyll site
+        uses: actions/jekyll-build-pages@v1
         with:
-          ruby-version: '3.2'
-
-      - name: Install Jekyll dependencies
-        run: bundle install
-
-      - name: Build static site
-        run: JEKYLL_ENV=production bundle exec jekyll build
+          source: ./
+          destination: ./_site
 
       - uses: actions/setup-node@v4
         with:
@@ -49,14 +45,14 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Start local Jekyll server
+      - name: Serve built static site
         run: |
-          bundle exec jekyll serve --host 127.0.0.1 --port 4000 --no-watch > /tmp/jekyll.log 2>&1 &
-          for i in $(seq 1 60); do
+          python -m http.server 4000 --directory _site > /tmp/site.log 2>&1 &
+          for i in $(seq 1 30); do
             if curl -fsS http://127.0.0.1:4000/sql-playground/ > /dev/null; then exit 0; fi
-            sleep 2
+            sleep 1
           done
-          cat /tmp/jekyll.log
+          cat /tmp/site.log
           exit 1
 
       - name: Test responsive layout, chart types, and exports
