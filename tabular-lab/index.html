@@ -1,0 +1,151 @@
+---
+layout: default
+title: Tabular Lab
+description: A browser-based workspace for organizing SQL queries, snippets, and saved analysis notes.
+permalink: /tabular-lab/
+---
+
+<style>
+#tabular-lab{--tl-ink:var(--text-color,#17202a);--tl-muted:var(--muted,#64748b);--tl-line:var(--border-color,#dbe2ea);color:var(--tl-ink);max-width:1120px;margin:0 auto;padding:1.25rem 0 3rem}
+#tabular-lab *{box-sizing:border-box}
+#tabular-lab .tl-eyebrow{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--tl-muted)}
+#tabular-lab h1{font-size:clamp(2rem,5vw,3.25rem);line-height:1.05;margin:.4rem 0 1rem}
+#tabular-lab .tl-intro{max-width:720px;color:var(--tl-muted);font-size:1.08rem}
+#tabular-lab .tl-note{border:1px solid var(--tl-line);border-radius:12px;padding:1rem 1.1rem;margin:1.25rem 0;background:rgba(127,127,127,.06);font-size:.92rem}
+#tabular-lab .tl-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:1rem;margin-top:1.5rem}
+#tabular-lab .tl-panel{border:1px solid var(--tl-line);border-radius:14px;padding:1rem;min-width:0}
+#tabular-lab .tl-panel h2{font-size:1.15rem;margin:.1rem 0 .85rem}
+#tabular-lab input,#tabular-lab textarea,#tabular-lab select{width:100%;border:1px solid var(--tl-line);border-radius:8px;padding:.7rem .75rem;background:transparent;color:inherit;font:inherit;margin:.25rem 0 .7rem}
+#tabular-lab textarea{min-height:155px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88rem;resize:vertical}
+#tabular-lab .tl-row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+#tabular-lab button,#tabular-lab .tl-button{border:1px solid var(--tl-line);border-radius:9px;padding:.62rem .85rem;background:transparent;color:inherit;font:inherit;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+#tabular-lab button.tl-primary{background:var(--text-color,#17202a);color:var(--background-color,#fff);border-color:transparent}
+#tabular-lab button:hover{opacity:.8}
+#tabular-lab .tl-query{border:1px solid var(--tl-line);border-radius:10px;padding:.8rem;margin:.65rem 0}
+#tabular-lab .tl-query h3{font-size:1rem;margin:0 0 .35rem}
+#tabular-lab .tl-meta{font-size:.8rem;color:var(--tl-muted);overflow-wrap:anywhere}
+#tabular-lab .tl-tags{display:flex;gap:.35rem;flex-wrap:wrap;margin:.45rem 0}
+#tabular-lab .tl-tag{font-size:.75rem;border:1px solid var(--tl-line);border-radius:99px;padding:.15rem .5rem;color:var(--tl-muted)}
+#tabular-lab .tl-query-actions{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.55rem}
+#tabular-lab .tl-query-actions button{font-size:.8rem;padding:.35rem .55rem}
+#tabular-lab .tl-empty{color:var(--tl-muted);font-size:.92rem;padding:.8rem 0}
+#tabular-lab .tl-status{font-size:.85rem;color:var(--tl-muted);min-height:1.4em;margin-top:.5rem}
+#tabular-lab .tl-count{font-variant-numeric:tabular-nums;color:var(--tl-muted);font-size:.8rem}
+@media(max-width:760px){#tabular-lab .tl-layout{grid-template-columns:1fr}#tabular-lab{padding-top:.5rem}}
+</style>
+
+<div id="tabular-lab">
+  <p class="tl-eyebrow">Analytics workspace · Prototype</p>
+  <h1>Tabular Lab</h1>
+  <p class="tl-intro">A lightweight space to save, find, tag, and reuse SQL queries and analysis notes. Your workspace is stored in this browser; export a backup to move it elsewhere.</p>
+  <div class="tl-note"><strong>Prototype scope:</strong> This version manages saved SQL text locally. It does not connect to a database or execute queries. Avoid storing confidential data in query text or exported backups.</div>
+  <div class="tl-row">
+    <button id="tl-export" class="tl-primary" type="button">Export workspace</button>
+    <button id="tl-import-trigger" type="button">Import workspace</button>
+    <input id="tl-import-file" type="file" accept="application/json,.json" hidden>
+    <button id="tl-snapshot" type="button">Save snapshot</button>
+    <button id="tl-restore" type="button">Restore latest snapshot</button>
+    <span id="tl-count" class="tl-count"></span>
+  </div>
+  <div class="tl-layout">
+    <section class="tl-panel" aria-labelledby="tl-editor-heading">
+      <h2 id="tl-editor-heading">Query editor</h2>
+      <label for="tl-title">Query title</label>
+      <input id="tl-title" maxlength="120" placeholder="e.g. Monthly revenue by region">
+      <label for="tl-tags-input">Tags (comma-separated)</label>
+      <input id="tl-tags-input" placeholder="revenue, monthly, finance">
+      <label for="tl-sql">SQL / analysis notes</label>
+      <textarea id="tl-sql" spellcheck="false" placeholder="SELECT region, SUM(revenue) AS revenue&#10;FROM sales&#10;GROUP BY region;"></textarea>
+      <div class="tl-row">
+        <button id="tl-save" class="tl-primary" type="button">Save query</button>
+        <button id="tl-clear" type="button">Clear editor</button>
+      </div>
+      <p id="tl-status" class="tl-status" role="status" aria-live="polite"></p>
+    </section>
+    <section class="tl-panel" aria-labelledby="tl-library-heading">
+      <h2 id="tl-library-heading">Query library</h2>
+      <label for="tl-search">Search saved queries</label>
+      <input id="tl-search" type="search" placeholder="Search titles, SQL, or tags">
+      <div class="tl-row">
+        <label for="tl-filter" style="margin:0;flex:1">Show</label>
+        <select id="tl-filter" style="margin:0;flex:2">
+          <option value="all">All queries</option>
+          <option value="favorites">Favorites only</option>
+        </select>
+      </div>
+      <div id="tl-list" aria-live="polite"></div>
+    </section>
+  </div>
+  <section class="tl-panel" style="margin-top:1rem" aria-labelledby="tl-snippets-heading">
+    <h2 id="tl-snippets-heading">Starter snippets</h2>
+    <p class="tl-intro" style="font-size:.94rem">Load a pattern into the editor, adapt it to your schema, then save it to your library.</p>
+    <div class="tl-row">
+      <button type="button" data-snippet="group">Group and aggregate</button>
+      <button type="button" data-snippet="date">Filter by date</button>
+      <button type="button" data-snippet="rank">Rank within groups</button>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+  const root=document.getElementById('tabular-lab');
+  if(!root||root.dataset.ready)return;root.dataset.ready='1';
+  const $=id=>document.getElementById(id);
+  const STORE='tabular-lab-workspace-v1',SNAP='tabular-lab-snapshot-v1';
+  let queries=[],editingId=null;
+  const snippets={
+    group:'SELECT category,\n       COUNT(*) AS row_count,\n       SUM(amount) AS total_amount\nFROM your_table\nGROUP BY category\nORDER BY total_amount DESC;',
+    date:'SELECT *\nFROM your_table\nWHERE event_date >= DATE \'2026-01-01\'\n  AND event_date <  DATE \'2027-01-01\';',
+    rank:'SELECT *,\n       ROW_NUMBER() OVER (PARTITION BY group_name ORDER BY metric DESC) AS rank_in_group\nFROM your_table;'
+  };
+  function status(msg){$('tl-status').textContent=msg}
+  function load(){
+    try{const raw=localStorage.getItem(STORE);const parsed=raw?JSON.parse(raw):[];queries=Array.isArray(parsed)?parsed.filter(q=>q&&typeof q.id==='string'&&typeof q.title==='string'):[]}
+    catch(e){queries=[];status('Could not read saved workspace; you can import a backup.')}
+  }
+  function persist(){try{localStorage.setItem(STORE,JSON.stringify(queries));render()}catch(e){status('Browser storage is unavailable or full. Export your work and check browser privacy settings.')}}
+  function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+  function render(){
+    const term=$('tl-search').value.trim().toLowerCase(),fav=$('tl-filter').value==='favorites';
+    const visible=queries.filter(q=>(!fav||q.favorite)&&(!term||[q.title,q.sql,(q.tags||[]).join(' ')].join(' ').toLowerCase().includes(term))).sort((a,b)=>Number(!!b.favorite)-Number(!!a.favorite)||(b.updatedAt||0)-(a.updatedAt||0));
+    $('tl-count').textContent=queries.length+' saved quer'+(queries.length===1?'y':'ies');
+    const list=$('tl-list');
+    if(!visible.length){list.innerHTML='<p class="tl-empty">'+(queries.length?'No queries match these filters yet.':'No saved queries yet. Add one using the editor.')+'</p>';return}
+    list.innerHTML=visible.map(q=>'<article class="tl-query"><h3>'+esc(q.title)+(q.favorite?' ★':'')+'</h3><p class="tl-meta">Updated '+esc(new Date(q.updatedAt||Date.now()).toLocaleString())+'</p><div class="tl-tags">'+(q.tags||[]).map(t=>'<span class="tl-tag">'+esc(t)+'</span>').join('')+'</div><pre style="white-space:pre-wrap;overflow-wrap:anywhere;font-size:.82rem;max-height:120px;overflow:auto">'+esc(q.sql)+'</pre><div class="tl-query-actions"><button type="button" data-action="edit" data-id="'+esc(q.id)+'">Edit</button><button type="button" data-action="favorite" data-id="'+esc(q.id)+'">'+(q.favorite?'Unfavorite':'Favorite')+'</button><button type="button" data-action="copy" data-id="'+esc(q.id)+'">Copy SQL</button><button type="button" data-action="delete" data-id="'+esc(q.id)+'">Delete</button></div></article>').join('');
+  }
+  function clearEditor(){editingId=null;$('tl-title').value='';$('tl-tags-input').value='';$('tl-sql').value='';$('tl-save').textContent='Save query';}
+  $('tl-save').addEventListener('click',()=>{
+    const title=$('tl-title').value.trim(),sql=$('tl-sql').value.trim();
+    if(!title||!sql){status('Add a title and some SQL or notes first.');return}
+    const now=Date.now(),existing=queries.find(q=>q.id===editingId);
+    const item={id:editingId||('q-'+now+'-'+Math.random().toString(36).slice(2,8)),title,sql,tags:[...new Set($('tl-tags-input').value.split(',').map(t=>t.trim()).filter(Boolean))],favorite:existing?!!existing.favorite:false,createdAt:existing?existing.createdAt:now,updatedAt:now};
+    queries=existing?queries.map(q=>q.id===editingId?item:q):[item,...queries];persist();clearEditor();status('Query saved in this browser.');
+  });
+  $('tl-clear').addEventListener('click',()=>{clearEditor();status('Editor cleared.')});
+  $('tl-search').addEventListener('input',render);$('tl-filter').addEventListener('change',render);
+  $('tl-list').addEventListener('click',async e=>{
+    const b=e.target.closest('button[data-action]');if(!b)return;const q=queries.find(x=>x.id===b.dataset.id);if(!q)return;
+    if(b.dataset.action==='edit'){editingId=q.id;$('tl-title').value=q.title;$('tl-tags-input').value=(q.tags||[]).join(', ');$('tl-sql').value=q.sql;$('tl-save').textContent='Update query';status('Editing “'+q.title+'”.');window.scrollTo({top:root.getBoundingClientRect().top+window.scrollY-20,behavior:'smooth'})}
+    if(b.dataset.action==='favorite'){q.favorite=!q.favorite;persist();status(q.favorite?'Added to favorites.':'Removed from favorites.')}
+    if(b.dataset.action==='delete'){if(!confirm('Delete “'+q.title+'” from this browser workspace?'))return;queries=queries.filter(x=>x.id!==q.id);persist();status('Query deleted.')}
+    if(b.dataset.action==='copy'){try{await navigator.clipboard.writeText(q.sql);status('SQL copied to clipboard.')}catch(err){status('Clipboard access was blocked by the browser. Select the SQL in the editor to copy it.');editingId=q.id;$('tl-title').value=q.title;$('tl-tags-input').value=(q.tags||[]).join(', ');$('tl-sql').value=q.sql}}
+  });
+  $('tl-export').addEventListener('click',()=>{
+    const blob=new Blob([JSON.stringify({format:'tabular-lab-workspace',version:1,exportedAt:new Date().toISOString(),queries},null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='tabular-lab-workspace.json';a.click();URL.revokeObjectURL(url);status('Workspace export created.');
+  });
+  $('tl-import-trigger').addEventListener('click',()=>$('tl-import-file').click());
+  $('tl-import-file').addEventListener('change',async e=>{
+    const file=e.target.files&&e.target.files[0];if(!file)return;
+    try{const data=JSON.parse(await file.text()),incoming=Array.isArray(data)?data:data.queries;if(!Array.isArray(incoming))throw new Error('Invalid format');if(!confirm('Import '+incoming.length+' queries? Existing queries with the same ID will be replaced.'))return;
+      const valid=incoming.filter(q=>q&&typeof q.title==='string'&&typeof q.sql==='string').map(q=>({...q,id:typeof q.id==='string'?q.id:'q-'+Date.now()+'-'+Math.random().toString(36).slice(2),tags:Array.isArray(q.tags)?q.tags.filter(t=>typeof t==='string'):[],favorite:!!q.favorite,updatedAt:Number(q.updatedAt)||Date.now()}));
+      const byId=new Map(queries.map(q=>[q.id,q]));valid.forEach(q=>byId.set(q.id,q));queries=[...byId.values()];persist();status('Imported '+valid.length+' queries.');
+    }catch(err){status('Import failed: choose a valid Tabular Lab JSON backup.')}finally{$('tl-import-file').value=''}
+  });
+  $('tl-snapshot').addEventListener('click',()=>{try{localStorage.setItem(SNAP,JSON.stringify({savedAt:Date.now(),queries}));status('Snapshot saved in this browser.')}catch(e){status('Could not save snapshot in browser storage.')}});
+  $('tl-restore').addEventListener('click',()=>{try{const raw=localStorage.getItem(SNAP);if(!raw){status('No snapshot found in this browser yet.');return}if(!confirm('Restore the latest snapshot? Current saved queries will be replaced.'))return;queries=JSON.parse(raw).queries||[];persist();status('Snapshot restored.')}catch(e){status('Could not restore snapshot.')}});
+  root.querySelectorAll('[data-snippet]').forEach(b=>b.addEventListener('click',()=>{clearEditor();$('tl-title').value=({'group':'Group and aggregate','date':'Filter by date','rank':'Rank within groups'})[b.dataset.snippet];$('tl-sql').value=snippets[b.dataset.snippet];status('Snippet loaded. Review it, adjust the date/table/column names, then save it.');$('tl-title').focus()}));
+  load();render();
+})();
+</script>
