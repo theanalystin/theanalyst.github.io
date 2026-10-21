@@ -11,6 +11,7 @@ try {
     const page = await browser.newPage({ viewport, acceptDownloads: true });
     page.on('pageerror', error => errors.push(`pageerror at ${viewport.width}px: ${error.message}`));
     await page.goto(baseURL, { waitUntil: 'domcontentloaded', timeout: 45000 });
+    await page.locator('[data-sample="employees"]').click();
     await page.waitForFunction(() => {
       const engine = document.querySelector('#sqlp-engine')?.textContent || '';
       return engine.includes('DuckDB ready') && document.querySelector('#sqlp-chart canvas');
