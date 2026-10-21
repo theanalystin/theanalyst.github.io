@@ -264,7 +264,6 @@ function renderRows(cols,rows){
  if(!rows.length){$('sqlp-results').textContent='Query returned zero rows.';return;}
  const visible=rows.slice(0,200);
  $('sqlp-results').innerHTML='<div class="table-wrap"><table><thead><tr>'+cols.map(c=>'<th>'+esc(c.name)+'</th>').join('')+'</tr></thead><tbody>'+visible.map(row=>'<tr>'+row.map(v=>'<td>'+esc(toText(v))+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>'+(rows.length>visible.length?'<p class="muted">Showing 200 rows; exports include the complete result.</p>':'');
- updateProfile(cols,rows);
  cols.forEach(c=>{c.numeric=rows.some(r=>{const v=r[c.index];return typeof v==='number'||typeof v==='bigint'||(typeof v==='string'&&v.trim()!==''&&Number.isFinite(Number(v));});});
  const nums=cols.filter(c=>c.numeric),cats=cols.filter(c=>!c.numeric);
  fillSelect('sqlp-x',cols,cats[0]?.name||nums[0]?.name||cols[0]?.name);
@@ -276,6 +275,20 @@ function renderRows(cols,rows){
  const auto=nums.length>=2&&cats.length===0?'scatter':dateCol&&nums.length?'line':cats.length>=2&&nums.length?'heatmap':cats.length===1&&nums.length&&rows.length<=6?'pie':nums.length?'bar':'treemap';
  selectChart(auto);
  updateChartAvailability();$('sqlp-render').disabled=!cols.length;$('sqlp-download').disabled=!cols.length;
+}
+async function profileTable(name){
+ try{
+  const table=quote(name),countResult=await state.conn.query('SELECT COUNT(*) AS n FROM '+table),rowCount=Number(countResult.toArray()[0].n);
+  const schemaResult=await state.conn.query('DESCRIBE SELECT * FROM '+table),schema=schemaResult.toArray().map((r,i)=>({name:String(r.column_name),type:String(r.column_type),index:i}));
+  if(!schema.length)return;
+  const statsSql='SELECT '+schema.map((col,i)=>'COUNT('+quote(col.name)+') AS nn'+i+', COUNT(DISTINCT '+quote(col.name)+') AS dd'+i).join(', ')+' FROM '+table;
+  const stats=(await state.conn.query(statsSql)).toArray()[0];
+  const preview=(await state.conn.query('SELECT * FROM '+table+' LIMIT 10')).toArray().map(row=>schema.map(col=>row[col.name]));
+  $('sqlp-profile').hidden=false;
+  $('sqlp-profile-metrics').innerHTML='<div class="profile-metric"><strong>'+rowCount.toLocaleString()+'</strong><span>Rows in '+esc(name)+'</span></div><div class="profile-metric"><strong>'+schema.length+'</strong><span>Columns</span></div><div class="profile-metric"><strong>'+schema.reduce((n,col,i)=>n+rowCount-Number(stats['nn'+i]),0).toLocaleString()+'</strong><span>Null cells</span></div>';
+  $('sqlp-schema').innerHTML='<table><thead><tr><th>Column</th><th>Inferred type</th><th>Nulls</th><th>Distinct</th></tr></thead><tbody>'+schema.map((col,i)=>'<tr><td>'+esc(col.name)+'</td><td>'+esc(col.type)+'</td><td>'+(rowCount-Number(stats['nn'+i]))+'</td><td>'+Number(stats['dd'+i]).toLocaleString()+'</td></tr>').join('')+'</tbody></table>';
+  $('sqlp-preview').innerHTML='<table><thead><tr>'+schema.map(col=>'<th>'+esc(col.name)+'</th>').join('')+'</tr></thead><tbody>'+preview.map(row=>'<tr>'+row.map(v=>'<td>'+esc(toText(v))+'</td>').join('')+'</tr>').join('')+'</tbody></table>';
+ }catch(e){$('sqlp-import-status').textContent='Loaded the table, but could not profile its schema: '+(e.message||String(e));}
 }
 function updateProfile(cols,rows){
  const card=$('sqlp-profile');if(!card)return;card.hidden=!cols.length;
@@ -403,16 +416,16 @@ async function importFiles(){
  if(!files.length){$('sqlp-import-status').textContent='Choose at least one CSV file.';return;}
  $('sqlp-import').disabled=true;$('sqlp-import-status').textContent='Importing '+files.length+' file(s)…';
  try{
-  for(const f of files){const name=tableName(f.name),csv=await f.text();await addTable(name,csv,'upload_'+Date.now());}
+  for(const f of files){const name=tableName(f.name),csv=await f.text();await addTable(name,csv,'upload_'+Date.now());await profileTable(name);}
   await refreshTables();$('sqlp-import-status').textContent='Imported '+files.length+' CSV file(s). Choose a table above or query it by name.';
   if(files.length===1)$('sqlp-query').value='SELECT * FROM '+quote(tableName(files[0].name))+' LIMIT 100;';
- }catch(e){$('sqlp-import-status').textContent='Import failed: '+(e.message||String(e));}
+ }catch(e){$('sqlp-import-status').textContent='CSV could not be parsed. Check that the file has a header row and consistent delimiters. Details: '+(e.message||String(e));}
  finally{$('sqlp-import').disabled=!state.ready;}
 }
 async function loadSample(key){
  const s=samples[key];if(!s||state.loadedSamples.has(key))return;
  $('sqlp-engine').textContent='Loading '+s.name+'…';if(!s.csv)s.csv=employeeCSV();
- await addTable(s.name,s.csv,'sample');state.loadedSamples.add(key);await refreshTables();$('sqlp-engine').textContent='DuckDB ready';
+ await addTable(s.name,s.csv,'sample');state.loadedSamples.add(key);await refreshTables();await profileTable(s.name);$('sqlp-engine').textContent='DuckDB ready';
 }
 async function init(){
  try{
