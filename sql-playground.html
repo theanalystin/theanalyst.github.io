@@ -377,7 +377,17 @@ async function run(){
 function selectedChart(){return document.querySelector('#sqlp [data-chart][aria-pressed="true"]')?.dataset.chart||'bar';}
 function selectChart(type){document.querySelectorAll('#sqlp [data-chart]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.chart===type)));if($('sqlp-chart-note'))$('sqlp-chart-note').textContent='Selected: '+type+'.';}
 function col(name){return state.columns.find(c=>c.name===name);}
-function isNum(name){return !!col(name)?.numeric;}
+function isNum(name){
+ const c=col(name);if(!c)return false;
+ if(c.numeric)return true;
+ return state.rows.some(r=>{
+  const v=r[c.index];
+  return v!==null&&v!==undefined&&(
+   typeof v==='number'||typeof v==='bigint'||
+   (typeof v==='string'&&v.trim()!==''&&Number.isFinite(Number(v)))
+  );
+ });
+}
 function compatibility(type){
  const nums=state.columns.filter(c=>c.numeric),x=$('sqlp-x').value,y=$('sqlp-y').value,g=$('sqlp-group').value,e=$('sqlp-extra').value;
  let ok=false,why='Choose compatible columns for this chart.';
