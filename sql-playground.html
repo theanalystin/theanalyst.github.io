@@ -52,7 +52,7 @@ permalink: /sql-playground/
   <div class="workspace">
     <div class="left-workflow">
         <section class="panel">
-    <div class="panel-head"><h2>01 — Choose your data</h2><span class="pill" id="sqlp-engine">Starting DuckDB…</span></div>
+    <div class="panel-head"><h2>01 — Choose your data</h2><span class="pill" id="sqlp-engine">Ready when you are</span></div>
     <div class="row">
       <button type="button" class="dataset" data-sample="employees"><strong>Employee database · 1,000 rows</strong><small>Departments, salaries, locations, performance</small></button>
       <button type="button" class="dataset" data-sample="sales"><strong>Sales</strong><small>Orders, regions, products, revenue</small></button>
@@ -60,7 +60,7 @@ permalink: /sql-playground/
     </div>
     <div class="row" style="margin-top:.7rem;align-items:flex-end">
       <div id="sqlp-dropzone" class="drop" style="flex:1;min-width:220px"><label for="sqlp-files">Or import CSV files (drop here or browse)</label><input id="sqlp-files" type="file" accept=".csv,text/csv" multiple><p class="hint">Drop one or more CSV files here.</p></div>
-      <button class="primary" id="sqlp-import" type="button" disabled>Import CSV</button>
+      <button class="primary" id="sqlp-import" type="button">Import CSV</button>
     </div>
     <p class="file-note">CSV files are processed locally in your browser; they are not uploaded to The Analyst. Sample employee data is fictional.</p>
     <div class="table-list" id="sqlp-tables"><span class="muted">Tables will appear here when DuckDB is ready.</span></div>
@@ -89,13 +89,13 @@ permalink: /sql-playground/
       <div id="sqlp-editor-host" aria-label="SQL editor"></div>
       <textarea id="sqlp-query" spellcheck="false" aria-label="SQL query editor">SELECT department, COUNT(*) AS headcount FROM employees GROUP BY department ORDER BY headcount DESC;</textarea>
       <div class="row" style="margin-top:.6rem">
-        <button class="primary" id="sqlp-run" type="button" disabled>Run query</button>
+        <button class="primary" id="sqlp-run" type="button">Run query</button>
         <button id="sqlp-example" type="button">Load selected</button>
         <button id="sqlp-save-query" type="button">Save query</button>
         <button id="sqlp-clear" type="button">Clear</button>
         <button id="sqlp-download" type="button" disabled>Results CSV</button>
       </div>
-      <p id="sqlp-status" class="status" role="status" aria-live="polite">Preparing browser SQL engine…</p>
+      <p id="sqlp-status" class="status" role="status" aria-live="polite">Choose a sample, import a CSV, or run SQL to start the browser engine.</p>
       <div style="margin-top:1rem">
         <div class="panel-head"><h2>Query results</h2><span id="sqlp-result-meta" class="muted">No results yet</span></div>
         <div id="sqlp-results" class="muted">Run a query to populate the table and chart builder.</div>
@@ -170,7 +170,7 @@ let duckdb, echarts, pptxgen;
 
 (() => {
 const $ = id => document.getElementById(id);
-const state = {db:null,conn:null,ready:false,columns:[],rows:[],chart:null,editor:null,editorLoading:false,loadedSamples:new Set(),queryText:''};
+const state = {db:null,conn:null,ready:false,initPromise:null,columns:[],rows:[],chart:null,chartPromise:null,chartOption:null,editor:null,editorLoading:false,loadedSamples:new Set(),queryText:'',pendingConfig:null};
 const palettes = {
  mono:['#111111','#555555','#888888','#b0b0b0','#d2d2d2'],
  deloitte:['#86bc25','#111111','#666666','#b8b8b8','#e1e1e1'],
@@ -348,15 +348,20 @@ function csvDownload(){
 }
 function downloadBlob(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1200);}
 async function run(){
+ if(!state.ready){try{await init();}catch(_){return;}}
  const sql=getQuery().trim();if(!sql){status('Enter a query first.',true);return;}
  $('sqlp-run').disabled=true;status('Running query…');const t=performance.now();
  try{
+  if(/\\bemployees\\b/i.test(sql)&&!state.loadedSamples.has('employees'))await loadSample('employees');
   const result=await state.conn.query(sql),cols=result.schema.fields.map((f,i)=>({name:f.name,index:i}));
   state.queryText=sql;
   const rows=result.toArray().map(row=>cols.map(c=>row[c.name]));
-  renderRows(cols,rows);status('Query completed in '+((performance.now()-t)/1000).toFixed(2)+'s.');await refreshTables();drawChart();
+  renderRows(cols,rows);await refreshTables();
+  status('Query completed in '+((performance.now()-t)/1000).toFixed(2)+'s.');
+  await drawChart();
+  if(state.pendingConfig){const config=state.pendingConfig;state.pendingConfig=null;restoreConfig(config);setPalette(config.palette||'mono');updateChartAvailability();await drawChart();}
  }catch(e){status(friendlySqlError(e),true);}
- finally{$('sqlp-run').disabled=!state.ready;}
+ finally{$('sqlp-run').disabled=false;}
 }
 function selectedChart(){return document.querySelector('#sqlp [data-chart][aria-pressed="true"]')?.dataset.chart||'bar';}
 function selectChart(type){document.querySelectorAll('#sqlp [data-chart]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.chart===type)));if($('sqlp-chart-note'))$('sqlp-chart-note').textContent='Selected: '+type+'.';}
@@ -403,7 +408,7 @@ async function chartSql(type){
  }
 }
 async function drawChart(){
- if(!state.chart||!state.columns.length)return;updateChartAvailability();
+ if(!state.columns.length)return;if(!state.chart)await initEcharts();updateChartAvailability();
  const type=selectedChart(),a=compatibility(type);if(!a.valid){$('sqlp-chart-note').textContent=a.why;return;}
  const d=chartData(),pal=palettes[$('sqlp-palette').value]||palettes.mono,title=$('sqlp-title').value.trim(),subtitle=$('sqlp-subtitle').value.trim(),xt=$('sqlp-x-title').value.trim(),yt=$('sqlp-y-title').value.trim(),showLabels=$('sqlp-labels').checked,showGrid=$('sqlp-gridlines').checked,showLegend=$('sqlp-legend').checked,sort=$('sqlp-sort').value;
  try{
@@ -451,6 +456,7 @@ async function exportPpt(){
  }catch(e){status('PowerPoint export failed: '+(e.message||String(e)),true);}
 }
 async function importFiles(){
+ if(!state.ready){try{await init();}catch(_){return;}}
  const files=Array.from($('sqlp-files').files||[]).filter(f=>/\.csv$/i.test(f.name));
  if(!files.length){$('sqlp-import-status').textContent='Choose at least one CSV file.';return;}
  $('sqlp-import').disabled=true;$('sqlp-import-status').textContent='Importing '+files.length+' file(s)…';
@@ -466,20 +472,10 @@ async function loadSample(key){
  $('sqlp-engine').textContent='Loading '+s.name+'…';if(!s.csv)s.csv=employeeCSV();
  await addTable(s.name,s.csv,'sample');state.loadedSamples.add(key);await refreshTables();await profileTable(s.name);$('sqlp-engine').textContent='DuckDB ready';
 }
-async function init(){
- try{
-  status('Loading DuckDB engine…');duckdb=await import('https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.29.0/+esm');
-  const bundle=await duckdb.selectBundle(duckdb.getJsDelivrBundles());
-  const workerUrl=URL.createObjectURL(new Blob(['importScripts("'+bundle.mainWorker+'");'],{type:'text/javascript'}));
-  const worker=new Worker(workerUrl);state.db=new duckdb.AsyncDuckDB(new duckdb.ConsoleLogger(),worker);
-  await state.db.instantiate(bundle.mainModule,bundle.pthreadWorker);URL.revokeObjectURL(workerUrl);
-  state.conn=await state.db.connect();state.ready=true;$('sqlp-engine').textContent='Preparing employee sample…';
-  await loadSample('employees');
+async function initEcharts(){
+ if(state.chart)return state.chart;if(state.chartPromise)return state.chartPromise;
+ state.chartPromise=(async()=>{
   echarts=await import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/core.js');
-  const charts=await import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/charts.js');
-  const components=await import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/components.js');
-  const renderers=await import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/renderers.js');
-  echarts.use([charts.BarChart,charts.LineChart,charts.PieChart,charts.ScatterChart,charts.HeatmapChart,charts.BoxplotChart,charts.TreemapChart,charts.FunnelChart,charts.RadarChart,charts.GaugeChart,charts.SankeyChart,components.TitleComponent,components.TooltipComponent,components.GridComponent,components.LegendComponent,components.VisualMapComponent,components.RadarComponent,renderers.CanvasRenderer,renderers.SVGRenderer]);
   const chartModules=await Promise.all([
    import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/bar/install.js'),
    import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/line/install.js'),
@@ -506,19 +502,38 @@ async function init(){
    import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/renderer/svg/install.js')
   ]);
   echarts.use([...chartModules,...componentModules,...rendererModules].map(module=>module.default));
-  state.chart=echarts.init($('sqlp-chart'),null,{renderer:'canvas'});
-  $('sqlp-run').disabled=false;$('sqlp-import').disabled=false;
-  let restore=readHashConfig();if(!restore){try{restore=JSON.parse(localStorage.getItem('theanalyst.sql.session')||'null');}catch(_){}}
-  if(restore)restoreConfig(restore);
-  setPalette($('sqlp-palette').value||'mono');status('DuckDB ready. Run SQL or choose a sample dataset.');await run();
-  if(restore){restoreConfig(restore);setPalette(restore.palette||'mono');updateChartAvailability();await drawChart();}
- }catch(e){$('sqlp-engine').textContent='Engine unavailable';status('Could not start DuckDB. Reload the page or check browser/CDN restrictions. '+(e.message||String(e)),true);}
+  state.chart=echarts.init($('sqlp-chart'),null,{renderer:'canvas'});return state.chart;
+ })();
+ try{return await state.chartPromise;}catch(e){state.chartPromise=null;throw e;}
+}
+async function init(){
+ if(state.ready)return true;if(state.initPromise)return state.initPromise;
+ state.initPromise=(async()=>{
+  try{
+   $('sqlp-engine').textContent='Loading DuckDB…';status('Loading DuckDB-Wasm only when you need it…');
+   duckdb=await import('https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.29.0/+esm');
+   const bundle=await duckdb.selectBundle(duckdb.getJsDelivrBundles());
+   const workerUrl=URL.createObjectURL(new Blob(['importScripts("'+bundle.mainWorker+'");'],{type:'text/javascript'}));
+   const worker=new Worker(workerUrl);state.db=new duckdb.AsyncDuckDB(new duckdb.ConsoleLogger(),worker);
+   await state.db.instantiate(bundle.mainModule,bundle.pthreadWorker);URL.revokeObjectURL(workerUrl);
+   state.conn=await state.db.connect();state.ready=true;$('sqlp-engine').textContent='DuckDB ready';
+   $('sqlp-run').disabled=false;$('sqlp-import').disabled=false;
+   let restore=readHashConfig();if(!restore){try{restore=JSON.parse(localStorage.getItem('theanalyst.sql.session')||'null');}catch(_){}}
+   if(restore){state.pendingConfig=restore;if(restore.query)setQuery(restore.query);setPalette(restore.palette||'mono');}
+   status('DuckDB ready. Choose a sample, import a CSV, or run SQL.');
+   return true;
+  }catch(e){
+   $('sqlp-engine').textContent='Engine unavailable';status('Could not start DuckDB. Reload the page or check browser/CDN restrictions. '+(e.message||String(e)),true);
+   state.initPromise=null;throw e;
+  }
+ })();
+ return state.initPromise;
 }
 $('sqlp-run').addEventListener('click',run);
 $('sqlp-query').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run();}});
 $('sqlp-query').addEventListener('focus',initCodeMirror,{once:true});
 $('sqlp-example').addEventListener('click',()=>{setQuery(examples[$('sqlp-query-examples').value]||examples.headcount);});
-$('sqlp-query-examples').addEventListener('change',()=>{setQuery(examples[$('sqlp-query-examples').value]||examples.headcount);});
+$('sqlp-query-examples').addEventListener('change',()=>{state.pendingConfig=null;setQuery(examples[$('sqlp-query-examples').value]||examples.headcount);});
 $('sqlp-save-query').addEventListener('click',saveQuery);
 $('sqlp-saved-query').addEventListener('change',()=>{let saved=[];try{saved=JSON.parse(localStorage.getItem('theanalyst.sql.savedQueries')||'[]');}catch(_){}const q=saved[Number($('sqlp-saved-query').value)];if(q)setQuery(q.sql);});
 refreshSavedQueries();
@@ -542,7 +557,6 @@ $('sqlp-png').addEventListener('click',()=>{if(state.chart)downloadBlob(dataURIt
 $('sqlp-ppt').addEventListener('click',exportPpt);
 
 function dataURItoBlob(uri){const parts=uri.split(','),mime=parts[0].match(/:(.*?);/)[1],raw=atob(parts[1]),arr=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)arr[i]=raw.charCodeAt(i);return new Blob([arr],{type:mime});}
-document.querySelectorAll('#sqlp [data-sample]').forEach(b=>b.addEventListener('click',async()=>{try{if(!state.ready){status('DuckDB is still loading.');return;}await loadSample(b.dataset.sample);setQuery(examples[b.dataset.sample]);await run();}catch(e){status('Could not load sample: '+(e.message||String(e)),true);}}));
-init();
-})();
+document.querySelectorAll('#sqlp [data-sample]').forEach(b=>b.addEventListener('click',async()=>{try{if(!state.ready)await init();state.pendingConfig=null;await loadSample(b.dataset.sample);setQuery(examples[b.dataset.sample]);await run();}catch(e){status('Could not load sample: '+(e.message||String(e)),true);}}));
+status('Choose a sample, import a CSV, or run SQL to initialize DuckDB.');
 </script>
