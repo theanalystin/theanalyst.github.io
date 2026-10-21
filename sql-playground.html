@@ -32,6 +32,7 @@ permalink: /sql-playground/
 #sqlp .chart-tile[aria-pressed=true]{background:#111;color:#fff;border-color:#111}#sqlp .chart-tile:disabled{opacity:.35;cursor:not-allowed;background:#f7f7f7}
 #sqlp .chart-more{margin:.15rem 0 .8rem}#sqlp .chart-more[hidden]{display:none}#sqlp .chart-more-toggle{font-size:.8rem}
 #sqlp .chart-note{font-size:.76rem;color:var(--muted);min-height:1.1em;margin:.4rem 0 .7rem}
+#sqlp .sqlp-footer{border-top:1px solid var(--line);margin-top:1.5rem;padding-top:1rem;color:var(--muted);font-size:.78rem}
 @media(max-width:780px){#sqlp .chart-picker{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:780px){#sqlp .steps{grid-template-columns:1fr}#sqlp .workspace{grid-template-columns:1fr}#sqlp .chart-controls{grid-template-columns:repeat(2,minmax(0,1fr))}#sqlp #sqlp-chart{height:320px}}@media(max-width:420px){#sqlp .profile-metrics{grid-template-columns:1fr}#sqlp .query-tools{grid-template-columns:1fr}#sqlp .panel{padding:.75rem}#sqlp .chart-controls{grid-template-columns:1fr}#sqlp .chart-controls .wide{grid-column:auto}#sqlp .steps{gap:.35rem}#sqlp .step{padding:.6rem}}
 </style>
@@ -161,6 +162,7 @@ permalink: /sql-playground/
       <p class="hint">Palette names are visual references, not official brand colors or endorsements.</p>
     </section>
   </div>
+  <footer class="sqlp-footer">theanalyst.in - your data stays in your browser.</footer>
 </div>
 
 <script type="module">
@@ -271,7 +273,7 @@ async function initCodeMirror(){
   ]);
   const initial=$('sqlp-query').value;
   state.editor=new view.EditorView({state:st.EditorState.create({doc:initial,extensions:[
-   view.lineNumbers(),view.highlightActiveLineGutter(),view.highlightSpecialChars(),cmd.history(),lang.foldGutter(),view.drawSelection(),view.dropCursor(),lang.indentOnInput(),lang.syntaxHighlighting(lang.defaultHighlightStyle),lang.bracketMatching(),view.rectangularSelection(),view.crosshairCursor(),view.highlightActiveLine(),view.keymap.of([{key:'Mod-Enter',run:()=>{run();return true;}},...cmd.defaultKeymap,...cmd.historyKeymap,cmd.indentWithTab]),sqlLang.sql(),view.EditorView.lineWrapping,view.EditorView.updateListener.of(update=>{if(update.docChanged)$('sqlp-query').value=update.state.doc.toString();})
+   view.lineNumbers(),view.highlightActiveLineGutter(),view.highlightSpecialChars(),cmd.history(),lang.foldGutter(),view.drawSelection(),view.dropCursor(),lang.indentOnInput(),lang.syntaxHighlighting(lang.defaultHighlightStyle),lang.bracketMatching(),view.rectangularSelection(),view.crosshairCursor(),view.highlightActiveLine(),view.keymap.of([{key:'Mod-Enter',run:()=>{run();return true;}},...cmd.defaultKeymap,...cmd.historyKeymap,cmd.indentWithTab]),sqlLang.sql(),view.EditorView.lineWrapping,view.EditorView.updateListener.of(update=>{if(update.docChanged){$('sqlp-query').value=update.state.doc.toString();persistConfig();}})
   ]}),parent:$('sqlp-editor-host')});
   $('sqlp-query').hidden=true;state.editor.focus();
  }catch(e){status('CodeMirror could not load; the plain SQL editor remains available.');}
@@ -478,6 +480,32 @@ async function init(){
   const components=await import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/components.js');
   const renderers=await import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/renderers.js');
   echarts.use([charts.BarChart,charts.LineChart,charts.PieChart,charts.ScatterChart,charts.HeatmapChart,charts.BoxplotChart,charts.TreemapChart,charts.FunnelChart,charts.RadarChart,charts.GaugeChart,charts.SankeyChart,components.TitleComponent,components.TooltipComponent,components.GridComponent,components.LegendComponent,components.VisualMapComponent,components.RadarComponent,renderers.CanvasRenderer,renderers.SVGRenderer]);
+  const chartModules=await Promise.all([
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/bar/install.js'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/line/install.js'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/pie/install.js'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/scatter/install.js'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/heatmap/install.js'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/boxplot/install.js'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/treemap/install.js'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/funnel/install.js'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/radar/install.js'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/gauge/install.js'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/sankey/install.js')
+  ]);
+  const componentModules=await Promise.all([
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/title/install.js'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/tooltip/install.js'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/grid/install.js'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/legend/install.js'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/visualMap/install.js'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/radar/install.js')
+  ]);
+  const rendererModules=await Promise.all([
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/renderer/canvas/install.js'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/renderer/svg/install.js')
+  ]);
+  echarts.use([...chartModules,...componentModules,...rendererModules].map(module=>module.default));
   state.chart=echarts.init($('sqlp-chart'),null,{renderer:'canvas'});
   $('sqlp-run').disabled=false;$('sqlp-import').disabled=false;
   let restore=readHashConfig();if(!restore){try{restore=JSON.parse(localStorage.getItem('theanalyst.sql.session')||'null');}catch(_){}}
