@@ -52,7 +52,17 @@ try {
         await page.waitForFunction(() => (document.querySelector('#sqlp-status')?.textContent || '').startsWith('Query completed'), null, { timeout: 30000 });
         const tile = page.locator(`#sqlp [data-chart="${chartType}"]`);
         await tile.waitFor({ state: 'visible' });
-        if (await tile.isDisabled()) throw new Error(`Chart ${chartType} was disabled for sample query ${queryKey}`);
+        if (await tile.isDisabled()) {
+          const diagnostic = await page.evaluate(() => ({
+            x: document.querySelector('#sqlp-x')?.value,
+            y: document.querySelector('#sqlp-y')?.value,
+            group: document.querySelector('#sqlp-group')?.value,
+            note: document.querySelector('#sqlp-chart-note')?.textContent,
+            columns: Array.from(document.querySelectorAll('#sqlp-x option')).map(o => o.value),
+            types: Array.from(document.querySelectorAll('#sqlp-chart-picker [data-chart]')).map(b => ({type:b.dataset.chart, disabled:b.disabled}))
+          }));
+          throw new Error(`Chart ${chartType} was disabled for sample query ${queryKey}: ${JSON.stringify(diagnostic)}`);
+        }
         await tile.click();
         await page.waitForFunction(type => document.querySelector('#sqlp-chart')?.dataset.chartType === type, chartType, { timeout: 15000 });
         const note = await page.locator('#sqlp-chart-note').textContent();
