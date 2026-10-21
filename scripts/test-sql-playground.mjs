@@ -18,7 +18,7 @@ try {
         const status = document.querySelector('#sqlp-status');
         const note = document.querySelector('#sqlp-chart-note')?.textContent || '';
         return (engine.includes('DuckDB ready') && document.querySelector('#sqlp-chart canvas')) ||
-          status?.classList.contains('error') || /Chart (error|renderer)|could not load/i.test(note);
+          status?.classList.contains('error') || /Chart error|could not load|timed out/i.test(note);
       }, null, { timeout: 60000 });
     } catch (error) {
       await page.screenshot({ path: `${output}/sql-playground-${viewport.width}-startup-timeout.png`, fullPage: true });
