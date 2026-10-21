@@ -476,6 +476,7 @@ async function loadSample(key){
 }
 async function initEcharts(){
  if(state.chart)return state.chart;if(state.chartPromise)return state.chartPromise;
+ $('sqlp-chart-note').textContent='Loading chart modules…';
  state.chartPromise=(async()=>{
   echarts=await import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/core.js');
   const chartModules=await Promise.all([
