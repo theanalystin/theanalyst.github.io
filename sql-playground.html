@@ -408,7 +408,9 @@ async function chartSql(type){
  }
 }
 async function drawChart(){
- if(!state.columns.length)return;if(!state.chart)await initEcharts();updateChartAvailability();
+ if(!state.columns.length)return;
+ if(!state.chart){try{await initEcharts();}catch(e){$('sqlp-chart-note').textContent='Chart modules could not load. Check the browser connection and retry. '+(e.message||String(e));return;}}
+ updateChartAvailability();
  const type=selectedChart(),a=compatibility(type);if(!a.valid){$('sqlp-chart-note').textContent=a.why;return;}
  const d=chartData(),pal=palettes[$('sqlp-palette').value]||palettes.mono,title=$('sqlp-title').value.trim(),subtitle=$('sqlp-subtitle').value.trim(),xt=$('sqlp-x-title').value.trim(),yt=$('sqlp-y-title').value.trim(),showLabels=$('sqlp-labels').checked,showGrid=$('sqlp-gridlines').checked,showLegend=$('sqlp-legend').checked,sort=$('sqlp-sort').value;
  try{
