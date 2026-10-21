@@ -14,7 +14,7 @@ try {
     await page.waitForFunction(() => {
       const engine = document.querySelector('#sqlp-engine')?.textContent || '';
       return engine.includes('DuckDB ready') && document.querySelector('#sqlp-chart canvas');
-    }, { timeout: 150000 });
+    }, null, { timeout: 150000 });
     await page.locator('#sqlp-query').focus();
     await page.locator('.cm-editor').waitFor({ state: 'visible', timeout: 30000 });
     const tileColumns = await page.locator('#sqlp-chart-picker').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length);
@@ -33,7 +33,7 @@ try {
       for (const [queryKey, chartType] of cases) {
         await page.locator('#sqlp-query-examples').selectOption(queryKey);
         await page.locator('#sqlp-run').click();
-        await page.waitForFunction(() => (document.querySelector('#sqlp-status')?.textContent || '').startsWith('Query completed'), { timeout: 30000 });
+        await page.waitForFunction(() => (document.querySelector('#sqlp-status')?.textContent || '').startsWith('Query completed'), null, { timeout: 30000 });
         const tile = page.locator(`#sqlp [data-chart="${chartType}"]`);
         await tile.waitFor({ state: 'visible' });
         if (await tile.isDisabled()) throw new Error(`Chart ${chartType} was disabled for sample query ${queryKey}`);
