@@ -1,279 +1,256 @@
 ---
 layout: default
 title: SQL Playground
-description: Run SQL in your browser with sample datasets and local CSV imports. Queries execute in your browser using DuckDB-Wasm.
+description: Query a 1,000-row employee dataset with DuckDB, build ECharts visualizations, and export charts as PNG or PowerPoint.
 permalink: /sql-playground/
 ---
 
 <style>
-#sqlp{--p-border:var(--border-color,#dbe2ea);--p-muted:var(--muted,#64748b);color:var(--text-color,#17202a);padding:1rem 0 3rem}
-#sqlp *{box-sizing:border-box}
-#sqlp .eyebrow{font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;font-weight:750;color:var(--p-muted)}
-#sqlp h1{font-size:clamp(2rem,5vw,3.15rem);line-height:1.05;margin:.35rem 0 .8rem}
-#sqlp .intro{max-width:760px;color:var(--p-muted);font-size:1.05rem}
-#sqlp .toolbar,#sqlp .actions,#sqlp .dataset-row{display:flex;gap:.55rem;align-items:center;flex-wrap:wrap}
-#sqlp .toolbar{margin:1rem 0}
-#sqlp button,#sqlp select,#sqlp input{font:inherit}
-#sqlp button{border:1px solid var(--p-border);border-radius:9px;padding:.62rem .85rem;background:transparent;color:inherit;cursor:pointer}
-#sqlp button.primary{background:var(--text-color,#17202a);color:var(--background-color,#fff);border-color:transparent}
-#sqlp button:disabled{opacity:.5;cursor:not-allowed}
-#sqlp .pill{font-size:.78rem;border:1px solid var(--p-border);border-radius:999px;padding:.3rem .62rem;color:var(--p-muted)}
-#sqlp .pill.ready{color:#16804a;border-color:#16804a}
-#sqlp .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,.37fr);gap:1rem;align-items:start}
-#sqlp .panel{border:1px solid var(--p-border);border-radius:14px;padding:1rem;min-width:0;margin-bottom:1rem}
-#sqlp h2{font-size:1.08rem;margin:.15rem 0 .8rem}
-#sqlp label{display:block;font-size:.88rem;font-weight:650;margin:.55rem 0 .25rem}
-#sqlp select,#sqlp input[type=file]{width:100%;border:1px solid var(--p-border);border-radius:8px;padding:.55rem;background:transparent;color:inherit}
-#sqlp .datasets button{text-align:left;flex:1;min-width:130px}
-#sqlp .datasets strong{display:block;font-size:.88rem}
-#sqlp .datasets small{display:block;color:var(--p-muted);margin-top:.18rem}
-#sqlp textarea{width:100%;min-height:240px;resize:vertical;padding:1rem;border:1px solid var(--p-border);border-radius:10px;background:#101820;color:#e4edf4;font: .9rem/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2}
-#sqlp .editor-top{display:flex;justify-content:space-between;gap:.6rem;align-items:center;flex-wrap:wrap;margin:.4rem 0}
-#sqlp .status{font-size:.86rem;color:var(--p-muted);min-height:1.5em;margin:.65rem 0}
-#sqlp .status.error{color:#b42318}
-#sqlp .result-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
-#sqlp .table-wrap{width:100%;overflow:auto;max-height:480px;border:1px solid var(--p-border);border-radius:8px}
-#sqlp table{border-collapse:collapse;width:100%;font-size:.86rem;white-space:nowrap}
-#sqlp th,#sqlp td{padding:.55rem .7rem;border-bottom:1px solid var(--p-border);text-align:left}
-#sqlp th{position:sticky;top:0;background:var(--background-color,#fff);font-weight:750}
-#sqlp .muted{color:var(--p-muted);font-size:.84rem}
-#sqlp .table-list{list-style:none;padding:0;margin:0}
-#sqlp .table-list li{border-top:1px solid var(--p-border);padding:.65rem 0;display:flex;align-items:center;justify-content:space-between;gap:.5rem;font-size:.88rem}
-#sqlp .table-list button{padding:.3rem .45rem;font-size:.78rem}
-#sqlp .drop{border:1px dashed var(--p-border);border-radius:10px;padding:.8rem}
-#sqlp .examples{display:flex;gap:.4rem;flex-wrap:wrap}
-#sqlp .examples button{font-size:.8rem;padding:.4rem .55rem}
-#sqlp .warning{border-left:3px solid var(--p-border);padding:.65rem .8rem;color:var(--p-muted);font-size:.86rem}
-@media(max-width:820px){#sqlp .grid{grid-template-columns:1fr}#sqlp textarea{min-height:210px}}
+#sqlp{--ink:#111;--muted:#686868;--line:#dedede;--paper:#fff;color:var(--ink);padding:1.2rem 0 3rem;font-size:14px}
+#sqlp *{box-sizing:border-box}#sqlp h1{font-size:clamp(2rem,5vw,3rem);letter-spacing:-.055em;line-height:1.05;margin:.25rem 0 .6rem}#sqlp h2{font-size:1rem;letter-spacing:-.02em;margin:0 0 .8rem}#sqlp p{line-height:1.5}#sqlp .muted{color:var(--muted);font-size:.84rem}#sqlp .eyebrow{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:750;margin:0}
+#sqlp .intro{max-width:700px;color:var(--muted);margin:.5rem 0 1.2rem}#sqlp .steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.5rem;margin:1.3rem 0}#sqlp .step{border:1px solid var(--line);border-radius:8px;padding:.7rem .8rem;min-width:0}#sqlp .step b{display:block;font-size:.78rem;margin-bottom:.2rem}#sqlp .step span{color:var(--muted);font-size:.76rem}
+#sqlp .panel{border:1px solid var(--line);border-radius:10px;padding:1rem;min-width:0;margin-bottom:.8rem;background:var(--paper)}#sqlp .panel-head{display:flex;align-items:center;justify-content:space-between;gap:.7rem;flex-wrap:wrap;margin-bottom:.65rem}#sqlp .panel-head h2{margin:0}#sqlp .pill{border:1px solid var(--line);border-radius:999px;padding:.25rem .55rem;font-size:.74rem;color:var(--muted)}
+#sqlp button,#sqlp select,#sqlp input,#sqlp textarea{font:inherit}#sqlp button{border:1px solid #cfcfcf;border-radius:7px;background:#fff;color:#111;padding:.58rem .78rem;cursor:pointer;transition:background .15s}#sqlp button:hover{background:#f2f2f2}#sqlp button.primary{background:#111;color:#fff;border-color:#111}#sqlp button.primary:hover{background:#333}#sqlp button:disabled{opacity:.45;cursor:not-allowed}#sqlp select,#sqlp input[type=text],#sqlp input[type=file]{width:100%;border:1px solid #d2d2d2;border-radius:7px;padding:.55rem;background:#fff;color:#111;min-width:0}#sqlp label{display:block;font-size:.78rem;font-weight:650;margin:.55rem 0 .3rem}
+#sqlp .row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}#sqlp .row>*{min-width:0}#sqlp .dataset{flex:1;text-align:left;min-width:140px}#sqlp .dataset strong{display:block}#sqlp .dataset small{display:block;color:var(--muted);font-size:.75rem;margin-top:.2rem}
+#sqlp .workspace{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);gap:.8rem;align-items:start}#sqlp textarea{width:100%;min-height:215px;resize:vertical;padding:.85rem;border:1px solid #333;border-radius:7px;background:#111;color:#f5f5f5;font:.88rem/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2}#sqlp .status{font-size:.82rem;color:var(--muted);min-height:1.2em;margin:.65rem 0 0;overflow-wrap:anywhere}#sqlp .status.error{color:#a32020}#sqlp .drop{border:1px dashed #cfcfcf;border-radius:7px;padding:.7rem}#sqlp .table-wrap{overflow:auto;max-height:360px;border:1px solid var(--line);border-radius:7px}#sqlp table{border-collapse:collapse;width:100%;font-size:.8rem;white-space:nowrap}#sqlp th,#sqlp td{padding:.5rem .65rem;text-align:left;border-bottom:1px solid #e9e9e9}#sqlp th{background:#f7f7f7;position:sticky;top:0}#sqlp .result-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:.8rem}#sqlp .chart-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}#sqlp .chart-controls .wide{grid-column:span 2}#sqlp #sqlp-chart{width:100%;height:390px;min-height:280px}#sqlp .hint{font-size:.78rem;color:var(--muted);margin:.5rem 0 0}#sqlp .table-list{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 0}#sqlp .table-list button{font-size:.78rem;padding:.35rem .5rem}#sqlp .file-note{font-size:.76rem;color:var(--muted);margin:.45rem 0 0}
+@media(max-width:780px){#sqlp .steps{grid-template-columns:repeat(2,minmax(0,1fr))}#sqlp .workspace{grid-template-columns:1fr}#sqlp .chart-controls{grid-template-columns:repeat(2,minmax(0,1fr))}#sqlp #sqlp-chart{height:320px}}@media(max-width:420px){#sqlp .panel{padding:.75rem}#sqlp .chart-controls{grid-template-columns:1fr}#sqlp .chart-controls .wide{grid-column:auto}#sqlp .steps{gap:.35rem}#sqlp .step{padding:.6rem}}
 </style>
 
 <div id="sqlp">
-  <p class="eyebrow">Free browser tool · SQL analytics</p>
+  <p class="eyebrow">theanalyst.in / browser analytics</p>
   <h1>SQL Playground</h1>
-  <p class="intro">Practice real SQL against sample datasets or import your own CSV files. Queries run in your browser using DuckDB-Wasm—no account, database server, or file upload to The Analyst is required.</p>
-  <div class="toolbar">
-    <span id="sqlp-engine" class="pill">Starting SQL engine…</span>
-    <span id="sqlp-data-status" class="pill">Loading sample data…</span>
-    <button id="sqlp-reset" type="button">Reset samples</button>
+  <p class="intro">Query real-shaped sample data, turn the result into a chart, and export a presentation-ready visual. Everything runs in your browser.</p>
+
+  <div class="steps" aria-label="Workflow">
+    <div class="step"><b>01 / Data</b><span>Sample data or CSV</span></div>
+    <div class="step"><b>02 / Query</b><span>Write SQL or start from an example</span></div>
+    <div class="step"><b>03 / Visualize</b><span>Configure ECharts and style</span></div>
+    <div class="step"><b>04 / Export</b><span>PNG image or PowerPoint</span></div>
   </div>
 
   <section class="panel">
-    <h2>Choose a sample dataset</h2>
-    <p class="muted">Load a small, fictional dataset to start querying immediately.</p>
-    <div class="dataset-row datasets">
-      <button type="button" data-sample="sales"><strong>Sales</strong><small>Orders, regions, products, revenue</small></button>
-      <button type="button" data-sample="employees"><strong>Employees</strong><small>Teams, salaries, locations</small></button>
-      <button type="button" data-sample="web"><strong>Web events</strong><small>Sessions, channels, conversions</small></button>
+    <div class="panel-head"><h2>01 — Choose your data</h2><span class="pill" id="sqlp-engine">Starting DuckDB…</span></div>
+    <div class="row">
+      <button type="button" class="dataset" data-sample="employees"><strong>Employee database · 1,000 rows</strong><small>Departments, salaries, locations, performance</small></button>
+      <button type="button" class="dataset" data-sample="sales"><strong>Sales</strong><small>Orders, regions, products, revenue</small></button>
+      <button type="button" class="dataset" data-sample="web"><strong>Web analytics</strong><small>Channels, visitors, conversions</small></button>
     </div>
+    <div class="row" style="margin-top:.7rem;align-items:flex-end">
+      <div style="flex:1;min-width:220px"><label for="sqlp-files">Or import CSV files from your device</label><input id="sqlp-files" type="file" accept=".csv,text/csv" multiple></div>
+      <button class="primary" id="sqlp-import" type="button" disabled>Import CSV</button>
+    </div>
+    <p class="file-note">CSV files are processed locally in your browser; they are not uploaded to The Analyst. Sample employee data is fictional.</p>
+    <div class="table-list" id="sqlp-tables"><span class="muted">Tables will appear here when DuckDB is ready.</span></div>
+    <p id="sqlp-import-status" class="status" aria-live="polite"></p>
   </section>
 
-  <div class="grid">
-    <div>
-      <section class="panel">
-        <div class="editor-top"><h2 style="margin:0">SQL editor</h2><span class="muted">Ctrl/⌘ + Enter to run</span></div>
-        <textarea id="sqlp-query" spellcheck="false" aria-label="SQL query editor">SELECT region,
-       COUNT(*) AS orders,
-       ROUND(SUM(revenue), 2) AS total_revenue
-FROM sales
-GROUP BY region
-ORDER BY total_revenue DESC;</textarea>
-        <div class="actions" style="margin-top:.65rem">
-          <button class="primary" id="sqlp-run" type="button" disabled>Run query</button>
-          <button id="sqlp-format" type="button">Clear editor</button>
-          <button id="sqlp-example" type="button">Load example query</button>
-          <button id="sqlp-download" type="button" disabled>Download results CSV</button>
-        </div>
-        <p id="sqlp-status" class="status" role="status" aria-live="polite">Preparing browser SQL engine…</p>
-      </section>
-      <section class="panel">
-        <div class="result-head"><h2>Results</h2><span id="sqlp-result-meta" class="muted">Run a query to see results.</span></div>
-        <div id="sqlp-results" class="muted">Results will appear here.</div>
-      </section>
-    </div>
-    <aside>
-      <section class="panel">
-        <h2>Import CSV files</h2>
-        <p class="muted">Choose one or more CSVs from your device. Each file becomes a table you can query by its filename.</p>
-        <div class="drop">
-          <label for="sqlp-files">CSV files</label>
-          <input id="sqlp-files" type="file" accept=".csv,text/csv" multiple>
-          <button class="primary" id="sqlp-import" type="button" disabled style="margin-top:.5rem">Import selected CSVs</button>
-          <p id="sqlp-import-status" class="status" aria-live="polite"></p>
-        </div>
-        <p class="warning">Privacy: CSV contents are processed locally in this browser session. Avoid importing sensitive personal or confidential data on shared devices.</p>
-      </section>
-      <section class="panel">
-        <h2>Tables in this session</h2>
-        <ul id="sqlp-tables" class="table-list"><li>Waiting for SQL engine…</li></ul>
-        <p class="muted">Click a table name to insert a quick preview query.</p>
-      </section>
-      <section class="panel">
-        <h2>Query patterns</h2>
-        <div class="examples">
-          <button type="button" data-query="select">SELECT 10 rows</button>
-          <button type="button" data-query="group">GROUP BY</button>
-          <button type="button" data-query="join">JOIN tables</button>
-          <button type="button" data-query="window">Window function</button>
-        </div>
-      </section>
-    </aside>
+  <div class="workspace">
+    <section class="panel">
+      <div class="panel-head"><h2>02 — Write your SQL</h2><span class="pill">Ctrl / ⌘ + Enter</span></div>
+      <label for="sqlp-query">SQL query</label>
+      <textarea id="sqlp-query" spellcheck="false" aria-label="SQL query editor">SELECT department,
+       ROUND(AVG(salary), 0) AS avg_salary,
+       COUNT(*) AS employees
+FROM employees
+GROUP BY department
+ORDER BY avg_salary DESC;</textarea>
+      <div class="row" style="margin-top:.6rem">
+        <button class="primary" id="sqlp-run" type="button" disabled>Run query</button>
+        <button id="sqlp-example" type="button">Load example</button>
+        <button id="sqlp-clear" type="button">Clear</button>
+        <button id="sqlp-download" type="button" disabled>Results CSV</button>
+      </div>
+      <p id="sqlp-status" class="status" role="status" aria-live="polite">Preparing browser SQL engine…</p>
+      <div style="margin-top:1rem">
+        <div class="panel-head"><h2>Query results</h2><span id="sqlp-result-meta" class="muted">No results yet</span></div>
+        <div id="sqlp-results" class="muted">Run a query to populate the table and chart builder.</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>03 — Build your chart</h2><span class="pill">Apache ECharts</span></div>
+      <div class="chart-controls">
+        <div><label for="sqlp-chart-type">Chart type</label><select id="sqlp-chart-type"><option value="bar">Bar</option><option value="line">Line</option><option value="pie">Pie</option><option value="scatter">Scatter</option></select></div>
+        <div><label for="sqlp-palette">Style palette</label><select id="sqlp-palette"><option value="mono">Monochrome</option><option value="mck">McKinsey-inspired blue</option><option value="bcg">BCG-inspired green</option><option value="bain">Bain-inspired red</option><option value="big4">Big Four mix</option><option value="pwc">PwC-inspired warm</option></select></div>
+        <div><label for="sqlp-x">Category / X axis</label><select id="sqlp-x"><option value="">Run a query first</option></select></div>
+        <div><label for="sqlp-y">Value / Y axis</label><select id="sqlp-y"><option value="">Run a query first</option></select></div>
+        <div class="wide"><label for="sqlp-title">Chart title</label><input id="sqlp-title" type="text" value="Average salary by department"></div>
+        <div><label for="sqlp-x-title">X-axis title</label><input id="sqlp-x-title" type="text" value="Department"></div>
+        <div><label for="sqlp-y-title">Y-axis title</label><input id="sqlp-y-title" type="text" value="Average salary"></div>
+      </div>
+      <div class="row" style="margin-top:.75rem"><button id="sqlp-render" class="primary" type="button" disabled>Update chart</button><button id="sqlp-png" type="button" disabled>Export PNG</button><button id="sqlp-ppt" type="button" disabled>Export PowerPoint</button></div>
+      <p class="hint">Pick columns from your query output. For a useful chart, return one category column and one numeric column.</p>
+      <div id="sqlp-chart" role="img" aria-label="Chart preview"></div>
+      <p class="hint">Palette names are visual references, not official brand colors or endorsements.</p>
+    </section>
   </div>
 </div>
 
 <script type="module">
 import * as duckdb from 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.29.0/+esm';
+import * as echarts from 'https://cdn.jsdelivr.net/npm/echarts@5.6.0/+esm';
+import pptxgen from 'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/+esm';
 
 (() => {
-const root = document.getElementById('sqlp');
-if (!root || root.dataset.ready) return;
-root.dataset.ready = '1';
 const $ = id => document.getElementById(id);
-const setStatus = (message, error=false) => { $('sqlp-status').textContent=message; $('sqlp-status').classList.toggle('error',error); };
-const state = {db:null, conn:null, resultRows:[], columns:[], engineReady:false, samplesLoaded:false};
-const samples = {
-sales: {
-name:'sales',
-csv:'order_id,order_date,region,product,category,quantity,unit_price,revenue\n1001,2026-01-03,South,Notebook,Stationery,4,120,480\n1002,2026-01-05,West,Desk,Office,1,8500,8500\n1003,2026-01-08,North,Pen,Stationery,12,15,180\n1004,2026-01-12,East,Chair,Furniture,2,3200,6400\n1005,2026-02-02,South,Desk,Office,1,8500,8500\n1006,2026-02-11,West,Notebook,Stationery,8,120,960\n1007,2026-02-18,North,Chair,Furniture,1,3200,3200\n1008,2026-03-01,East,Pen,Stationery,20,15,300\n1009,2026-03-06,South,Chair,Furniture,2,3200,6400\n1010,2026-03-19,West,Desk,Office,1,8500,8500\n1011,2026-04-03,North,Notebook,Stationery,6,120,720\n1012,2026-04-14,East,Desk,Office,1,8500,8500'
-},
-employees: {
-name:'employees',
-csv:'employee_id,employee_name,department,city,salary,joining_date\n1,Asha,Analytics,Bengaluru,950000,2022-04-11\n2,Rahul,Sales,Mumbai,780000,2021-07-19\n3,Meera,Analytics,Hyderabad,1100000,2020-02-03\n4,Arjun,Operations,Chennai,720000,2023-09-25\n5,Ishita,Sales,Bengaluru,840000,2022-11-07\n6,Kabir,Analytics,Pune,1020000,2019-06-17\n7,Diya,Operations,Mumbai,760000,2024-01-08\n8,Neel,Sales,Hyderabad,910000,2020-12-14'
-},
-web: {
-name:'web_events',
-csv:'event_id,event_date,channel,device,visitors,conversions\n1,2026-04-01,Organic,Mobile,1200,96\n2,2026-04-01,Paid Search,Desktop,850,71\n3,2026-04-02,Email,Mobile,640,58\n4,2026-04-02,Organic,Desktop,970,83\n5,2026-04-03,Paid Search,Mobile,1100,77\n6,2026-04-03,Email,Desktop,520,49\n7,2026-04-04,Organic,Mobile,1380,112\n8,2026-04-04,Paid Search,Desktop,900,74\n9,2026-04-05,Email,Mobile,710,67'
-}
+const state = {db:null,conn:null,ready:false,columns:[],rows:[],chart:null};
+const palettes = {
+  mono:['#111111','#555555','#888888','#b0b0b0','#d2d2d2'],
+  mck:['#003f6b','#0077a8','#4b9fca','#82bfdc','#b7d9e9'],
+  bcg:['#006b54','#269879','#6bb99c','#9bcdb9','#c7e2d6'],
+  bain:['#a30b22','#cf3145','#e46b78','#ed9da6','#f4c9ce'],
+  big4:['#111111','#0076a8','#4c8c2b','#d4a72c','#b13b2e'],
+  pwc:['#d94f00','#f28c28','#ffbd69','#7a3f25','#333333']
 };
 const examples = {
-select:'SELECT *\nFROM sales\nLIMIT 10;',
-group:'SELECT category,\n       COUNT(*) AS order_count,\n       SUM(revenue) AS revenue\nFROM sales\nGROUP BY category\nORDER BY revenue DESC;',
-join:'SELECT s.order_id, s.region, s.revenue, e.employee_name, e.department\nFROM sales AS s\nCROSS JOIN (SELECT employee_name, department FROM employees WHERE department = \'Analytics\' LIMIT 1) AS e\nLIMIT 10;',
-window:'SELECT order_id, order_date, region, revenue,\n       SUM(revenue) OVER (PARTITION BY region ORDER BY order_date) AS running_region_revenue\nFROM sales\nORDER BY region, order_date;'
+  employees:'SELECT department, ROUND(AVG(salary), 0) AS avg_salary, COUNT(*) AS employees\\nFROM employees\\nGROUP BY department\\nORDER BY avg_salary DESC;',
+  sales:'SELECT region, ROUND(SUM(revenue), 0) AS revenue\\nFROM sales\\nGROUP BY region\\nORDER BY revenue DESC;',
+  web:'SELECT channel, SUM(visitors) AS visitors, SUM(conversions) AS conversions\\nFROM web_events\\nGROUP BY channel\\nORDER BY visitors DESC;'
 };
-function quoteIdent(name){return '"'+String(name).replace(/"/g,'""')+'"';}
-function tableFromFilename(filename){
-  let name=filename.replace(/\.csv$/i,'').toLowerCase().replace(/[^a-z0-9_]+/g,'_').replace(/^([^a-z_])/,'t_$1').replace(/_+/g,'_');
-  return name || 'imported_data';
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function quote(n){return '"'+String(n).replace(/"/g,'""')+'"';}
+function status(msg,error=false){$('sqlp-status').textContent=msg;$('sqlp-status').classList.toggle('error',error);}
+function toText(v){if(v===null||v===undefined)return 'NULL';if(typeof v==='bigint')return v.toString();if(v instanceof Date)return v.toISOString();if(typeof v==='object')return JSON.stringify(v);return String(v);}
+function employeeCSV(){
+ const depts=['Analytics','Sales','Operations','Finance','Marketing','Technology','Human Resources','Strategy'];
+ const cities=['Bengaluru','Mumbai','Hyderabad','Chennai','Pune','Delhi','Kolkata','Gurugram'];
+ const first=['Aarav','Aditi','Aditya','Ananya','Arjun','Diya','Isha','Kabir','Kavya','Meera','Neel','Rohan','Sana','Vihaan','Zoya','Ishaan','Mira','Dev','Tara','Reyansh'];
+ const last=['Sharma','Patel','Rao','Iyer','Mehta','Singh','Nair','Kapoor','Das','Khan','Joshi','Reddy','Malhotra','Sen','Pillai'];
+ const out=['employee_id,employee_name,department,city,salary,joining_date,performance_score,employment_type'];
+ for(let i=1;i<=1000;i++){
+  const dept=depts[(i*7+i%5)%depts.length],city=cities[(i*3+i%7)%cities.length],name=first[(i*11)%first.length]+' '+last[(i*13)%last.length];
+  const salary=450000+((i*7919)%1450000),year=2017+(i%10),month=String((i%12)+1).padStart(2,'0'),day=String((i%27)+1).padStart(2,'0');
+  const score=(2.5+((i*17)%26)/10).toFixed(1),type=i%9===0?'Contract':'Full-time';
+  out.push([i,'"'+name+'"',dept,city,salary,year+'-'+month+'-'+day,score,type].join(','));
+ }
+ return out.join('\\n');
 }
-function csvText(file){
-  return new Promise((resolve,reject)=>{
-    const reader=new FileReader();
-    reader.onload=()=>resolve(String(reader.result||''));
-    reader.onerror=()=>reject(new Error('Could not read '+file.name));
-    reader.readAsText(file);
-  });
-}
-async function ensureSample(key){
-  const sample=samples[key];
-  await installSample(key);
-}
-async function installSample(key){
-  const sample=samples[key];
-  const buffer=new TextEncoder().encode(sample.csv);
-  const fileName='sample_'+sample.name+'.csv';
-  await state.db.registerFileBuffer(fileName,buffer);
-  await state.conn.query('CREATE OR REPLACE TABLE '+quoteIdent(sample.name)+' AS SELECT * FROM read_csv_auto('+JSON.stringify(fileName)+', header=true)');
-  await state.db.dropFile(fileName);
+const samples={
+ employees:{name:'employees',csv:employeeCSV()},
+ sales:{name:'sales',csv:'order_id,region,product,category,quantity,revenue\\n1001,South,Notebook,Stationery,4,480\\n1002,West,Desk,Office,1,8500\\n1003,North,Pen,Stationery,12,180\\n1004,East,Chair,Furniture,2,6400\\n1005,South,Desk,Office,1,8500\\n1006,West,Notebook,Stationery,8,960\\n1007,North,Chair,Furniture,1,3200\\n1008,East,Pen,Stationery,20,300\\n1009,South,Chair,Furniture,2,6400\\n1010,West,Desk,Office,1,8500\\n1011,North,Notebook,Stationery,6,720\\n1012,East,Desk,Office,1,8500'},
+ web:{name:'web_events',csv:'event_id,channel,device,visitors,conversions\\n1,Organic,Mobile,1200,96\\n2,Paid Search,Desktop,850,71\\n3,Email,Mobile,640,58\\n4,Organic,Desktop,970,83\\n5,Paid Search,Mobile,1100,77\\n6,Email,Desktop,520,49\\n7,Organic,Mobile,1380,112\\n8,Paid Search,Desktop,900,74\\n9,Email,Mobile,710,67'}
+};
+function tableName(filename){let n=filename.replace(/\\.csv$/i,'').toLowerCase().replace(/[^a-z0-9_]+/g,'_').replace(/^([^a-z_])/,'t_$1').replace(/_+/g,'_');return n||'imported_data';}
+async function addTable(name,csv,tag){
+ const virtual=tag+'_'+name+'.csv';
+ await state.db.registerFileBuffer(virtual,new TextEncoder().encode(csv));
+ try{await state.conn.query('CREATE OR REPLACE TABLE '+quote(name)+' AS SELECT * FROM read_csv_auto('+JSON.stringify(virtual)+', header=true)');}
+ finally{await state.db.dropFile(virtual);}
 }
 async function refreshTables(){
-  const res=await state.conn.query("SELECT table_name FROM information_schema.tables WHERE table_schema='main' AND table_type='BASE TABLE' ORDER BY table_name");
-  const names=res.toArray().map(r=>String(r.table_name));
-  $('sqlp-tables').innerHTML=names.length?names.map(n=>'<li><span><strong>'+escapeHTML(n)+'</strong></span><button type="button" data-table="'+escapeHTML(n)+'">Preview</button></li>').join(''):'<li>No tables yet</li>';
-  $('sqlp-tables').querySelectorAll('button[data-table]').forEach(b=>b.addEventListener('click',()=>{$('sqlp-query').value='SELECT * FROM '+quoteIdent(b.dataset.table)+' LIMIT 100;';}));
-  $('sqlp-data-status').textContent=names.length+' table'+(names.length===1?'':'s')+' available';
+ const r=await state.conn.query("SELECT table_name FROM information_schema.tables WHERE table_schema='main' AND table_type='BASE TABLE' ORDER BY table_name");
+ const names=r.toArray().map(x=>String(x.table_name));
+ $('sqlp-tables').innerHTML=names.map(n=>'<button type="button" data-table="'+esc(n)+'">'+esc(n)+'</button>').join('');
+ $('sqlp-tables').querySelectorAll('[data-table]').forEach(b=>b.addEventListener('click',()=>{$('sqlp-query').value='SELECT * FROM '+quote(b.dataset.table)+' LIMIT 100;';}));
 }
-function escapeHTML(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function valueText(v){if(v===null||v===undefined)return 'NULL';if(v instanceof Date)return v.toISOString();if(typeof v==='bigint')return v.toString();if(typeof v==='object')return JSON.stringify(v);return String(v);}
-function renderResult(columns,rows){
-  state.columns=columns;state.resultRows=rows;
-  $('sqlp-result-meta').textContent=rows.length+' row'+(rows.length===1?'':'s')+' · '+columns.length+' column'+(columns.length===1?'':'s');
-  if(!columns.length){$('sqlp-results').textContent='Query completed. No tabular result returned.';$('sqlp-download').disabled=true;return;}
-  if(!rows.length){$('sqlp-results').innerHTML='<p class="muted">Query completed with 0 rows.</p>';$('sqlp-download').disabled=true;return;}
-  const visible=rows.slice(0,500);
-  $('sqlp-results').innerHTML='<div class="table-wrap"><table><thead><tr>'+columns.map(c=>'<th>'+escapeHTML(c)+'</th>').join('')+'</tr></thead><tbody>'+visible.map(row=>'<tr>'+row.map(v=>'<td>'+escapeHTML(valueText(v))+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>'+(rows.length>visible.length?'<p class="muted">Showing first 500 rows. Download CSV for the full result.</p>':'');
-  $('sqlp-download').disabled=false;
+function fillSelect(id,cols,preferred){
+ const el=$(id),old=el.value;el.innerHTML='';
+ cols.forEach((c,i)=>{const o=document.createElement('option');o.value=c.name;o.textContent=c.name;el.appendChild(o);});
+ if(cols.some(c=>c.name===old))el.value=old;else if(cols.some(c=>c.name===preferred))el.value=preferred;else if(cols.length)el.selectedIndex=Math.min(id==='sqlp-x'?0:1,cols.length-1);
 }
-async function runQuery(){
-  const sql=$('sqlp-query').value.trim();
-  if(!sql){setStatus('Enter a SQL query first.',true);return;}
-  $('sqlp-run').disabled=true;$('sqlp-download').disabled=true;setStatus('Running query…');
-  const start=performance.now();
-  try{
-    const result=await state.conn.query(sql);
-    const columns=result.schema.fields.map(f=>f.name);
-    const rows=result.toArray().map(row=>columns.map(c=>row[c]));
-    renderResult(columns,rows);
-    setStatus('Query completed in '+((performance.now()-start)/1000).toFixed(3)+'s.');
-    await refreshTables();
-  }catch(err){$('sqlp-result-meta').textContent='Query failed';$('sqlp-results').textContent='';setStatus(err.message||String(err),true);}
-  finally{$('sqlp-run').disabled=!state.engineReady;}
+function renderRows(cols,rows){
+ state.columns=cols;state.rows=rows;
+ $('sqlp-result-meta').textContent=rows.length.toLocaleString()+' rows · '+cols.length+' columns';
+ if(!cols.length){$('sqlp-results').textContent='Query ran without tabular output.';return;}
+ if(!rows.length){$('sqlp-results').textContent='Query returned zero rows.';return;}
+ const visible=rows.slice(0,200);
+ $('sqlp-results').innerHTML='<div class="table-wrap"><table><thead><tr>'+cols.map(c=>'<th>'+esc(c.name)+'</th>').join('')+'</tr></thead><tbody>'+visible.map(row=>'<tr>'+row.map(v=>'<td>'+esc(toText(v))+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>'+(rows.length>visible.length?'<p class="muted">Showing 200 rows; exports include the complete result.</p>':'');
+ fillSelect('sqlp-x',cols,cols[0]?.name);
+ const numeric=cols.find(c=>rows.some(r=>typeof r[c.index]==='number'||typeof r[c.index]==='bigint'||(r[c.index]!=null&&r[c.index]!==''&&!Number.isNaN(Number(r[c.index])))));
+ fillSelect('sqlp-y',cols,numeric?.name||cols[1]?.name);
+ $('sqlp-render').disabled=!cols.length;$('sqlp-download').disabled=!cols.length;
 }
-function downloadResults(){
-  const csvCell=v=>{const s=valueText(v);return /[",\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
-  const csv=[state.columns,...state.resultRows.map(row=>row.map(valueText))].map(row=>row.map(csvCell).join(',')).join('\r\n');
-  const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
-  const a=document.createElement('a');a.href=url;a.download='sql-playground-results.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+function csvDownload(){
+ const cell=v=>{const s=toText(v);return /[",\\r\\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
+ const text=[state.columns.map(c=>c.name),...state.rows.map(r=>r.map(toText))].map(r=>r.map(cell).join(',')).join('\\r\\n');
+ downloadBlob(new Blob([text],{type:'text/csv;charset=utf-8'}),'query-results.csv');
+}
+function downloadBlob(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1200);}
+async function run(){
+ const sql=$('sqlp-query').value.trim();if(!sql){status('Enter a query first.',true);return;}
+ $('sqlp-run').disabled=true;status('Running query…');const t=performance.now();
+ try{
+  const result=await state.conn.query(sql),cols=result.schema.fields.map((f,i)=>({name:f.name,index:i}));
+  const rows=result.toArray().map(row=>cols.map(c=>row[c.name]));
+  renderRows(cols,rows);status('Query completed in '+((performance.now()-t)/1000).toFixed(2)+'s.');await refreshTables();drawChart();
+ }catch(e){status(e.message||String(e),true);}
+ finally{$('sqlp-run').disabled=!state.ready;}
+}
+function chartData(){
+ const x=$('sqlp-x').value,y=$('sqlp-y').value,xi=state.columns.findIndex(c=>c.name===x),yi=state.columns.findIndex(c=>c.name===y);
+ return {x,y,xi,yi,items:state.rows.filter(r=>r[xi]!=null).map(r=>({name:toText(r[xi]),value:Number(r[yi])})).filter(d=>Number.isFinite(d.value)).slice(0,500)};
+}
+function drawChart(){
+ if(!state.chart||!state.columns.length)return;
+ const d=chartData();if(d.xi<0||d.yi<0||!d.items.length)return;
+ const type=$('sqlp-chart-type').value,pal=palettes[$('sqlp-palette').value]||palettes.mono;
+ const title=$('sqlp-title').value.trim(),xt=$('sqlp-x-title').value.trim(),yt=$('sqlp-y-title').value.trim();
+ const base={backgroundColor:'#ffffff',animation:false,color:pal,title:{text:title,left:'center',top:8,textStyle:{fontSize:16,fontWeight:600,color:'#111'}},tooltip:{trigger:type==='pie'?'item':'axis'},grid:{left:65,right:25,top:65,bottom:65,containLabel:false},toolbox:{show:false}};
+ let series=[];
+ if(type==='pie'){
+  base.legend={bottom:5,type:'scroll',textStyle:{color:'#444'}};
+  series=[{type:'pie',radius:['0%','65%'],center:['50%','54%'],data:d.items.map(v=>({name:v.name,value:v.value})),label:{color:'#111'},itemStyle:{borderColor:'#fff',borderWidth:2}}];
+ }else{
+  base.xAxis={type:'category',name:xt,nameLocation:'middle',nameGap:42,data:d.items.map(v=>v.name),axisLabel:{color:'#444',rotate:d.items.length>7?25:0,hideOverlap:true},nameTextStyle:{color:'#333',padding:[12,0,0,0]},axisLine:{lineStyle:{color:'#aaa'}},axisTick:{show:false}};
+  base.yAxis={type:'value',name:yt,nameLocation:'middle',nameGap:48,nameTextStyle:{color:'#333'},axisLabel:{color:'#555'},splitLine:{lineStyle:{color:'#eee'}},axisLine:{show:false}};
+  const s={name:d.y,type:type==='scatter'?'scatter':type,data:d.items.map(v=>v.value),symbolSize:9};
+  if(type==='bar')s.itemStyle={borderRadius:[3,3,0,0]};
+  if(type==='line'){s.smooth:false;s.symbolSize:7;s.lineStyle={width:3};s.areaStyle={opacity:.07};}
+  series=[s];
+ }
+ base.series=series;state.chart.setOption(base,true);$('sqlp-png').disabled=false;$('sqlp-ppt').disabled=false;
+}
+async function exportPpt(){
+ try{
+  drawChart();
+  const png=state.chart.getDataURL({type:'png',pixelRatio:2,backgroundColor:'#ffffff'});
+  const pptx=new pptxgen();pptx.layout='LAYOUT_WIDE';pptx.author='The Analyst';pptx.subject='SQL Playground chart';pptx.title=$('sqlp-title').value||'SQL chart';
+  const slide=pptx.addSlide();slide.background={color:'FFFFFF'};
+  slide.addText($('sqlp-title').value||'SQL chart',{x:.55,y:.25,w:12.2,h:.45,fontFace:'Aptos Display',fontSize:22,bold:true,color:'111111',margin:0});
+  slide.addImage({data:png,x:.55,y:.9,w:12.2,h:5.8,sizingCrop:false});
+  slide.addText('Created with theanalyst.in SQL Playground',{x:.55,y:7.05,w:12,h:.2,fontSize:8,color:'777777',margin:0});
+  await pptx.writeFile({fileName:'sql-playground-chart.pptx'});
+  status('PowerPoint exported.');
+ }catch(e){status('PowerPoint export failed: '+(e.message||String(e)),true);}
 }
 async function importFiles(){
-  const files=[...$('sqlp-files').files].filter(f=>/\.csv$/i.test(f.name));
-  if(!files.length){$('sqlp-import-status').textContent='Choose at least one CSV file.';return;}
-  $('sqlp-import').disabled=true;$('sqlp-import-status').textContent='Importing '+files.length+' file(s)…';
-  const used=new Set();
-  try{
-    for(const file of files){
-      let name=tableFromFilename(file.name),base=name,n=2;
-      while(used.has(name)){name=base+'_'+n++;}used.add(name);
-      const virtualFile='import_'+Date.now()+'_'+name+'.csv';
-      const buffer=new TextEncoder().encode(await csvText(file));
-      await state.db.registerFileBuffer(virtualFile,buffer);
-      try{await state.conn.query('CREATE OR REPLACE TABLE '+quoteIdent(name)+' AS SELECT * FROM read_csv_auto('+JSON.stringify(virtualFile)+', header=true)');}
-      finally{await state.db.dropFile(virtualFile);}
-    }
-    await refreshTables();
-    $('sqlp-import-status').textContent='Imported '+files.length+' CSV file(s). Use the table names listed below in your SQL.';
-    if(files.length===1){const name=tableFromFilename(files[0].name);$('sqlp-query').value='SELECT * FROM '+quoteIdent(name)+' LIMIT 100;';}
-  }catch(err){$('sqlp-import-status').textContent='Import failed: '+(err.message||String(err));}
-  finally{$('sqlp-import').disabled=!state.engineReady;}
+ const files=Array.from($('sqlp-files').files||[]).filter(f=>/\\.csv$/i.test(f.name));
+ if(!files.length){$('sqlp-import-status').textContent='Choose at least one CSV file.';return;}
+ $('sqlp-import').disabled=true;$('sqlp-import-status').textContent='Importing '+files.length+' file(s)…';
+ try{
+  for(const f of files){const name=tableName(f.name),csv=await f.text();await addTable(name,csv,'upload_'+Date.now());}
+  await refreshTables();$('sqlp-import-status').textContent='Imported '+files.length+' CSV file(s). Choose a table above or query it by name.';
+  if(files.length===1)$('sqlp-query').value='SELECT * FROM '+quote(tableName(files[0].name))+' LIMIT 100;';
+ }catch(e){$('sqlp-import-status').textContent='Import failed: '+(e.message||String(e));}
+ finally{$('sqlp-import').disabled=!state.ready;}
 }
 async function init(){
-  try{
-    const bundles=duckdb.getJsDelivrBundles();
-    const bundle=await duckdb.selectBundle(bundles);
-    const workerUrl=URL.createObjectURL(new Blob(['importScripts("'+bundle.mainWorker+'");'],{type:'text/javascript'}));
-    const worker=new Worker(workerUrl);
-    const logger=new duckdb.ConsoleLogger();
-    state.db=new duckdb.AsyncDuckDB(logger,worker);
-    await state.db.instantiate(bundle.mainModule,bundle.pthreadWorker);
-    URL.revokeObjectURL(workerUrl);
-    state.conn=await state.db.connect();
-    $('sqlp-engine').textContent='DuckDB ready';$('sqlp-engine').classList.add('ready');
-    for(const key of Object.keys(samples)) await installSample(key);
-    state.engineReady=true;state.samplesLoaded=true;
-    $('sqlp-run').disabled=false;$('sqlp-import').disabled=false;
-    await refreshTables();
-    setStatus('Ready. Run the starter query or select another sample table.');
-  }catch(err){
-    $('sqlp-engine').textContent='Engine failed to start';
-    setStatus('Could not start DuckDB-Wasm. Check your connection or content blockers, then reload. '+(err.message||String(err)),true);
-  }
+ try{
+  const bundle=await duckdb.selectBundle(duckdb.getJsDelivrBundles());
+  const workerUrl=URL.createObjectURL(new Blob(['importScripts("'+bundle.mainWorker+'");'],{type:'text/javascript'}));
+  const worker=new Worker(workerUrl);state.db=new duckdb.AsyncDuckDB(new duckdb.ConsoleLogger(),worker);
+  await state.db.instantiate(bundle.mainModule,bundle.pthreadWorker);URL.revokeObjectURL(workerUrl);
+  state.conn=await state.db.connect();
+  for(const key of Object.keys(samples))await addTable(samples[key].name,samples[key].csv,'sample');
+  state.ready=true;$('sqlp-engine').textContent='DuckDB ready';$('sqlp-run').disabled=false;$('sqlp-import').disabled=false;
+  await refreshTables();state.chart=echarts.init($('sqlp-chart'),null,{renderer:'canvas'});window.addEventListener('resize',()=>state.chart&&state.chart.resize());
+  await run();
+ }catch(e){$('sqlp-engine').textContent='Engine unavailable';status('Could not start DuckDB. Reload the page or check browser/CDN restrictions. '+(e.message||String(e)),true);}
 }
-$('sqlp-run').addEventListener('click',runQuery);
-$('sqlp-download').addEventListener('click',downloadResults);
+$('sqlp-run').addEventListener('click',run);
+$('sqlp-query').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run();}});
+$('sqlp-example').addEventListener('click',()=>{$('sqlp-query').value=examples.employees;});
+$('sqlp-clear').addEventListener('click',()=>{$('sqlp-query').value='';$('sqlp-query').focus();});
+$('sqlp-download').addEventListener('click',csvDownload);
 $('sqlp-import').addEventListener('click',importFiles);
-$('sqlp-format').addEventListener('click',()=>{$('sqlp-query').value='';$('sqlp-query').focus();});
-$('sqlp-example').addEventListener('click',()=>{$('sqlp-query').value=examples.group;});
-$('sqlp-query').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runQuery();}});
-root.querySelectorAll('[data-sample]').forEach(b=>b.addEventListener('click',async()=>{
-  if(!state.engineReady)return;
-  try{await installSample(b.dataset.sample);await refreshTables();setStatus('Sample table "'+samples[b.dataset.sample].name+'" is ready.');$('sqlp-query').value=b.dataset.sample==='sales'?examples.group:'SELECT * FROM '+quoteIdent(samples[b.dataset.sample].name)+' LIMIT 100;';}
-  catch(err){setStatus(err.message||String(err),true);}
-}));
-root.querySelectorAll('[data-query]').forEach(b=>b.addEventListener('click',()=>{$('sqlp-query').value=examples[b.dataset.query];}));
-$('sqlp-reset').addEventListener('click',async()=>{
-  if(!state.engineReady)return;
-  try{for(const key of Object.keys(samples))await installSample(key);await refreshTables();$('sqlp-query').value=examples.group;setStatus('Sample tables reset. Imported tables and changes to sample tables may have been replaced only for the named sample tables.');}
-  catch(err){setStatus(err.message||String(err),true);}
-});
+$('sqlp-render').addEventListener('click',drawChart);
+['sqlp-chart-type','sqlp-palette','sqlp-x','sqlp-y','sqlp-title','sqlp-x-title','sqlp-y-title'].forEach(id=>$(id).addEventListener('change',drawChart));
+['sqlp-title','sqlp-x-title','sqlp-y-title'].forEach(id=>$(id).addEventListener('input',()=>{if(state.chart)drawChart();}));
+$('sqlp-png').addEventListener('click',()=>{if(state.chart)downloadBlob(dataURItoBlob(state.chart.getDataURL({type:'png',pixelRatio:3,backgroundColor:'#ffffff'})),'sql-playground-chart.png');});
+$('sqlp-ppt').addEventListener('click',exportPpt);
+$('sqlp-chart-type').addEventListener('change',()=>{const pie=$('sqlp-chart-type').value==='pie';$('sqlp-x-title').disabled=pie;$('sqlp-y-title').disabled=pie;});
+function dataURItoBlob(uri){const parts=uri.split(','),mime=parts[0].match(/:(.*?);/)[1],raw=atob(parts[1]),arr=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)arr[i]=raw.charCodeAt(i);return new Blob([arr],{type:mime});}
+document.querySelectorAll('#sqlp [data-sample]').forEach(b=>b.addEventListener('click',()=>{$('sqlp-query').value=examples[b.dataset.sample];run();}));
 init();
 })();
 </script>
