@@ -17,7 +17,7 @@ try {
         const engine = document.querySelector('#sqlp-engine')?.textContent || '';
         const status = document.querySelector('#sqlp-status');
         const note = document.querySelector('#sqlp-chart-note')?.textContent || '';
-        return (engine.includes('DuckDB ready') && document.querySelector('#sqlp-chart canvas')) ||
+        return (engine.includes('DuckDB ready') && document.querySelector('#sqlp-chart canvas') && document.querySelector('#sqlp-chart')?.dataset.chartType) ||
           status?.classList.contains('error') || /Chart (error|renderer)|could not load/i.test(note);
       }, null, { timeout: 60000 });
     } catch (error) {
