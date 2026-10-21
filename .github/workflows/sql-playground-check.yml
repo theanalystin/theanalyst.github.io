@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Build static Jekyll site
         uses: actions/jekyll-build-pages@v1
@@ -24,9 +24,9 @@ jobs:
           source: ./
           destination: ./_site
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: '20'
+          node-version: '24'
 
       - name: Check embedded JavaScript syntax
         run: |
@@ -60,7 +60,7 @@ jobs:
 
       - name: Upload 375px and 1280px screenshots
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: sql-playground-responsive-screenshots
           path: /tmp/sql-playground-screenshots/*.png
