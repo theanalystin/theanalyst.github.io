@@ -39,7 +39,7 @@ try {
         await tile.waitFor({ state: 'visible' });
         if (await tile.isDisabled()) throw new Error(`Chart ${chartType} was disabled for sample query ${queryKey}`);
         await tile.click();
-        await page.waitForTimeout(200);
+        await page.waitForFunction(type => document.querySelector('#sqlp-chart')?.dataset.chartType === type, chartType, { timeout: 15000 });
         const note = await page.locator('#sqlp-chart-note').textContent();
         if ((note || '').includes('Chart error')) throw new Error(`${chartType} failed: ${note}`);
         const hasCanvas = await page.locator('#sqlp-chart canvas').count();
