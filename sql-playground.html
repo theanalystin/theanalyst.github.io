@@ -15,7 +15,7 @@ permalink: /sql-playground/
 #sqlp textarea,#sqlp #sqlp-query{background:#fff!important;color:#111!important;border:1px solid #d2d2d2}
 #sqlp .cm-editor{border:1px solid #d2d2d2;border-radius:7px;font-size:.88rem;min-height:215px;color:#111;background:#fff}
 #sqlp .cm-scroller{min-height:215px}#sqlp .cm-gutters{background:#f7f7f7;border-right:1px solid #dedede;color:#686868}#sqlp .cm-focused{outline:2px solid #111;outline-offset:2px}
-#sqlp .workspace{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(360px,.95fr);gap:.8rem;align-items:start}#sqlp .left-workflow{min-width:0}#sqlp .left-workflow>.panel{margin-bottom:.8rem}#sqlp textarea{width:100%;min-height:215px;resize:vertical;padding:.85rem;border:1px solid #333;border-radius:7px;background:#111;color:#f5f5f5;font:.88rem/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2}#sqlp .status{font-size:.82rem;color:var(--muted);min-height:1.2em;margin:.65rem 0 0;overflow-wrap:anywhere}#sqlp .status.error{color:#a32020}#sqlp .drop{border:1px dashed #cfcfcf;border-radius:7px;padding:.7rem}#sqlp .table-wrap{overflow:auto;max-height:360px;border:1px solid var(--line);border-radius:7px}#sqlp table{border-collapse:collapse;width:100%;font-size:.8rem;white-space:nowrap}#sqlp th,#sqlp td{padding:.5rem .65rem;text-align:left;border-bottom:1px solid #e9e9e9}#sqlp th{background:#f7f7f7;position:sticky;top:0}#sqlp .result-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:.8rem}#sqlp .chart-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}#sqlp .chart-controls .wide{grid-column:span 2}#sqlp #sqlp-chart{width:100%;height:390px;min-height:280px}#sqlp .hint{font-size:.78rem;color:var(--muted);margin:.5rem 0 0}#sqlp .table-list{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 0}#sqlp .table-list button{font-size:.78rem;padding:.35rem .5rem}#sqlp .file-note{font-size:.76rem;color:var(--muted);margin:.45rem 0 0}
+#sqlp .workspace{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(360px,.95fr);gap:.8rem;align-items:start}#sqlp .left-workflow{min-width:0}#sqlp .left-workflow>.panel{margin-bottom:.8rem}#sqlp textarea{width:100%;min-height:215px;resize:vertical;padding:.85rem;border:1px solid #333;border-radius:7px;background:#111;color:#f5f5f5;font:.88rem/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2}#sqlp .status{font-size:.82rem;color:var(--muted);min-height:1.2em;margin:.65rem 0 0;overflow-wrap:anywhere}#sqlp .status.error{color:#a32020}#sqlp .drop{border:1px dashed #cfcfcf;border-radius:7px;padding:.7rem}#sqlp .table-wrap{overflow:auto;max-height:360px;border:1px solid var(--line);border-radius:7px}#sqlp table{border-collapse:collapse;width:100%;font-size:.8rem;white-space:nowrap}#sqlp th,#sqlp td{padding:.5rem .65rem;text-align:left;border-bottom:1px solid #e9e9e9}#sqlp th{background:#f7f7f7;position:sticky;top:0}#sqlp .result-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:.8rem}#sqlp .chart-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}#sqlp .chart-controls .wide{grid-column:span 2}#sqlp #sqlp-chart{width:100%;height:390px;min-height:280px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}#sqlp .hint{font-size:.78rem;color:var(--muted);margin:.5rem 0 0}#sqlp .table-list{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 0}#sqlp .table-list button{font-size:.78rem;padding:.35rem .5rem}#sqlp .file-note{font-size:.76rem;color:var(--muted);margin:.45rem 0 0}
 #sqlp .palette-groups{display:grid;gap:.55rem}#sqlp .palette-heading{display:block;font-size:.72rem;font-weight:700;margin:.1rem 0 .3rem}
 #sqlp .palette-row{display:flex;gap:.35rem;flex-wrap:wrap}#sqlp .palette-choice{display:flex;flex-direction:column;align-items:flex-start;gap:.25rem;font-size:.7rem;min-width:95px}
 #sqlp .palette-choice[aria-pressed=true]{outline:2px solid #111;outline-offset:1px}#sqlp .swatches{display:flex;gap:2px;width:100%}#sqlp .swatches i{display:block;height:9px;flex:1;border-radius:1px}
@@ -30,7 +30,6 @@ permalink: /sql-playground/
 #sqlp .chart-tile{min-width:0;min-height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.35rem;padding:.55rem .25rem;text-align:center;border:1px solid var(--line);border-radius:8px;background:#fff}
 #sqlp .chart-tile .chart-glyph{display:flex;align-items:center;justify-content:center;width:28px;height:28px;color:currentColor}#sqlp .chart-tile .chart-glyph svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}#sqlp .chart-tile .chart-label{font-size:.73rem;line-height:1.2}
 #sqlp .chart-tile[aria-pressed=true]{background:#111;color:#fff;border-color:#111}#sqlp .chart-tile:disabled{opacity:.35;cursor:not-allowed;background:#f7f7f7}
-#sqlp .chart-more{margin:.15rem 0 .8rem}#sqlp .chart-more[hidden]{display:none}#sqlp .chart-more-toggle{font-size:.8rem}
 #sqlp .chart-note{font-size:.76rem;color:var(--muted);min-height:1.1em;margin:.4rem 0 .7rem}
 #sqlp .sqlp-footer{border-top:1px solid var(--line);margin-top:1.5rem;padding-top:1rem;color:var(--muted);font-size:.78rem}
 @media(max-width:780px){#sqlp .chart-picker{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -118,17 +117,6 @@ permalink: /sql-playground/
         <button type="button" class="chart-tile" data-chart="histogram" aria-pressed="false" title="SQL automatically bins a numeric column"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 20V14h4v6M8 20V7h4v13M13 20V3h4v17M18 20V11h3v9"/></svg></span><span class="chart-label">Histogram</span></button>
         <button type="button" class="chart-tile" data-chart="boxplot" aria-pressed="false" title="SQL computes min, quartiles, median and max"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12h4M17 12h4M5 7v10M19 7v10M7 6h10v12H7zM12 6v12"/></svg></span><span class="chart-label">Boxplot</span></button>
       </div>
-      <div class="chart-more"><button id="sqlp-more-toggle" type="button" class="chart-more-toggle" aria-expanded="false">More chart types +</button>
-        <div id="sqlp-more-charts" class="chart-picker" hidden>
-          <button type="button" class="chart-tile" data-chart="combo" aria-pressed="false" title="Needs one category and two numeric series"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 20V12h4v8M10 20V7h4v13"/><polyline points="3,10 9,5 14,8 21,3"/></svg></span><span class="chart-label">Combo (dual axis)</span></button>
-          <button type="button" class="chart-tile" data-chart="waterfall" aria-pressed="false" title="Cumulative increases and decreases"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 20V13h4v7M7 13h4V8h4M15 8h3V4M15 4h3M18 4v3"/></svg></span><span class="chart-label">Waterfall</span></button>
-          <button type="button" class="chart-tile" data-chart="treemap" aria-pressed="false" title="Hierarchical proportions"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/><path d="M13 3v18M3 11h10M13 14h8M17 3v11"/></svg></span><span class="chart-label">Treemap</span></button>
-          <button type="button" class="chart-tile" data-chart="funnel" aria-pressed="false" title="Descending stage values"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 4h18l-3 5H6zM6 9h12l-3 5H9zM9 14h6l-3 6z"/></svg></span><span class="chart-label">Funnel</span></button>
-          <button type="button" class="chart-tile" data-chart="radar" aria-pressed="false" title="Needs multiple numeric metrics"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="12,3 20,9 17,19 7,19 4,9"/><path d="M12 3v9l8-3M12 12l5 7M12 12l-5 7M12 12L4 9"/></svg></span><span class="chart-label">Radar</span></button>
-          <button type="button" class="chart-tile" data-chart="gauge" aria-pressed="false" title="Aggregate numeric value as a gauge"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 18a8 8 0 0 1 16 0M12 14l5-5M7 18h10"/></svg></span><span class="chart-label">Gauge</span></button>
-          <button type="button" class="chart-tile" data-chart="sankey" aria-pressed="false" title="Needs two categories and a numeric flow value"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 6h5c5 0 4 6 9 6h4M3 18h5c5 0 4-6 9-6h4M18 9l3 3-3 3"/></svg></span><span class="chart-label">Sankey</span></button>
-        </div>
-      </div>
       <p id="sqlp-chart-note" class="chart-note" aria-live="polite">Run a query to see which chart types fit your columns.</p>
       <div class="chart-controls">
         <div class="wide"><label>Palette</label><div class="palette-groups">
@@ -156,9 +144,11 @@ permalink: /sql-playground/
         <div class="wide"><label for="sqlp-footnote">Source footnote</label><input id="sqlp-footnote" type="text" value="Source: Sample employee dataset"></div>
         <div class="chart-toggles wide"><label><input type="checkbox" id="sqlp-labels"> Data labels</label><label><input type="checkbox" id="sqlp-gridlines" checked> Gridlines</label><label><input type="checkbox" id="sqlp-legend" checked> Legend</label><label for="sqlp-sort">Sort</label><select id="sqlp-sort"><option value="none">None</option><option value="asc">Ascending</option><option value="desc">Descending</option></select></div>
       </div>
-      <div class="row" style="margin-top:.75rem"><button id="sqlp-render" class="primary" type="button" disabled>Update chart</button><button id="sqlp-png" type="button" disabled>Export PNG 2×</button><button id="sqlp-svg" type="button" disabled>Export SVG</button><button id="sqlp-ppt" type="button" disabled>Export PowerPoint</button><button id="sqlp-copy-link" type="button">Copy link</button></div>
       <p class="hint">Pick columns from your query output. For a useful chart, return one category column and one numeric column.</p>
+      <div class="panel-head" style="margin-top:1rem"><h2>Live chart preview</h2><span class="muted">Updates in your browser before export</span></div>
       <div id="sqlp-chart" role="img" aria-label="Chart preview"></div>
+      <div class="row" style="margin-top:.75rem"><button id="sqlp-render" class="primary" type="button" disabled>Update chart</button><button id="sqlp-png" type="button" disabled>Export PNG 2×</button><button id="sqlp-svg" type="button" disabled>Export SVG</button><button id="sqlp-ppt" type="button" disabled>Export PowerPoint</button><button id="sqlp-copy-link" type="button">Copy link</button></div>
+      <p class="hint">Review the live preview above, then export it. PNG, SVG and PowerPoint are generated from the browser-rendered chart.</p>
       <p class="hint">Palette names are visual references, not official brand colors or endorsements.</p>
     </section>
   </div>
@@ -477,37 +467,32 @@ async function loadSample(key){
  await addTable(s.name,s.csv,'sample');state.loadedSamples.add(key);await refreshTables();await profileTable(s.name);$('sqlp-engine').textContent='DuckDB ready';
 }
 async function initEcharts(){
- if(state.chart)return state.chart;if(state.chartPromise)return state.chartPromise;
- $('sqlp-chart-note').textContent='Loading chart modules…';
+ if(state.chart)return state.chart;
+ if(state.chartPromise)return state.chartPromise;
+ $('sqlp-chart-note').textContent='Loading chart renderer…';
  state.chartPromise=(async()=>{
-  echarts=await import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/core.js/+esm');
-  const chartModules=await Promise.all([
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/bar/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/line/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/pie/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/scatter/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/heatmap/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/boxplot/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/treemap/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/funnel/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/radar/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/gauge/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/sankey/install.js/+esm')
-  ]);
-  const componentModules=await Promise.all([
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/title/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/tooltip/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/grid/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/legend/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/visualMap/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/radar/install.js/+esm')
-  ]);
-  const rendererModules=await Promise.all([
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/renderer/installCanvasRenderer.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/renderer/installSVGRenderer.js/+esm')
-  ]);
-  echarts.use([...chartModules,...componentModules,...rendererModules].map(module=>module.install));
-  state.chart=echarts.init($('sqlp-chart'),null,{renderer:'canvas'});return state.chart;
+  if(!window.echarts){
+   await new Promise((resolve,reject)=>{
+    const existing=document.querySelector('script[data-sqlp-echarts]');
+    if(existing){
+     if(window.echarts){resolve();return;}
+     existing.addEventListener('load',resolve,{once:true});
+     existing.addEventListener('error',()=>reject(new Error('The chart library could not be loaded from the CDN.')),{once:true});
+     return;
+    }
+    const script=document.createElement('script');
+    script.src='https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js';
+    script.dataset.sqlpEcharts='true';
+    script.onload=resolve;
+    script.onerror=()=>reject(new Error('The chart library could not be loaded from the CDN.'));
+    document.head.appendChild(script);
+   });
+  }
+  echarts=window.echarts;
+  if(!echarts||typeof echarts.init!=='function')throw new Error('The chart library loaded but did not initialize.');
+  state.chart=echarts.init($('sqlp-chart'),null,{renderer:'canvas'});
+  state.chart.on('finished',()=>{$('sqlp-chart').setAttribute('aria-label','Chart preview ready');});
+  return state.chart;
  })();
  try{return await state.chartPromise;}catch(e){state.chartPromise=null;throw e;}
 }
@@ -558,7 +543,6 @@ document.querySelectorAll('#sqlp [data-chart]').forEach(b=>{b.dataset.baseTitle=
 $('sqlp-copy-link').addEventListener('click',copyConfigLink);
 $('sqlp-svg').addEventListener('click',()=>{if(!state.chart||!state.chartOption)return;let svgChart;const host=document.createElement('div');host.style.cssText='position:fixed;left:-10000px;top:0;width:1200px;height:675px';document.body.appendChild(host);try{svgChart=echarts.init(host,null,{renderer:'svg',width:1200,height:675});svgChart.setOption(state.chartOption,true);const svg=svgChart.getDataURL({type:'svg',backgroundColor:'#fff'});const body=svg.includes(',')?decodeURIComponent(svg.slice(svg.indexOf(',')+1)):svg;downloadBlob(new Blob([body],{type:'image/svg+xml;charset=utf-8'}),'sql-playground-chart.svg');}catch(e){status('SVG export failed: '+(e.message||String(e)),true);}finally{if(svgChart)svgChart.dispose();host.remove();}});
 new ResizeObserver(()=>state.chart&&state.chart.resize()).observe($('sqlp-chart'));
-$('sqlp-more-toggle').addEventListener('click',()=>{const el=$('sqlp-more-charts'),open=el.hidden;el.hidden=!open;$('sqlp-more-toggle').setAttribute('aria-expanded',String(open));$('sqlp-more-toggle').textContent=open?'Fewer chart types −':'More chart types +';});
 ['sqlp-title','sqlp-subtitle','sqlp-x-title','sqlp-y-title','sqlp-footnote'].forEach(id=>$(id).addEventListener('input',()=>{if(state.chart)drawChart();persistConfig();}));
 $('sqlp-png').addEventListener('click',()=>{if(state.chart)downloadBlob(dataURItoBlob(state.chart.getDataURL({type:'png',pixelRatio:2,backgroundColor:'#ffffff'})),'sql-playground-chart.png');});
 $('sqlp-ppt').addEventListener('click',exportPpt);
