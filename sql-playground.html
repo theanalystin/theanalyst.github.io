@@ -13,6 +13,10 @@ permalink: /sql-playground/
 #sqlp button,#sqlp select,#sqlp input,#sqlp textarea{font:inherit}#sqlp button{border:1px solid #cfcfcf;border-radius:7px;background:#fff;color:#111;padding:.58rem .78rem;cursor:pointer;transition:background .15s}#sqlp button:hover{background:#f2f2f2}#sqlp button.primary{background:#111;color:#fff;border-color:#111}#sqlp button.primary:hover{background:#333}#sqlp button:disabled{opacity:.45;cursor:not-allowed}#sqlp select,#sqlp input[type=text],#sqlp input[type=file]{width:100%;border:1px solid #d2d2d2;border-radius:7px;padding:.55rem;background:#fff;color:#111;min-width:0}#sqlp label{display:block;font-size:.78rem;font-weight:650;margin:.55rem 0 .3rem}
 #sqlp .row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}#sqlp .row>*{min-width:0}#sqlp .dataset{flex:1;text-align:left;min-width:140px}#sqlp .dataset strong{display:block}#sqlp .dataset small{display:block;color:var(--muted);font-size:.75rem;margin-top:.2rem}
 #sqlp .workspace{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);gap:.8rem;align-items:start}#sqlp textarea{width:100%;min-height:215px;resize:vertical;padding:.85rem;border:1px solid #333;border-radius:7px;background:#111;color:#f5f5f5;font:.88rem/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2}#sqlp .status{font-size:.82rem;color:var(--muted);min-height:1.2em;margin:.65rem 0 0;overflow-wrap:anywhere}#sqlp .status.error{color:#a32020}#sqlp .drop{border:1px dashed #cfcfcf;border-radius:7px;padding:.7rem}#sqlp .table-wrap{overflow:auto;max-height:360px;border:1px solid var(--line);border-radius:7px}#sqlp table{border-collapse:collapse;width:100%;font-size:.8rem;white-space:nowrap}#sqlp th,#sqlp td{padding:.5rem .65rem;text-align:left;border-bottom:1px solid #e9e9e9}#sqlp th{background:#f7f7f7;position:sticky;top:0}#sqlp .result-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:.8rem}#sqlp .chart-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}#sqlp .chart-controls .wide{grid-column:span 2}#sqlp #sqlp-chart{width:100%;height:390px;min-height:280px}#sqlp .hint{font-size:.78rem;color:var(--muted);margin:.5rem 0 0}#sqlp .table-list{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 0}#sqlp .table-list button{font-size:.78rem;padding:.35rem .5rem}#sqlp .file-note{font-size:.76rem;color:var(--muted);margin:.45rem 0 0}
+#sqlp .palette-groups{display:grid;gap:.55rem}#sqlp .palette-heading{display:block;font-size:.72rem;font-weight:700;margin:.1rem 0 .3rem}
+#sqlp .palette-row{display:flex;gap:.35rem;flex-wrap:wrap}#sqlp .palette-choice{display:flex;flex-direction:column;align-items:flex-start;gap:.25rem;font-size:.7rem;min-width:95px}
+#sqlp .palette-choice[aria-pressed=true]{outline:2px solid #111;outline-offset:1px}#sqlp .swatches{display:flex;gap:2px;width:100%}#sqlp .swatches i{display:block;height:9px;flex:1;border-radius:1px}
+#sqlp .chart-toggles{display:flex;flex-wrap:wrap;align-items:center;gap:.8rem}#sqlp .chart-toggles label{display:flex;align-items:center;gap:.35rem;margin:.2rem 0;font-weight:500}#sqlp .chart-toggles input[type=checkbox]{width:16px;height:16px;accent-color:#111}
 #sqlp .profile-card{margin-top:1rem;border-top:1px solid var(--line);padding-top:1rem}
 #sqlp .profile-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin:.7rem 0 1rem}
 #sqlp .profile-metric{border:1px solid var(--line);padding:.65rem;border-radius:7px}
@@ -121,16 +125,32 @@ permalink: /sql-playground/
       </div>
       <p id="sqlp-chart-note" class="chart-note" aria-live="polite">Run a query to see which chart types fit your columns.</p>
       <div class="chart-controls">
-        <div><label for="sqlp-palette">Style palette</label><select id="sqlp-palette"><option value="mono">Monochrome</option><option value="mck">McKinsey-inspired blue</option><option value="bcg">BCG-inspired green</option><option value="bain">Bain-inspired red</option><option value="big4">Big Four mix</option><option value="pwc">PwC-inspired warm</option></select></div>
+        <div class="wide"><label>Palette</label><div class="palette-groups">
+<div><span class="palette-heading">Default</span><button type="button" class="palette-choice" data-palette="mono" aria-pressed="true"><span class="swatches"><i style="background:#111"></i><i style="background:#555"></i><i style="background:#888"></i><i style="background:#d2d2d2"></i></span><span>Mono</span></button></div>
+<div><span class="palette-heading">Big4-inspired</span><div class="palette-row">
+<button type="button" class="palette-choice" data-palette="deloitte" aria-pressed="false" title="Green, black and grey"><span class="swatches"><i style="background:#86bc25"></i><i style="background:#111"></i><i style="background:#888"></i></span><span>Deloitte-style</span></button>
+<button type="button" class="palette-choice" data-palette="pwc" aria-pressed="false" title="Orange, coral and charcoal"><span class="swatches"><i style="background:#d94f00"></i><i style="background:#db536a"></i><i style="background:#333"></i></span><span>PwC-style</span></button>
+<button type="button" class="palette-choice" data-palette="ey" aria-pressed="false" title="Yellow, grey and black"><span class="swatches"><i style="background:#ffe600"></i><i style="background:#888"></i><i style="background:#111"></i></span><span>EY-style</span></button>
+<button type="button" class="palette-choice" data-palette="kpmg" aria-pressed="false" title="Blue, purple and grey"><span class="swatches"><i style="background:#00338d"></i><i style="background:#483698"></i><i style="background:#888"></i></span><span>KPMG-style</span></button>
+</div></div>
+<div><span class="palette-heading">MBB-inspired</span><div class="palette-row">
+<button type="button" class="palette-choice" data-palette="mck" aria-pressed="false"><span class="swatches"><i style="background:#003f6b"></i><i style="background:#0077a8"></i><i style="background:#4b9fca"></i></span><span>McKinsey-style</span></button>
+<button type="button" class="palette-choice" data-palette="bcg" aria-pressed="false"><span class="swatches"><i style="background:#006b54"></i><i style="background:#888"></i><i style="background:#111"></i></span><span>BCG-style</span></button>
+<button type="button" class="palette-choice" data-palette="bain" aria-pressed="false"><span class="swatches"><i style="background:#a30b22"></i><i style="background:#888"></i><i style="background:#111"></i></span><span>Bain-style</span></button>
+</div></div></div><input id="sqlp-palette" type="hidden" value="mono"></div>
         <div><label for="sqlp-x">Category / X axis</label><select id="sqlp-x"><option value="">Run a query first</option></select></div>
         <div><label for="sqlp-y">Value / Y axis</label><select id="sqlp-y"><option value="">Run a query first</option></select></div>
-        <div><label for="sqlp-group">Group / second category</label><select id="sqlp-group"><option value="">Optional</option></select></div>
+        <div><label for="sqlp-y-multi">Additional Y series (multi-select)</label><select id="sqlp-y-multi" multiple size="3" aria-describedby="sqlp-y-help"></select><p id="sqlp-y-help" class="hint">Use Ctrl/Cmd to select multiple measures.</p></div>
+        <div><label for="sqlp-group">Series / Group</label><select id="sqlp-group"><option value="">Optional</option></select></div>
         <div><label for="sqlp-extra">Second numeric series</label><select id="sqlp-extra"><option value="">Optional</option></select></div>
-        <div class="wide"><label for="sqlp-title">Chart title</label><input id="sqlp-title" type="text" value="Average salary by department"></div>
+        <div class="wide"><label for="sqlp-title">Action title</label><input id="sqlp-title" type="text" value="Average salary differs by department"></div>
+        <div class="wide"><label for="sqlp-subtitle">Subtitle</label><input id="sqlp-subtitle" type="text" value=""></div>
         <div><label for="sqlp-x-title">X-axis title</label><input id="sqlp-x-title" type="text" value="Department"></div>
         <div><label for="sqlp-y-title">Y-axis title</label><input id="sqlp-y-title" type="text" value="Average salary"></div>
+        <div class="wide"><label for="sqlp-footnote">Source footnote</label><input id="sqlp-footnote" type="text" value="Source: The Analyst SQL Playground sample data"></div>
+        <div class="chart-toggles wide"><label><input type="checkbox" id="sqlp-labels"> Data labels</label><label><input type="checkbox" id="sqlp-gridlines" checked> Gridlines</label><label><input type="checkbox" id="sqlp-legend" checked> Legend</label><label for="sqlp-sort">Sort</label><select id="sqlp-sort"><option value="none">None</option><option value="asc">Ascending</option><option value="desc">Descending</option></select></div>
       </div>
-      <div class="row" style="margin-top:.75rem"><button id="sqlp-render" class="primary" type="button" disabled>Update chart</button><button id="sqlp-png" type="button" disabled>Export PNG</button><button id="sqlp-ppt" type="button" disabled>Export PowerPoint</button></div>
+      <div class="row" style="margin-top:.75rem"><button id="sqlp-render" class="primary" type="button" disabled>Update chart</button><button id="sqlp-png" type="button" disabled>Export PNG 2×</button><button id="sqlp-svg" type="button" disabled>Export SVG</button><button id="sqlp-ppt" type="button" disabled>Export PowerPoint</button><button id="sqlp-copy-link" type="button">Copy link</button></div>
       <p class="hint">Pick columns from your query output. For a useful chart, return one category column and one numeric column.</p>
       <div id="sqlp-chart" role="img" aria-label="Chart preview"></div>
       <p class="hint">Palette names are visual references, not official brand colors or endorsements.</p>
@@ -145,12 +165,14 @@ let duckdb, echarts, pptxgen;
 const $ = id => document.getElementById(id);
 const state = {db:null,conn:null,ready:false,columns:[],rows:[],chart:null,loadedSamples:new Set(),queryText:''};
 const palettes = {
-  mono:['#111111','#555555','#888888','#b0b0b0','#d2d2d2'],
-  mck:['#003f6b','#0077a8','#4b9fca','#82bfdc','#b7d9e9'],
-  bcg:['#006b54','#269879','#6bb99c','#9bcdb9','#c7e2d6'],
-  bain:['#a30b22','#cf3145','#e46b78','#ed9da6','#f4c9ce'],
-  big4:['#111111','#0076a8','#4c8c2b','#d4a72c','#b13b2e'],
-  pwc:['#d94f00','#f28c28','#ffbd69','#7a3f25','#333333']
+ mono:['#111111','#555555','#888888','#b0b0b0','#d2d2d2'],
+ deloitte:['#86bc25','#111111','#666666','#b8b8b8','#e1e1e1'],
+ pwc:['#d94f00','#eb8c00','#db536a','#7a3f25','#333333'],
+ ey:['#ffe600','#555555','#111111','#999999','#d9d9d9'],
+ kpmg:['#00338d','#483698','#00a3e0','#7f77b9','#9b9b9b'],
+ mck:['#003f6b','#0077a8','#4b9fca','#82bfdc','#b7d9e9'],
+ bcg:['#006b54','#269879','#6bb99c','#9bcdb9','#c7e2d6'],
+ bain:['#a30b22','#cf3145','#e46b78','#ed9da6','#f4c9ce']
 };
 const examples = {
  employees:'SELECT department, COUNT(*) AS headcount FROM employees GROUP BY department ORDER BY headcount DESC;',
