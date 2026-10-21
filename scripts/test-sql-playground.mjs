@@ -12,13 +12,21 @@ try {
     page.on('pageerror', error => errors.push(`pageerror at ${viewport.width}px: ${error.message}`));
     await page.goto(baseURL, { waitUntil: 'domcontentloaded', timeout: 45000 });
     await page.locator('[data-sample="employees"]').click();
-    await page.waitForFunction(() => {
-      const engine = document.querySelector('#sqlp-engine')?.textContent || '';
-      const status = document.querySelector('#sqlp-status');
-      const note = document.querySelector('#sqlp-chart-note')?.textContent || '';
-      return (engine.includes('DuckDB ready') && document.querySelector('#sqlp-chart canvas')) ||
-        status?.classList.contains('error') || note.includes('Chart modules could not load');
-    }, null, { timeout: 150000 });
+    try {
+      await page.waitForFunction(() => {
+        const engine = document.querySelector('#sqlp-engine')?.textContent || '';
+        const status = document.querySelector('#sqlp-status');
+        const note = document.querySelector('#sqlp-chart-note')?.textContent || '';
+        return (engine.includes('DuckDB ready') && document.querySelector('#sqlp-chart canvas')) ||
+          status?.classList.contains('error') || note.includes('Chart modules could not load');
+      }, null, { timeout: 60000 });
+    } catch (error) {
+      await page.screenshot({ path: `${output}/sql-playground-${viewport.width}-startup-timeout.png`, fullPage: true });
+      const engine = await page.locator('#sqlp-engine').textContent();
+      const status = await page.locator('#sqlp-status').textContent();
+      const note = await page.locator('#sqlp-chart-note').textContent();
+      throw new Error(`Startup timed out at ${viewport.width}px: engine=${engine}; status=${status}; chart=${note}; ${error.message}`);
+    }
     const startupStatus = await page.locator('#sqlp-status').textContent();
     const startupEngine = await page.locator('#sqlp-engine').textContent();
     const startupNote = await page.locator('#sqlp-chart-note').textContent();
@@ -67,16 +75,16 @@ try {
       await page.waitForFunction(() => (document.querySelector('#sqlp-status')?.textContent || '').startsWith('Query completed'), null, { timeout: 30000 });
       await page.locator('#sqlp [data-chart="boxplot"]').click();
       await page.waitForFunction(type => document.querySelector('#sqlp-chart')?.dataset.chartType === type, 'boxplot', { timeout: 15000 });
-      const csvDownload = page.waitForEvent('download');
+      const csvDownload = page.waitForEvent('download', { timeout: 20000 });
       await page.locator('#sqlp-download').click();
       if (!(await csvDownload).suggestedFilename().endsWith('.csv')) throw new Error('CSV export did not produce a CSV file');
-      const pngDownload = page.waitForEvent('download');
+      const pngDownload = page.waitForEvent('download', { timeout: 20000 });
       await page.locator('#sqlp-png').click();
       if (!(await pngDownload).suggestedFilename().endsWith('.png')) throw new Error('PNG export did not produce a PNG file');
-      const svgDownload = page.waitForEvent('download');
+      const svgDownload = page.waitForEvent('download', { timeout: 20000 });
       await page.locator('#sqlp-svg').click();
       if (!(await svgDownload).suggestedFilename().endsWith('.svg')) throw new Error('SVG export did not produce an SVG file');
-      const pptDownload = page.waitForEvent('download');
+      const pptDownload = page.waitForEvent('download', { timeout: 20000 });
       await page.locator('#sqlp-ppt').click();
       if (!(await pptDownload).suggestedFilename().endsWith('.pptx')) throw new Error('PowerPoint export did not produce a PPTX file');
     }
