@@ -14,8 +14,19 @@ try {
     await page.locator('[data-sample="employees"]').click();
     await page.waitForFunction(() => {
       const engine = document.querySelector('#sqlp-engine')?.textContent || '';
-      return engine.includes('DuckDB ready') && document.querySelector('#sqlp-chart canvas');
+      const status = document.querySelector('#sqlp-status');
+      const note = document.querySelector('#sqlp-chart-note')?.textContent || '';
+      return (engine.includes('DuckDB ready') && document.querySelector('#sqlp-chart canvas')) ||
+        status?.classList.contains('error') || note.includes('Chart modules could not load');
     }, null, { timeout: 150000 });
+    const startupStatus = await page.locator('#sqlp-status').textContent();
+    const startupEngine = await page.locator('#sqlp-engine').textContent();
+    const startupNote = await page.locator('#sqlp-chart-note').textContent();
+    if (!startupEngine.includes('DuckDB ready') || !(await page.locator('#sqlp-chart canvas').count())) {
+      await page.screenshot({ path: `${output}/sql-playground-${viewport.width}-startup-failure.png`, fullPage: true });
+      throw new Error(`Startup failed at ${viewport.width}px: engine=${startupEngine}; status=${startupStatus}; chart=${startupNote}`);
+    }
+    await page.screenshot({ path: `${output}/sql-playground-${viewport.width}-before-editor.png`, fullPage: true });
     await page.locator('#sqlp-query').focus();
     await page.locator('.cm-editor').waitFor({ state: 'visible', timeout: 30000 });
     const tileColumns = await page.locator('#sqlp-chart-picker').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length);
