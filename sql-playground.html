@@ -309,6 +309,10 @@ function restoreConfig(config){if(!config||typeof config!=='object')return;
 function readHashConfig(){try{const h=location.hash.match(/#config=([^&]+)/);if(h)return JSON.parse(decodeURIComponent(escape(atob(h[1]))));}catch(_){}return null;}
 function copyConfigLink(){const cfg=configState();const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(cfg))));const url=location.href.split('#')[0]+'#config='+encoded;history.replaceState(null,'',url);if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>status('Shareable configuration link copied. The link contains no data.'),()=>status('Link updated in address bar; copy it from there.'));else status('Link updated in address bar; copy it from there.');}
 function setPalette(name){$('sqlp-palette').value=name;document.querySelectorAll('#sqlp [data-palette]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.palette===name)));}
+function numericType(type){
+ const value=String(type||'');
+ return /\b(TINYINT|SMALLINT|INTEGER|INT|BIGINT|HUGEINT|UTINYINT|USMALLINT|UINTEGER|UBIGINT|FLOAT|DOUBLE|REAL|DECIMAL|NUMERIC|INT8|INT16|INT32|INT64|UINT8|UINT16|UINT32|UINT64|FLOAT32|FLOAT64)\b/i.test(value);
+}
 function renderRows(cols,rows){
  state.columns=cols;state.rows=rows;
  $('sqlp-result-meta').textContent=rows.length.toLocaleString()+' rows · '+cols.length+' columns';
@@ -316,7 +320,7 @@ function renderRows(cols,rows){
  if(!rows.length){$('sqlp-results').textContent='Query returned zero rows.';return;}
  const visible=rows.slice(0,200);
  $('sqlp-results').innerHTML='<div class="table-wrap"><table><thead><tr>'+cols.map(c=>'<th>'+esc(c.name)+'</th>').join('')+'</tr></thead><tbody>'+visible.map(row=>'<tr>'+row.map(v=>'<td>'+esc(toText(v))+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>'+(rows.length>visible.length?'<p class="muted">Showing 200 rows; exports include the complete result.</p>':'');
- cols.forEach(c=>{c.numeric=rows.some(r=>{const v=r[c.index];return typeof v==='number'||typeof v==='bigint'||(typeof v==='string'&&v.trim()!==''&&Number.isFinite(Number(v)));});});
+ cols.forEach(c=>{c.numeric=numericType(c.type)||rows.some(r=>{const v=r[c.index];return typeof v==='number'||typeof v==='bigint'||(typeof v==='string'&&v.trim()!==''&&Number.isFinite(Number(v)));});});
  const nums=cols.filter(c=>c.numeric),cats=cols.filter(c=>!c.numeric);
  fillSelect('sqlp-x',cols,cats[0]?.name||nums[0]?.name||cols[0]?.name);
  fillSelect('sqlp-y',cols,cats.length===0&&nums.length>1?nums[1].name:nums[0]?.name||cols[1]?.name);
@@ -372,7 +376,7 @@ async function run(){
  $('sqlp-run').disabled=true;status('Running query…');const t=performance.now();
  try{
   if(/\bemployees\b/i.test(sql)&&!state.loadedSamples.has('employees'))await loadSample('employees');
-  const result=await state.conn.query(sql),cols=result.schema.fields.map((f,i)=>({name:f.name,index:i}));
+  const result=await state.conn.query(sql),cols=result.schema.fields.map((f,i)=>({name:f.name,index:i,type:String(f.type??'')}));
   state.queryText=sql;
   const rows=result.toArray().map(row=>cols.map(c=>row[c.name]));
   renderRows(cols,rows);await refreshTables();
