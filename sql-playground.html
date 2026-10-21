@@ -488,27 +488,29 @@ async function loadSample(key){
 async function initEcharts(){
  if(state.chart)return state.chart;
  if(state.chartPromise)return state.chartPromise;
- $('sqlp-chart-note').textContent='Loading chart renderer…';
+ $('sqlp-chart-note').textContent='Loading chart modules…';
  state.chartPromise=(async()=>{
-  if(!window.echarts){
-   await new Promise((resolve,reject)=>{
-    const existing=document.querySelector('script[data-sqlp-echarts]');
-    if(existing){
-     if(window.echarts){resolve();return;}
-     existing.addEventListener('load',()=>window.echarts?resolve():reject(new Error('The chart library loaded without exposing ECharts.')),{once:true});
-     existing.addEventListener('error',()=>reject(new Error('The chart library could not be loaded from the CDN.')),{once:true});
-     return;
-    }
-    const script=document.createElement('script');
-    script.src='https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js';
-    script.dataset.sqlpEcharts='true';
-    script.onload=()=>window.echarts?resolve():reject(new Error('The chart library loaded without exposing ECharts.'));
-    script.onerror=()=>{script.remove();reject(new Error('The chart library could not be loaded from the CDN.'));};
-    document.head.appendChild(script);
-   });
-  }
-  echarts=window.echarts;
-  if(!echarts||typeof echarts.init!=='function')throw new Error('The chart library loaded but did not initialize.');
+  echarts=await import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/core.js/+esm');
+  const chartModules=await Promise.all([
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/bar/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/line/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/pie/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/scatter/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/heatmap/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/boxplot/install.js/+esm')
+  ]);
+  const componentModules=await Promise.all([
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/title/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/tooltip/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/grid/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/legend/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/visualMap/install.js/+esm')
+  ]);
+  const rendererModules=await Promise.all([
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/renderer/installCanvasRenderer.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/renderer/installSVGRenderer.js/+esm')
+  ]);
+  echarts.use([...chartModules,...componentModules,...rendererModules].map(module=>module.install));
   state.chart=echarts.init($('sqlp-chart'),null,{renderer:'canvas'});
   state.chart.on('finished',()=>{$('sqlp-chart').setAttribute('aria-label','Chart preview ready');});
   return state.chart;
