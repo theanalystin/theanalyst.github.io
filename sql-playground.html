@@ -488,29 +488,13 @@ async function loadSample(key){
 async function initEcharts(){
  if(state.chart)return state.chart;
  if(state.chartPromise)return state.chartPromise;
- $('sqlp-chart-note').textContent='Loading chart modules…';
+ $('sqlp-chart-note').textContent='Loading chart renderer…';
  state.chartPromise=(async()=>{
-  echarts=await import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/core.js/+esm');
-  const chartModules=await Promise.all([
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/bar/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/line/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/pie/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/scatter/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/heatmap/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/boxplot/install.js/+esm')
+  echarts=await Promise.race([
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/+esm'),
+   new Promise((_,reject)=>setTimeout(()=>reject(new Error('Timed out loading the chart renderer. Check your CDN/network access and retry.')),20000))
   ]);
-  const componentModules=await Promise.all([
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/title/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/tooltip/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/grid/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/legend/install.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/visualMap/install.js/+esm')
-  ]);
-  const rendererModules=await Promise.all([
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/renderer/installCanvasRenderer.js/+esm'),
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/renderer/installSVGRenderer.js/+esm')
-  ]);
-  echarts.use([...chartModules,...componentModules,...rendererModules].map(module=>module.install));
+  if(!echarts||typeof echarts.init!=='function')throw new Error('The chart bundle loaded but did not expose the ECharts initializer.');
   state.chart=echarts.init($('sqlp-chart'),null,{renderer:'canvas'});
   state.chart.on('finished',()=>{$('sqlp-chart').setAttribute('aria-label','Chart preview ready');});
   return state.chart;
