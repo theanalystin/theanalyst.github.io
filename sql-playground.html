@@ -184,8 +184,8 @@ const examples = {
  attritionShare:'SELECT department, SUM(attrition_flag) AS attrition, COUNT(*)-SUM(attrition_flag) AS retained FROM employees GROUP BY department ORDER BY attrition DESC;',
  salaryTenure:'SELECT tenure_years, salary, performance_rating FROM employees WHERE tenure_years IS NOT NULL;',
  performanceHeatmap:'SELECT department, grade, ROUND(AVG(performance_rating),2) AS avg_rating FROM employees GROUP BY department, grade ORDER BY department, grade;',
- salaryHistogram:'SELECT width_bucket(salary, (SELECT MIN(salary) FROM employees), (SELECT MAX(salary)+1 FROM employees), 10) AS salary_bin, COUNT(*) AS employees FROM employees GROUP BY salary_bin ORDER BY salary_bin;',
- salaryBoxplot:'SELECT grade, MIN(salary) AS min_salary, quantile_cont(salary,0.25) AS q1, quantile_cont(salary,0.5) AS median, quantile_cont(salary,0.75) AS q3, MAX(salary) AS max_salary FROM employees GROUP BY grade ORDER BY grade;',
+ salaryHistogram:'SELECT salary FROM employees;',
+ salaryBoxplot:'SELECT grade, salary FROM employees ORDER BY grade;',
  genderPayGap:'SELECT grade, gender, ROUND(AVG(salary),0) AS avg_salary FROM employees GROUP BY grade, gender ORDER BY grade, gender;',
  attritionLocation:'SELECT location, ROUND(100.0*SUM(attrition_flag)/COUNT(*),1) AS attrition_pct FROM employees GROUP BY location ORDER BY attrition_pct DESC;',
  sales:'SELECT region, ROUND(SUM(revenue),0) AS revenue FROM sales GROUP BY region ORDER BY revenue DESC;',
@@ -218,7 +218,7 @@ function employeeCSV(){
   const title=titles[dept][(i+gi)%titles[dept].length];
   out.push([i,'"'+first[(i*11)%first.length]+' '+last[(i*13)%last.length]+'"',dept,'"'+title+'"',grade,locations[(i*3+i%7)%locations.length],genders[(i*5+Math.floor(i/8))%genders.length],year+'-'+month+'-'+day,tenure,salary,bonus,rating,attrition,manager||''].join(','));
  }
- return out.join('\\n');
+ return out.join('\n');
 }
 const samples={
  employees:{name:'employees',csv:null},
@@ -267,8 +267,8 @@ function renderRows(cols,rows){
  updateProfile(cols,rows);
  cols.forEach(c=>{c.numeric=rows.some(r=>{const v=r[c.index];return typeof v==='number'||typeof v==='bigint'||(typeof v==='string'&&v.trim()!==''&&Number.isFinite(Number(v));});});
  const nums=cols.filter(c=>c.numeric),cats=cols.filter(c=>!c.numeric);
- fillSelect('sqlp-x',cols,cats[0]?.name||cols[0]?.name);
- fillSelect('sqlp-y',cols,nums[0]?.name||cols[1]?.name);
+ fillSelect('sqlp-x',cols,cats[0]?.name||nums[0]?.name||cols[0]?.name);
+ fillSelect('sqlp-y',cols,cats.length===0&&nums.length>1?nums[1].name:nums[0]?.name||cols[1]?.name);
  fillSelect('sqlp-y-multi',nums,nums[1]?.name,true);
  fillSelect('sqlp-group',cats,cats[1]?.name,true);
  fillSelect('sqlp-extra',nums,nums[1]?.name,true);
