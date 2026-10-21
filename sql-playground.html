@@ -36,7 +36,7 @@ permalink: /sql-playground/
 #sqlp .chart-note{font-size:.76rem;color:var(--muted);min-height:1.1em;margin:.4rem 0 .7rem}
 #sqlp .sqlp-footer{border-top:1px solid var(--line);margin-top:1.5rem;padding-top:1rem;color:var(--muted);font-size:.78rem}
 @media(max-width:780px){#sqlp .chart-picker{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:780px){#sqlp .steps{grid-template-columns:1fr}#sqlp .workspace{grid-template-columns:1fr}#sqlp .chart-controls{grid-template-columns:repeat(2,minmax(0,1fr))}#sqlp #sqlp-chart{height:320px}}@media(max-width:420px){#sqlp .profile-metrics{grid-template-columns:1fr}#sqlp .query-tools{grid-template-columns:1fr}#sqlp .panel{padding:.75rem}#sqlp .chart-controls{grid-template-columns:1fr}#sqlp .chart-controls .wide{grid-column:auto}#sqlp .steps{gap:.35rem}#sqlp .step{padding:.6rem}}
+@media(max-width:980px){#sqlp .steps{grid-template-columns:1fr}#sqlp .workspace{grid-template-columns:1fr}#sqlp .chart-controls{grid-template-columns:repeat(2,minmax(0,1fr))}#sqlp #sqlp-chart{height:320px}}@media(max-width:420px){#sqlp .profile-metrics{grid-template-columns:1fr}#sqlp .query-tools{grid-template-columns:1fr}#sqlp .panel{padding:.75rem}#sqlp .chart-controls{grid-template-columns:1fr}#sqlp .chart-controls .wide{grid-column:auto}#sqlp .steps{gap:.35rem}#sqlp .step{padding:.6rem}}
 </style>
 
 <div id="sqlp">
@@ -147,14 +147,13 @@ permalink: /sql-playground/
       
       <div class="row" style="margin-top:.75rem"><button id="sqlp-render" class="primary" type="button" disabled>Update chart</button></div>
       <p class="hint">The preview updates as you change chart type, columns, palette, or formatting.</p>
+      <section class="panel chart-preview-panel" style="margin-top:1rem">
+        <div class="panel-head"><h2>Live chart preview</h2><span class="pill">ECharts</span></div>
+        <div id="sqlp-chart" role="img" aria-label="Chart preview"></div>
+        <p class="hint">Palette names are visual references, not official brand colors or endorsements.</p>
+      </section>
       </section>
     </div>
-    <section class="panel chart-preview-panel">
-      <div class="panel-head"><h2>Live chart preview</h2><span class="pill">ECharts</span></div>
-      <div id="sqlp-chart" role="img" aria-label="Chart preview"></div>
-      <p class="hint">Palette names are visual references, not official brand colors or endorsements.</p>
-    
-    </section>
   </div>
   <section class="panel export-panel" id="sqlp-export-panel">
     <div class="panel-head"><h2>04 — Export & share</h2><span class="pill">Generated in your browser</span></div>
