@@ -452,7 +452,7 @@ async function drawChart(){
    const ys=selectedYNames().filter(n=>n!==d.y&&state.columns.some(c=>c.name===n&&c.numeric));
    series=[{type:ct,name:d.y,data:chartItems.map(v=>v.value),symbolSize:7,label:labelOpt,...(type==='area'?{areaStyle:{opacity:.2}}:{})},...ys.map(name=>{const idx=state.columns.findIndex(c=>c.name===name);return {type:ct,name,data:state.rows.map(r=>Number(r[idx])),symbolSize:7,label:labelOpt,...(type==='area'?{areaStyle:{opacity:.2}}:{})};})];}
   base.series=series;state.chart.setOption(base,true);$('sqlp-chart').dataset.chartType=type;state.chartOption=base;$('sqlp-png').disabled=false;$('sqlp-svg').disabled=false;$('sqlp-ppt').disabled=false;persistConfig();
- }catch(e){$('sqlp-chart-note').textContent='Chart error: '+(e.message||String(e));}
+ }catch(e){$('sqlp-chart-note').textContent='Chart error: '+(e.stack||e.message||String(e));}
 }
 async function exportPpt(){
  try{
@@ -491,7 +491,7 @@ async function initEcharts(){
  $('sqlp-chart-note').textContent='Loading chart renderer…';
  state.chartPromise=(async()=>{
   echarts=await Promise.race([
-   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.esm.min.js'),
    new Promise((_,reject)=>setTimeout(()=>reject(new Error('Timed out loading the chart renderer. Check your CDN/network access and retry.')),20000))
   ]);
   if(!echarts||typeof echarts.init!=='function')throw new Error('The chart bundle loaded but did not expose the ECharts initializer.');
