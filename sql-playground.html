@@ -12,7 +12,7 @@ permalink: /sql-playground/
 #sqlp .panel{border:1px solid var(--line);border-radius:10px;padding:1rem;min-width:0;margin-bottom:.8rem;background:var(--paper)}#sqlp .panel-head{display:flex;align-items:center;justify-content:space-between;gap:.7rem;flex-wrap:wrap;margin-bottom:.65rem}#sqlp .panel-head h2{margin:0}#sqlp .pill{border:1px solid var(--line);border-radius:999px;padding:.25rem .55rem;font-size:.74rem;color:var(--muted)}
 #sqlp button,#sqlp select,#sqlp input,#sqlp textarea{font:inherit}#sqlp button{border:1px solid #cfcfcf;border-radius:7px;background:#fff;color:#111;padding:.58rem .78rem;cursor:pointer;transition:background .15s}#sqlp button:hover{background:#f2f2f2}#sqlp button:focus-visible,#sqlp select:focus-visible,#sqlp input:focus-visible,#sqlp textarea:focus-visible{outline:2px solid #111;outline-offset:2px}#sqlp button.primary{background:#111;color:#fff;border-color:#111}#sqlp button.primary:hover{background:#333}#sqlp button:disabled{opacity:.45;cursor:not-allowed}#sqlp select,#sqlp input[type=text],#sqlp input[type=file]{width:100%;border:1px solid #d2d2d2;border-radius:7px;padding:.55rem;background:#fff;color:#111;min-width:0}#sqlp label{display:block;font-size:.78rem;font-weight:650;margin:.55rem 0 .3rem}
 #sqlp .row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}#sqlp .row>*{min-width:0}#sqlp .dataset{flex:1;text-align:left;min-width:140px}#sqlp .dataset strong{display:block}#sqlp .dataset small{display:block;color:var(--muted);font-size:.75rem;margin-top:.2rem}
-#sqlp textarea{background:#fff;color:#111;border:1px solid #d2d2d2}
+#sqlp textarea,#sqlp #sqlp-query{background:#fff!important;color:#111!important;border:1px solid #d2d2d2}
 #sqlp .cm-editor{border:1px solid #d2d2d2;border-radius:7px;font-size:.88rem;min-height:215px;color:#111;background:#fff}
 #sqlp .cm-scroller{min-height:215px}#sqlp .cm-gutters{background:#f7f7f7;border-right:1px solid #dedede;color:#686868}#sqlp .cm-focused{outline:2px solid #111;outline-offset:2px}
 #sqlp .workspace{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(360px,.95fr);gap:.8rem;align-items:start}#sqlp .left-workflow{min-width:0}#sqlp .left-workflow>.panel{margin-bottom:.8rem}#sqlp textarea{width:100%;min-height:215px;resize:vertical;padding:.85rem;border:1px solid #333;border-radius:7px;background:#111;color:#f5f5f5;font:.88rem/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2}#sqlp .status{font-size:.82rem;color:var(--muted);min-height:1.2em;margin:.65rem 0 0;overflow-wrap:anywhere}#sqlp .status.error{color:#a32020}#sqlp .drop{border:1px dashed #cfcfcf;border-radius:7px;padding:.7rem}#sqlp .table-wrap{overflow:auto;max-height:360px;border:1px solid var(--line);border-radius:7px}#sqlp table{border-collapse:collapse;width:100%;font-size:.8rem;white-space:nowrap}#sqlp th,#sqlp td{padding:.5rem .65rem;text-align:left;border-bottom:1px solid #e9e9e9}#sqlp th{background:#f7f7f7;position:sticky;top:0}#sqlp .result-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:.8rem}#sqlp .chart-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}#sqlp .chart-controls .wide{grid-column:span 2}#sqlp #sqlp-chart{width:100%;height:390px;min-height:280px}#sqlp .hint{font-size:.78rem;color:var(--muted);margin:.5rem 0 0}#sqlp .table-list{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 0}#sqlp .table-list button{font-size:.78rem;padding:.35rem .5rem}#sqlp .file-note{font-size:.76rem;color:var(--muted);margin:.45rem 0 0}
@@ -303,6 +303,8 @@ function renderRows(cols,rows){
  const nums=cols.filter(c=>c.numeric),cats=cols.filter(c=>!c.numeric);
  fillSelect('sqlp-x',cols,cats[0]?.name||nums[0]?.name||cols[0]?.name);
  fillSelect('sqlp-y',cols,cats.length===0&&nums.length>1?nums[1].name:nums[0]?.name||cols[1]?.name);
+ if(!$('sqlp-x-title').dataset.custom)$('sqlp-x-title').value=$('sqlp-x').value||'Category';
+ if(!$('sqlp-y-title').dataset.custom)$('sqlp-y-title').value=$('sqlp-y').value||'Value';
  fillSelect('sqlp-y-multi',nums,nums[1]?.name,true);
  fillSelect('sqlp-group',cats,cats[1]?.name,true);
  fillSelect('sqlp-extra',nums,nums[1]?.name,true);
@@ -504,7 +506,7 @@ async function initEcharts(){
    import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/renderer/installCanvasRenderer.js/+esm'),
    import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/renderer/installSVGRenderer.js/+esm')
   ]);
-  echarts.use([...chartModules,...componentModules,...rendererModules].map(module=>module.default));
+  echarts.use([...chartModules,...componentModules,...rendererModules].map(module=>module.install));
   state.chart=echarts.init($('sqlp-chart'),null,{renderer:'canvas'});return state.chart;
  })();
  try{return await state.chartPromise;}catch(e){state.chartPromise=null;throw e;}
@@ -550,6 +552,7 @@ const dropzone=$('sqlp-dropzone');
 dropzone.addEventListener('drop',e=>{const files=Array.from(e.dataTransfer?.files||[]).filter(f=>f.name.toLowerCase().endsWith('.csv'));if(!files.length){$('sqlp-import-status').textContent='Drop CSV files to import them.';return;}const dt=new DataTransfer();files.forEach(f=>dt.items.add(f));$('sqlp-files').files=dt.files;importFiles();});
 $('sqlp-render').addEventListener('click',drawChart);
 ['sqlp-x','sqlp-y','sqlp-y-multi','sqlp-group','sqlp-extra','sqlp-title','sqlp-subtitle','sqlp-x-title','sqlp-y-title','sqlp-footnote','sqlp-sort','sqlp-labels','sqlp-gridlines','sqlp-legend'].forEach(id=>$(id).addEventListener('change',()=>{updateChartAvailability();drawChart();persistConfig();}));
+['sqlp-x-title','sqlp-y-title'].forEach(id=>$(id).addEventListener('input',()=>{$(id).dataset.custom='true';}));
 document.querySelectorAll('#sqlp [data-palette]').forEach(b=>b.addEventListener('click',()=>{setPalette(b.dataset.palette);drawChart();persistConfig();}));
 document.querySelectorAll('#sqlp [data-chart]').forEach(b=>{b.dataset.baseTitle=b.title;b.addEventListener('click',()=>{if(!b.disabled){selectChart(b.dataset.chart);updateChartAvailability();drawChart();persistConfig();}});});
 $('sqlp-copy-link').addEventListener('click',copyConfigLink);
