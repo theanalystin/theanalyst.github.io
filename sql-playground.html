@@ -103,9 +103,9 @@ const palettes = {
   pwc:['#d94f00','#f28c28','#ffbd69','#7a3f25','#333333']
 };
 const examples = {
-  employees:'SELECT department, ROUND(AVG(salary), 0) AS avg_salary, COUNT(*) AS employees\\nFROM employees\\nGROUP BY department\\nORDER BY avg_salary DESC;',
-  sales:'SELECT region, ROUND(SUM(revenue), 0) AS revenue\\nFROM sales\\nGROUP BY region\\nORDER BY revenue DESC;',
-  web:'SELECT channel, SUM(visitors) AS visitors, SUM(conversions) AS conversions\\nFROM web_events\\nGROUP BY channel\\nORDER BY visitors DESC;'
+  employees:'SELECT department, ROUND(AVG(salary), 0) AS avg_salary, COUNT(*) AS employees\nFROM employees\nGROUP BY department\nORDER BY avg_salary DESC;',
+  sales:'SELECT region, ROUND(SUM(revenue), 0) AS revenue\nFROM sales\nGROUP BY region\nORDER BY revenue DESC;',
+  web:'SELECT channel, SUM(visitors) AS visitors, SUM(conversions) AS conversions\nFROM web_events\nGROUP BY channel\nORDER BY visitors DESC;'
 };
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function quote(n){return '"'+String(n).replace(/"/g,'""')+'"';}
@@ -123,14 +123,14 @@ function employeeCSV(){
   const score=(2.5+((i*17)%26)/10).toFixed(1),type=i%9===0?'Contract':'Full-time';
   out.push([i,'"'+name+'"',dept,city,salary,year+'-'+month+'-'+day,score,type].join(','));
  }
- return out.join('\\n');
+ return out.join('\n');
 }
 const samples={
  employees:{name:'employees',csv:employeeCSV()},
- sales:{name:'sales',csv:'order_id,region,product,category,quantity,revenue\\n1001,South,Notebook,Stationery,4,480\\n1002,West,Desk,Office,1,8500\\n1003,North,Pen,Stationery,12,180\\n1004,East,Chair,Furniture,2,6400\\n1005,South,Desk,Office,1,8500\\n1006,West,Notebook,Stationery,8,960\\n1007,North,Chair,Furniture,1,3200\\n1008,East,Pen,Stationery,20,300\\n1009,South,Chair,Furniture,2,6400\\n1010,West,Desk,Office,1,8500\\n1011,North,Notebook,Stationery,6,720\\n1012,East,Desk,Office,1,8500'},
- web:{name:'web_events',csv:'event_id,channel,device,visitors,conversions\\n1,Organic,Mobile,1200,96\\n2,Paid Search,Desktop,850,71\\n3,Email,Mobile,640,58\\n4,Organic,Desktop,970,83\\n5,Paid Search,Mobile,1100,77\\n6,Email,Desktop,520,49\\n7,Organic,Mobile,1380,112\\n8,Paid Search,Desktop,900,74\\n9,Email,Mobile,710,67'}
+ sales:{name:'sales',csv:'order_id,region,product,category,quantity,revenue\n1001,South,Notebook,Stationery,4,480\n1002,West,Desk,Office,1,8500\n1003,North,Pen,Stationery,12,180\n1004,East,Chair,Furniture,2,6400\n1005,South,Desk,Office,1,8500\n1006,West,Notebook,Stationery,8,960\n1007,North,Chair,Furniture,1,3200\n1008,East,Pen,Stationery,20,300\n1009,South,Chair,Furniture,2,6400\n1010,West,Desk,Office,1,8500\n1011,North,Notebook,Stationery,6,720\n1012,East,Desk,Office,1,8500'},
+ web:{name:'web_events',csv:'event_id,channel,device,visitors,conversions\n1,Organic,Mobile,1200,96\n2,Paid Search,Desktop,850,71\n3,Email,Mobile,640,58\n4,Organic,Desktop,970,83\n5,Paid Search,Mobile,1100,77\n6,Email,Desktop,520,49\n7,Organic,Mobile,1380,112\n8,Paid Search,Desktop,900,74\n9,Email,Mobile,710,67'}
 };
-function tableName(filename){let n=filename.replace(/\\.csv$/i,'').toLowerCase().replace(/[^a-z0-9_]+/g,'_').replace(/^([^a-z_])/,'t_$1').replace(/_+/g,'_');return n||'imported_data';}
+function tableName(filename){let n=filename.replace(/\.csv$/i,'').toLowerCase().replace(/[^a-z0-9_]+/g,'_').replace(/^([^a-z_])/,'t_$1').replace(/_+/g,'_');return n||'imported_data';}
 async function addTable(name,csv,tag){
  const virtual=tag+'_'+name+'.csv';
  await state.db.registerFileBuffer(virtual,new TextEncoder().encode(csv));
@@ -161,8 +161,8 @@ function renderRows(cols,rows){
  $('sqlp-render').disabled=!cols.length;$('sqlp-download').disabled=!cols.length;
 }
 function csvDownload(){
- const cell=v=>{const s=toText(v);return /[",\\r\\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
- const text=[state.columns.map(c=>c.name),...state.rows.map(r=>r.map(toText))].map(r=>r.map(cell).join(',')).join('\\r\\n');
+ const cell=v=>{const s=toText(v);return /[",\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
+ const text=[state.columns.map(c=>c.name),...state.rows.map(r=>r.map(toText))].map(r=>r.map(cell).join(',')).join('\r\n');
  downloadBlob(new Blob([text],{type:'text/csv;charset=utf-8'}),'query-results.csv');
 }
 function downloadBlob(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1200);}
@@ -214,7 +214,7 @@ async function exportPpt(){
  }catch(e){status('PowerPoint export failed: '+(e.message||String(e)),true);}
 }
 async function importFiles(){
- const files=Array.from($('sqlp-files').files||[]).filter(f=>/\\.csv$/i.test(f.name));
+ const files=Array.from($('sqlp-files').files||[]).filter(f=>/\.csv$/i.test(f.name));
  if(!files.length){$('sqlp-import-status').textContent='Choose at least one CSV file.';return;}
  $('sqlp-import').disabled=true;$('sqlp-import-status').textContent='Importing '+files.length+' file(s)…';
  try{
