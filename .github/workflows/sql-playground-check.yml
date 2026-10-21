@@ -3,11 +3,13 @@ name: SQL Playground checks
 on:
   pull_request:
     branches: [main]
-  push:
-    branches: [feature/client-side-analytics-v2]
 
 permissions:
   contents: read
+
+concurrency:
+  group: sql-playground-checks-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-and-browser-test:
