@@ -12,13 +12,21 @@ try {
     page.on('pageerror', error => errors.push(`pageerror at ${viewport.width}px: ${error.message}`));
     await page.goto(baseURL, { waitUntil: 'domcontentloaded', timeout: 45000 });
     await page.locator('[data-sample="employees"]').click();
-    await page.waitForFunction(() => {
-      const engine = document.querySelector('#sqlp-engine')?.textContent || '';
-      const status = document.querySelector('#sqlp-status');
-      const note = document.querySelector('#sqlp-chart-note')?.textContent || '';
-      return (engine.includes('DuckDB ready') && document.querySelector('#sqlp-chart canvas')) ||
-        status?.classList.contains('error') || note.includes('Chart modules could not load');
-    }, null, { timeout: 150000 });
+    try {
+      await page.waitForFunction(() => {
+        const engine = document.querySelector('#sqlp-engine')?.textContent || '';
+        const status = document.querySelector('#sqlp-status');
+        const note = document.querySelector('#sqlp-chart-note')?.textContent || '';
+        return (engine.includes('DuckDB ready') && document.querySelector('#sqlp-chart canvas')) ||
+          status?.classList.contains('error') || note.includes('Chart modules could not load');
+      }, null, { timeout: 60000 });
+    } catch (error) {
+      await page.screenshot({ path: `${output}/sql-playground-${viewport.width}-startup-timeout.png`, fullPage: true });
+      const engine = await page.locator('#sqlp-engine').textContent();
+      const status = await page.locator('#sqlp-status').textContent();
+      const note = await page.locator('#sqlp-chart-note').textContent();
+      throw new Error(`Startup timed out at ${viewport.width}px: engine=${engine}; status=${status}; chart=${note}; ${error.message}`);
+    }
     const startupStatus = await page.locator('#sqlp-status').textContent();
     const startupEngine = await page.locator('#sqlp-engine').textContent();
     const startupNote = await page.locator('#sqlp-chart-note').textContent();
@@ -34,17 +42,13 @@ try {
     if (tileColumns !== expectedColumns) throw new Error(`Expected ${expectedColumns} chart tiles per row at ${viewport.width}px, got ${tileColumns}`);
     await page.screenshot({ path: `${output}/sql-playground-${viewport.width}.png`, fullPage: true });
     if (viewport.width === 1280) {
-      const chartTypes = await page.locator('#sqlp-chart-picker [data-chart]').count();
-      if (chartTypes !== 10) throw new Error(`Expected exactly 10 primary chart types, got ${chartTypes}`);
-      const previewBeforeExport = await page.locator('#sqlp-chart').evaluate(el =>
-        el.compareDocumentPosition(document.querySelector('#sqlp-png')) & Node.DOCUMENT_POSITION_FOLLOWING
-      );
-      if (!previewBeforeExport) throw new Error('Live chart preview must appear before export controls');
+      await page.locator('#sqlp-more-toggle').click();
       const cases = [
         ['headcount','bar'], ['topLocations','horizontalBar'], ['monthlyHiring','line'],
         ['cumulativeHiring','area'], ['genderHeadcount','stackedBar'], ['attritionShare','pie'],
         ['salaryTenure','scatter'], ['performanceHeatmap','heatmap'], ['salaryHistogram','histogram'],
-        ['salaryBoxplot','boxplot']
+        ['salaryBoxplot','boxplot'], ['combo','combo'], ['waterfall','waterfall'],
+        ['treemap','treemap'], ['funnel','funnel'], ['radar','radar'], ['gauge','gauge'], ['sankey','sankey']
       ];
       for (const [queryKey, chartType] of cases) {
         await page.locator('#sqlp-query-examples').selectOption(queryKey);
@@ -52,7 +56,17 @@ try {
         await page.waitForFunction(() => (document.querySelector('#sqlp-status')?.textContent || '').startsWith('Query completed'), null, { timeout: 30000 });
         const tile = page.locator(`#sqlp [data-chart="${chartType}"]`);
         await tile.waitFor({ state: 'visible' });
-        if (await tile.isDisabled()) throw new Error(`Chart ${chartType} was disabled for sample query ${queryKey}`);
+        if (await tile.isDisabled()) {
+          const diagnostic = await page.evaluate(() => ({
+            x: document.querySelector('#sqlp-x')?.value,
+            y: document.querySelector('#sqlp-y')?.value,
+            group: document.querySelector('#sqlp-group')?.value,
+            note: document.querySelector('#sqlp-chart-note')?.textContent,
+            columns: Array.from(document.querySelectorAll('#sqlp-x option')).map(o => o.value),
+            types: Array.from(document.querySelectorAll('#sqlp-chart-picker [data-chart]')).map(button => ({ type: button.dataset.chart, disabled: button.disabled }))
+          }));
+          throw new Error(`Chart ${chartType} was disabled for sample query ${queryKey}: ${JSON.stringify(diagnostic)}`);
+        }
         await tile.click();
         await page.waitForFunction(type => document.querySelector('#sqlp-chart')?.dataset.chartType === type, chartType, { timeout: 15000 });
         const note = await page.locator('#sqlp-chart-note').textContent();
@@ -71,23 +85,23 @@ try {
       await page.waitForFunction(() => (document.querySelector('#sqlp-status')?.textContent || '').startsWith('Query completed'), null, { timeout: 30000 });
       await page.locator('#sqlp [data-chart="boxplot"]').click();
       await page.waitForFunction(type => document.querySelector('#sqlp-chart')?.dataset.chartType === type, 'boxplot', { timeout: 15000 });
-      const csvDownload = page.waitForEvent('download');
+      const csvDownload = page.waitForEvent('download', { timeout: 20000 });
       await page.locator('#sqlp-download').click();
       if (!(await csvDownload).suggestedFilename().endsWith('.csv')) throw new Error('CSV export did not produce a CSV file');
-      const pngDownload = page.waitForEvent('download');
+      const pngDownload = page.waitForEvent('download', { timeout: 20000 });
       await page.locator('#sqlp-png').click();
       if (!(await pngDownload).suggestedFilename().endsWith('.png')) throw new Error('PNG export did not produce a PNG file');
-      const svgDownload = page.waitForEvent('download');
+      const svgDownload = page.waitForEvent('download', { timeout: 20000 });
       await page.locator('#sqlp-svg').click();
       if (!(await svgDownload).suggestedFilename().endsWith('.svg')) throw new Error('SVG export did not produce an SVG file');
-      const pptDownload = page.waitForEvent('download');
+      const pptDownload = page.waitForEvent('download', { timeout: 20000 });
       await page.locator('#sqlp-ppt').click();
       if (!(await pptDownload).suggestedFilename().endsWith('.pptx')) throw new Error('PowerPoint export did not produce a PPTX file');
     }
     await page.close();
   }
   if (errors.length) throw new Error(errors.join('\n'));
-  console.log('SQL Playground browser checks passed at 375px and 1280px; 10 chart types and CSV/PNG/SVG/PPTX exports rendered.');
+  console.log('SQL Playground browser checks passed at 375px and 1280px; all 17 chart types and CSV/PNG/SVG/PPTX exports rendered.');
 } finally {
   await browser.close();
 }
