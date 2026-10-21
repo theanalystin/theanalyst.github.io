@@ -12,13 +12,21 @@ try {
     page.on('pageerror', error => errors.push(`pageerror at ${viewport.width}px: ${error.message}`));
     await page.goto(baseURL, { waitUntil: 'domcontentloaded', timeout: 45000 });
     await page.locator('[data-sample="employees"]').click();
-    await page.waitForFunction(() => {
-      const engine = document.querySelector('#sqlp-engine')?.textContent || '';
-      const status = document.querySelector('#sqlp-status');
-      const note = document.querySelector('#sqlp-chart-note')?.textContent || '';
-      return (engine.includes('DuckDB ready') && document.querySelector('#sqlp-chart canvas')) ||
-        status?.classList.contains('error') || note.includes('Chart modules could not load');
-    }, null, { timeout: 150000 });
+    try {
+      await page.waitForFunction(() => {
+        const engine = document.querySelector('#sqlp-engine')?.textContent || '';
+        const status = document.querySelector('#sqlp-status');
+        const note = document.querySelector('#sqlp-chart-note')?.textContent || '';
+        return (engine.includes('DuckDB ready') && document.querySelector('#sqlp-chart canvas')) ||
+          status?.classList.contains('error') || note.includes('Chart modules could not load');
+      }, null, { timeout: 60000 });
+    } catch (error) {
+      await page.screenshot({ path: `${output}/sql-playground-${viewport.width}-startup-timeout.png`, fullPage: true });
+      const engine = await page.locator('#sqlp-engine').textContent();
+      const status = await page.locator('#sqlp-status').textContent();
+      const note = await page.locator('#sqlp-chart-note').textContent();
+      throw new Error(`Startup timed out at ${viewport.width}px: engine=${engine}; status=${status}; chart=${note}; ${error.message}`);
+    }
     const startupStatus = await page.locator('#sqlp-status').textContent();
     const startupEngine = await page.locator('#sqlp-engine').textContent();
     const startupNote = await page.locator('#sqlp-chart-note').textContent();
