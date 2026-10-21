@@ -6,21 +6,35 @@ permalink: /sql-playground/
 ---
 
 <style>
-#sqlp{--ink:#111;--muted:#686868;--line:#dedede;--paper:#fff;color:var(--ink);padding:1.2rem 0 3rem;font-size:14px}
+#sqlp{--ink:#111;--muted:#686868;--line:#dedede;--paper:#fff;color:var(--ink);padding:1.2rem 0 3rem;font-size:14px;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 #sqlp *{box-sizing:border-box}#sqlp h1{font-size:clamp(2rem,5vw,3rem);letter-spacing:-.055em;line-height:1.05;margin:.25rem 0 .6rem}#sqlp h2{font-size:1rem;letter-spacing:-.02em;margin:0 0 .8rem}#sqlp p{line-height:1.5}#sqlp .muted{color:var(--muted);font-size:.84rem}#sqlp .eyebrow{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:750;margin:0}
 #sqlp .intro{max-width:700px;color:var(--muted);margin:.5rem 0 1.2rem}#sqlp .steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.5rem;margin:1.3rem 0}#sqlp .step{border:1px solid var(--line);border-radius:8px;padding:.7rem .8rem;min-width:0}#sqlp .step b{display:block;font-size:.78rem;margin-bottom:.2rem}#sqlp .step span{color:var(--muted);font-size:.76rem}
 #sqlp .panel{border:1px solid var(--line);border-radius:10px;padding:1rem;min-width:0;margin-bottom:.8rem;background:var(--paper)}#sqlp .panel-head{display:flex;align-items:center;justify-content:space-between;gap:.7rem;flex-wrap:wrap;margin-bottom:.65rem}#sqlp .panel-head h2{margin:0}#sqlp .pill{border:1px solid var(--line);border-radius:999px;padding:.25rem .55rem;font-size:.74rem;color:var(--muted)}
-#sqlp button,#sqlp select,#sqlp input,#sqlp textarea{font:inherit}#sqlp button{border:1px solid #cfcfcf;border-radius:7px;background:#fff;color:#111;padding:.58rem .78rem;cursor:pointer;transition:background .15s}#sqlp button:hover{background:#f2f2f2}#sqlp button.primary{background:#111;color:#fff;border-color:#111}#sqlp button.primary:hover{background:#333}#sqlp button:disabled{opacity:.45;cursor:not-allowed}#sqlp select,#sqlp input[type=text],#sqlp input[type=file]{width:100%;border:1px solid #d2d2d2;border-radius:7px;padding:.55rem;background:#fff;color:#111;min-width:0}#sqlp label{display:block;font-size:.78rem;font-weight:650;margin:.55rem 0 .3rem}
+#sqlp button,#sqlp select,#sqlp input,#sqlp textarea{font:inherit}#sqlp button{border:1px solid #cfcfcf;border-radius:7px;background:#fff;color:#111;padding:.58rem .78rem;cursor:pointer;transition:background .15s}#sqlp button:hover{background:#f2f2f2}#sqlp button:focus-visible,#sqlp select:focus-visible,#sqlp input:focus-visible,#sqlp textarea:focus-visible{outline:2px solid #111;outline-offset:2px}#sqlp button.primary{background:#111;color:#fff;border-color:#111}#sqlp button.primary:hover{background:#333}#sqlp button:disabled{opacity:.45;cursor:not-allowed}#sqlp select,#sqlp input[type=text],#sqlp input[type=file]{width:100%;border:1px solid #d2d2d2;border-radius:7px;padding:.55rem;background:#fff;color:#111;min-width:0}#sqlp label{display:block;font-size:.78rem;font-weight:650;margin:.55rem 0 .3rem}
 #sqlp .row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}#sqlp .row>*{min-width:0}#sqlp .dataset{flex:1;text-align:left;min-width:140px}#sqlp .dataset strong{display:block}#sqlp .dataset small{display:block;color:var(--muted);font-size:.75rem;margin-top:.2rem}
-#sqlp .workspace{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);gap:.8rem;align-items:start}#sqlp textarea{width:100%;min-height:215px;resize:vertical;padding:.85rem;border:1px solid #333;border-radius:7px;background:#111;color:#f5f5f5;font:.88rem/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2}#sqlp .status{font-size:.82rem;color:var(--muted);min-height:1.2em;margin:.65rem 0 0;overflow-wrap:anywhere}#sqlp .status.error{color:#a32020}#sqlp .drop{border:1px dashed #cfcfcf;border-radius:7px;padding:.7rem}#sqlp .table-wrap{overflow:auto;max-height:360px;border:1px solid var(--line);border-radius:7px}#sqlp table{border-collapse:collapse;width:100%;font-size:.8rem;white-space:nowrap}#sqlp th,#sqlp td{padding:.5rem .65rem;text-align:left;border-bottom:1px solid #e9e9e9}#sqlp th{background:#f7f7f7;position:sticky;top:0}#sqlp .result-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:.8rem}#sqlp .chart-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}#sqlp .chart-controls .wide{grid-column:span 2}#sqlp #sqlp-chart{width:100%;height:390px;min-height:280px}#sqlp .hint{font-size:.78rem;color:var(--muted);margin:.5rem 0 0}#sqlp .table-list{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 0}#sqlp .table-list button{font-size:.78rem;padding:.35rem .5rem}#sqlp .file-note{font-size:.76rem;color:var(--muted);margin:.45rem 0 0}
+#sqlp textarea,#sqlp #sqlp-query{background:#fff!important;color:#111!important;border:1px solid #d2d2d2}
+#sqlp .cm-editor{border:1px solid #d2d2d2;border-radius:7px;font-size:.88rem;min-height:215px;color:#111;background:#fff}
+#sqlp .cm-scroller{min-height:215px}#sqlp .cm-gutters{background:#f7f7f7;border-right:1px solid #dedede;color:#686868}#sqlp .cm-focused{outline:2px solid #111;outline-offset:2px}
+#sqlp .workspace{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(360px,.95fr);gap:.8rem;align-items:start}#sqlp .left-workflow{min-width:0}#sqlp .left-workflow>.panel{margin-bottom:.8rem}#sqlp textarea{width:100%;min-height:215px;resize:vertical;padding:.85rem;border:1px solid #333;border-radius:7px;background:#111;color:#f5f5f5;font:.88rem/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2}#sqlp .status{font-size:.82rem;color:var(--muted);min-height:1.2em;margin:.65rem 0 0;overflow-wrap:anywhere}#sqlp .status.error{color:#a32020}#sqlp .drop{border:1px dashed #cfcfcf;border-radius:7px;padding:.7rem}#sqlp .table-wrap{overflow:auto;max-height:360px;border:1px solid var(--line);border-radius:7px}#sqlp table{border-collapse:collapse;width:100%;font-size:.8rem;white-space:nowrap}#sqlp th,#sqlp td{padding:.5rem .65rem;text-align:left;border-bottom:1px solid #e9e9e9}#sqlp th{background:#f7f7f7;position:sticky;top:0}#sqlp .result-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:.8rem}#sqlp .chart-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}#sqlp .chart-controls .wide{grid-column:span 2}#sqlp #sqlp-chart{width:100%;height:390px;min-height:280px}#sqlp .hint{font-size:.78rem;color:var(--muted);margin:.5rem 0 0}#sqlp .table-list{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 0}#sqlp .table-list button{font-size:.78rem;padding:.35rem .5rem}#sqlp .file-note{font-size:.76rem;color:var(--muted);margin:.45rem 0 0}
+#sqlp .palette-groups{display:grid;gap:.55rem}#sqlp .palette-heading{display:block;font-size:.72rem;font-weight:700;margin:.1rem 0 .3rem}
+#sqlp .palette-row{display:flex;gap:.35rem;flex-wrap:wrap}#sqlp .palette-choice{display:flex;flex-direction:column;align-items:flex-start;gap:.25rem;font-size:.7rem;min-width:95px}
+#sqlp .palette-choice[aria-pressed=true]{outline:2px solid #111;outline-offset:1px}#sqlp .swatches{display:flex;gap:2px;width:100%}#sqlp .swatches i{display:block;height:9px;flex:1;border-radius:1px}
+#sqlp .chart-toggles{display:flex;flex-wrap:wrap;align-items:center;gap:.8rem}#sqlp .chart-toggles label{display:flex;align-items:center;gap:.35rem;margin:.2rem 0;font-weight:500}#sqlp .chart-toggles input[type=checkbox]{width:16px;height:16px;accent-color:#111}
+#sqlp .profile-card{margin-top:1rem;border-top:1px solid var(--line);padding-top:1rem}
+#sqlp .profile-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin:.7rem 0 1rem}
+#sqlp .profile-metric{border:1px solid var(--line);padding:.65rem;border-radius:7px}
+#sqlp .profile-metric strong{display:block;font-size:1.15rem}#sqlp .profile-metric span{font-size:.75rem;color:var(--muted)}
+#sqlp .profile-card h3{font-size:.85rem;margin:.6rem 0}
+#sqlp .query-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}
 #sqlp .chart-picker{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.45rem;margin:.6rem 0 .9rem}
 #sqlp .chart-tile{min-width:0;min-height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.35rem;padding:.55rem .25rem;text-align:center;border:1px solid var(--line);border-radius:8px;background:#fff}
-#sqlp .chart-tile .chart-glyph{font-size:1.25rem;line-height:1.1;font-weight:700}#sqlp .chart-tile .chart-label{font-size:.73rem;line-height:1.2}
+#sqlp .chart-tile .chart-glyph{display:flex;align-items:center;justify-content:center;width:28px;height:28px;color:currentColor}#sqlp .chart-tile .chart-glyph svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}#sqlp .chart-tile .chart-label{font-size:.73rem;line-height:1.2}
 #sqlp .chart-tile[aria-pressed=true]{background:#111;color:#fff;border-color:#111}#sqlp .chart-tile:disabled{opacity:.35;cursor:not-allowed;background:#f7f7f7}
 #sqlp .chart-more{margin:.15rem 0 .8rem}#sqlp .chart-more[hidden]{display:none}#sqlp .chart-more-toggle{font-size:.8rem}
 #sqlp .chart-note{font-size:.76rem;color:var(--muted);min-height:1.1em;margin:.4rem 0 .7rem}
+#sqlp .sqlp-footer{border-top:1px solid var(--line);margin-top:1.5rem;padding-top:1rem;color:var(--muted);font-size:.78rem}
 @media(max-width:780px){#sqlp .chart-picker{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:780px){#sqlp .steps{grid-template-columns:repeat(2,minmax(0,1fr))}#sqlp .workspace{grid-template-columns:1fr}#sqlp .chart-controls{grid-template-columns:repeat(2,minmax(0,1fr))}#sqlp #sqlp-chart{height:320px}}@media(max-width:420px){#sqlp .panel{padding:.75rem}#sqlp .chart-controls{grid-template-columns:1fr}#sqlp .chart-controls .wide{grid-column:auto}#sqlp .steps{gap:.35rem}#sqlp .step{padding:.6rem}}
+@media(max-width:780px){#sqlp .steps{grid-template-columns:1fr}#sqlp .workspace{grid-template-columns:1fr}#sqlp .chart-controls{grid-template-columns:repeat(2,minmax(0,1fr))}#sqlp #sqlp-chart{height:320px}}@media(max-width:420px){#sqlp .profile-metrics{grid-template-columns:1fr}#sqlp .query-tools{grid-template-columns:1fr}#sqlp .panel{padding:.75rem}#sqlp .chart-controls{grid-template-columns:1fr}#sqlp .chart-controls .wide{grid-column:auto}#sqlp .steps{gap:.35rem}#sqlp .step{padding:.6rem}}
 </style>
 
 <div id="sqlp">
@@ -35,88 +49,120 @@ permalink: /sql-playground/
     <div class="step"><b>04 / Export</b><span>PNG image or PowerPoint</span></div>
   </div>
 
-  <section class="panel">
-    <div class="panel-head"><h2>01 — Choose your data</h2><span class="pill" id="sqlp-engine">Starting DuckDB…</span></div>
+  <div class="workspace">
+    <div class="left-workflow">
+        <section class="panel">
+    <div class="panel-head"><h2>01 — Choose your data</h2><span class="pill" id="sqlp-engine">Ready when you are</span></div>
     <div class="row">
       <button type="button" class="dataset" data-sample="employees"><strong>Employee database · 1,000 rows</strong><small>Departments, salaries, locations, performance</small></button>
       <button type="button" class="dataset" data-sample="sales"><strong>Sales</strong><small>Orders, regions, products, revenue</small></button>
       <button type="button" class="dataset" data-sample="web"><strong>Web analytics</strong><small>Channels, visitors, conversions</small></button>
     </div>
     <div class="row" style="margin-top:.7rem;align-items:flex-end">
-      <div style="flex:1;min-width:220px"><label for="sqlp-files">Or import CSV files from your device</label><input id="sqlp-files" type="file" accept=".csv,text/csv" multiple></div>
-      <button class="primary" id="sqlp-import" type="button" disabled>Import CSV</button>
+      <div id="sqlp-dropzone" class="drop" style="flex:1;min-width:220px"><label for="sqlp-files">Or import CSV files (drop here or browse)</label><input id="sqlp-files" type="file" accept=".csv,text/csv" multiple><p class="hint">Drop one or more CSV files here.</p></div>
+      <button class="primary" id="sqlp-import" type="button">Import CSV</button>
     </div>
     <p class="file-note">CSV files are processed locally in your browser; they are not uploaded to The Analyst. Sample employee data is fictional.</p>
     <div class="table-list" id="sqlp-tables"><span class="muted">Tables will appear here when DuckDB is ready.</span></div>
+    <div id="sqlp-profile" class="profile-card" hidden>
+      <div class="profile-metrics" id="sqlp-profile-metrics"></div>
+      <h3>Schema and data profile</h3><div id="sqlp-schema" class="table-wrap"></div>
+      <h3 style="margin-top:1rem">First 10 rows</h3><div id="sqlp-preview" class="table-wrap"></div>
+    </div>
     <p id="sqlp-import-status" class="status" aria-live="polite"></p>
   </section>
-
-  <div class="workspace">
-    <section class="panel">
+      <section class="panel">
       <div class="panel-head"><h2>02 — Write your SQL</h2><span class="pill">Ctrl / ⌘ + Enter</span></div>
+      <div class="query-tools">
+        <div><label for="sqlp-query-examples">Sample queries</label><select id="sqlp-query-examples">
+          <option value="headcount">Headcount by department · Bar</option><option value="topLocations">Top 10 locations by average salary · Horizontal bar</option>
+          <option value="monthlyHiring">Monthly hiring trend · Line</option><option value="cumulativeHiring">Cumulative headcount by month · Area</option>
+          <option value="genderHeadcount">Headcount by department and gender · Stacked bar</option><option value="attritionShare">Attrition share by department · Pie / donut</option>
+          <option value="salaryTenure">Salary vs tenure · Scatter</option><option value="performanceHeatmap">Average performance by department and grade · Heatmap</option>
+          <option value="salaryHistogram">Salary distribution in bins · Histogram</option><option value="salaryBoxplot">Salary spread by grade · Boxplot</option>
+          <option value="genderPayGap">Gender pay gap by grade</option><option value="attritionLocation">Attrition rate by location</option><option value="combo">Monthly hires + average salary · Combo</option><option value="waterfall">Net attrition impact · Waterfall</option><option value="treemap">Headcount by department · Treemap</option><option value="funnel">Hiring funnel · Funnel</option><option value="radar">Department metrics · Radar</option><option value="gauge">Company performance rating · Gauge</option><option value="sankey">Department to location · Sankey</option>
+          <option value="sales">Sales by region</option><option value="web">Visitors and conversions by channel</option>
+        </select></div>
+        <div><label for="sqlp-saved-query">Saved queries</label><select id="sqlp-saved-query"><option value="">No saved queries yet</option></select></div>
+      </div>
       <label for="sqlp-query">SQL query</label>
-      <textarea id="sqlp-query" spellcheck="false" aria-label="SQL query editor">SELECT department,
-       ROUND(AVG(salary), 0) AS avg_salary,
-       COUNT(*) AS employees
-FROM employees
-GROUP BY department
-ORDER BY avg_salary DESC;</textarea>
+      <div id="sqlp-editor-host" aria-label="SQL editor"></div>
+      <textarea id="sqlp-query" spellcheck="false" aria-label="SQL query editor">SELECT department, COUNT(*) AS headcount FROM employees GROUP BY department ORDER BY headcount DESC;</textarea>
       <div class="row" style="margin-top:.6rem">
-        <button class="primary" id="sqlp-run" type="button" disabled>Run query</button>
-        <button id="sqlp-example" type="button">Load example</button>
+        <button class="primary" id="sqlp-run" type="button">Run query</button>
+        <button id="sqlp-example" type="button">Load selected</button>
+        <button id="sqlp-save-query" type="button">Save query</button>
         <button id="sqlp-clear" type="button">Clear</button>
         <button id="sqlp-download" type="button" disabled>Results CSV</button>
       </div>
-      <p id="sqlp-status" class="status" role="status" aria-live="polite">Preparing browser SQL engine…</p>
+      <p id="sqlp-status" class="status" role="status" aria-live="polite">Choose a sample, import a CSV, or run SQL to start the browser engine.</p>
       <div style="margin-top:1rem">
         <div class="panel-head"><h2>Query results</h2><span id="sqlp-result-meta" class="muted">No results yet</span></div>
         <div id="sqlp-results" class="muted">Run a query to populate the table and chart builder.</div>
       </div>
-    </section>
+      </section>
+    </div>
 
     <section class="panel">
       <div class="panel-head"><h2>03 — Build your chart</h2><span class="pill">Apache ECharts</span></div>
       <div class="panel-head" style="margin-top:.25rem"><h2>Chart type</h2><span class="muted">Auto-matched to result columns</span></div>
       <div id="sqlp-chart-picker" class="chart-picker" aria-label="Chart type picker">
-        <button type="button" class="chart-tile" data-chart="bar" aria-pressed="true" title="Compare values across categories"><span class="chart-glyph">▮▮▮</span><span class="chart-label">Bar</span></button>
-        <button type="button" class="chart-tile" data-chart="horizontalBar" aria-pressed="false" title="Horizontal comparison of categories"><span class="chart-glyph">☰</span><span class="chart-label">Horizontal bar</span></button>
-        <button type="button" class="chart-tile" data-chart="line" aria-pressed="false" title="Trend across an ordered axis"><span class="chart-glyph">⌁</span><span class="chart-label">Line</span></button>
-        <button type="button" class="chart-tile" data-chart="area" aria-pressed="false" title="Trend magnitude over an axis"><span class="chart-glyph">◢</span><span class="chart-label">Area</span></button>
-        <button type="button" class="chart-tile" data-chart="stackedBar" aria-pressed="false" title="Needs two categories and a numeric value"><span class="chart-glyph">▥</span><span class="chart-label">Stacked bar</span></button>
-        <button type="button" class="chart-tile" data-chart="pie" aria-pressed="false" title="Parts of a whole"><span class="chart-glyph">◕</span><span class="chart-label">Pie / Donut</span></button>
-        <button type="button" class="chart-tile" data-chart="scatter" aria-pressed="false" title="Needs two numeric columns"><span class="chart-glyph">⠿</span><span class="chart-label">Scatter</span></button>
-        <button type="button" class="chart-tile" data-chart="heatmap" aria-pressed="false" title="Needs two categories and a numeric value"><span class="chart-glyph">▦</span><span class="chart-label">Heatmap</span></button>
-        <button type="button" class="chart-tile" data-chart="histogram" aria-pressed="false" title="SQL automatically bins a numeric column"><span class="chart-glyph">▥</span><span class="chart-label">Histogram</span></button>
-        <button type="button" class="chart-tile" data-chart="boxplot" aria-pressed="false" title="SQL computes min, quartiles, median and max"><span class="chart-glyph">⊟</span><span class="chart-label">Boxplot</span></button>
+        <button type="button" class="chart-tile" data-chart="bar" aria-pressed="true" title="Compare values across categories"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20V12h4v8M10 20V5h4v15M16 20V9h4v11"/></svg></span><span class="chart-label">Bar</span></button>
+        <button type="button" class="chart-tile" data-chart="horizontalBar" aria-pressed="false" title="Horizontal comparison of categories"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 6h12M3 12h18M3 18h9"/></svg></span><span class="chart-label">Horizontal bar</span></button>
+        <button type="button" class="chart-tile" data-chart="line" aria-pressed="false" title="Trend across an ordered axis"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="3,17 8,10 13,14 21,5"/></svg></span><span class="chart-label">Line</span></button>
+        <button type="button" class="chart-tile" data-chart="area" aria-pressed="false" title="Trend magnitude over an axis"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 20V14l5-5 5 3 8-8v16z"/></svg></span><span class="chart-label">Area</span></button>
+        <button type="button" class="chart-tile" data-chart="stackedBar" aria-pressed="false" title="Needs two categories and a numeric value"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20V12h5v8M4 12V5h5v7M11 20V15h5v5M11 15V8h5v7M18 20V11h3v9"/></svg></span><span class="chart-label">Stacked bar</span></button>
+        <button type="button" class="chart-tile" data-chart="pie" aria-pressed="false" title="Parts of a whole"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v8h8"/></svg></span><span class="chart-label">Pie / Donut</span></button>
+        <button type="button" class="chart-tile" data-chart="scatter" aria-pressed="false" title="Needs two numeric columns"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="6" cy="16" r="1.5"/><circle cx="9" cy="8" r="1.5"/><circle cx="14" cy="13" r="1.5"/><circle cx="19" cy="5" r="1.5"/><circle cx="18" cy="18" r="1.5"/></svg></span><span class="chart-label">Scatter</span></button>
+        <button type="button" class="chart-tile" data-chart="heatmap" aria-pressed="false" title="Needs two categories and a numeric value"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span class="chart-label">Heatmap</span></button>
+        <button type="button" class="chart-tile" data-chart="histogram" aria-pressed="false" title="SQL automatically bins a numeric column"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 20V14h4v6M8 20V7h4v13M13 20V3h4v17M18 20V11h3v9"/></svg></span><span class="chart-label">Histogram</span></button>
+        <button type="button" class="chart-tile" data-chart="boxplot" aria-pressed="false" title="SQL computes min, quartiles, median and max"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12h4M17 12h4M5 7v10M19 7v10M7 6h10v12H7zM12 6v12"/></svg></span><span class="chart-label">Boxplot</span></button>
       </div>
       <div class="chart-more"><button id="sqlp-more-toggle" type="button" class="chart-more-toggle" aria-expanded="false">More chart types +</button>
         <div id="sqlp-more-charts" class="chart-picker" hidden>
-          <button type="button" class="chart-tile" data-chart="combo" aria-pressed="false" title="Needs one category and two numeric series"><span class="chart-glyph">╱▮</span><span class="chart-label">Combo (dual axis)</span></button>
-          <button type="button" class="chart-tile" data-chart="waterfall" aria-pressed="false" title="Cumulative increases and decreases"><span class="chart-glyph">▥↗</span><span class="chart-label">Waterfall</span></button>
-          <button type="button" class="chart-tile" data-chart="treemap" aria-pressed="false" title="Hierarchical proportions"><span class="chart-glyph">▧</span><span class="chart-label">Treemap</span></button>
-          <button type="button" class="chart-tile" data-chart="funnel" aria-pressed="false" title="Descending stage values"><span class="chart-glyph">▽</span><span class="chart-label">Funnel</span></button>
-          <button type="button" class="chart-tile" data-chart="radar" aria-pressed="false" title="Needs multiple numeric metrics"><span class="chart-glyph">◇</span><span class="chart-label">Radar</span></button>
-          <button type="button" class="chart-tile" data-chart="gauge" aria-pressed="false" title="Aggregate numeric value as a gauge"><span class="chart-glyph">◴</span><span class="chart-label">Gauge</span></button>
-          <button type="button" class="chart-tile" data-chart="sankey" aria-pressed="false" title="Needs two categories and a numeric flow value"><span class="chart-glyph">⇢</span><span class="chart-label">Sankey</span></button>
+          <button type="button" class="chart-tile" data-chart="combo" aria-pressed="false" title="Needs one category and two numeric series"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 20V12h4v8M10 20V7h4v13"/><polyline points="3,10 9,5 14,8 21,3"/></svg></span><span class="chart-label">Combo (dual axis)</span></button>
+          <button type="button" class="chart-tile" data-chart="waterfall" aria-pressed="false" title="Cumulative increases and decreases"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 20V13h4v7M7 13h4V8h4M15 8h3V4M15 4h3M18 4v3"/></svg></span><span class="chart-label">Waterfall</span></button>
+          <button type="button" class="chart-tile" data-chart="treemap" aria-pressed="false" title="Hierarchical proportions"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/><path d="M13 3v18M3 11h10M13 14h8M17 3v11"/></svg></span><span class="chart-label">Treemap</span></button>
+          <button type="button" class="chart-tile" data-chart="funnel" aria-pressed="false" title="Descending stage values"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 4h18l-3 5H6zM6 9h12l-3 5H9zM9 14h6l-3 6z"/></svg></span><span class="chart-label">Funnel</span></button>
+          <button type="button" class="chart-tile" data-chart="radar" aria-pressed="false" title="Needs multiple numeric metrics"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="12,3 20,9 17,19 7,19 4,9"/><path d="M12 3v9l8-3M12 12l5 7M12 12l-5 7M12 12L4 9"/></svg></span><span class="chart-label">Radar</span></button>
+          <button type="button" class="chart-tile" data-chart="gauge" aria-pressed="false" title="Aggregate numeric value as a gauge"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 18a8 8 0 0 1 16 0M12 14l5-5M7 18h10"/></svg></span><span class="chart-label">Gauge</span></button>
+          <button type="button" class="chart-tile" data-chart="sankey" aria-pressed="false" title="Needs two categories and a numeric flow value"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 6h5c5 0 4 6 9 6h4M3 18h5c5 0 4-6 9-6h4M18 9l3 3-3 3"/></svg></span><span class="chart-label">Sankey</span></button>
         </div>
       </div>
       <p id="sqlp-chart-note" class="chart-note" aria-live="polite">Run a query to see which chart types fit your columns.</p>
       <div class="chart-controls">
-        <div><label for="sqlp-palette">Style palette</label><select id="sqlp-palette"><option value="mono">Monochrome</option><option value="mck">McKinsey-inspired blue</option><option value="bcg">BCG-inspired green</option><option value="bain">Bain-inspired red</option><option value="big4">Big Four mix</option><option value="pwc">PwC-inspired warm</option></select></div>
+        <div class="wide"><label>Palette</label><div class="palette-groups">
+<div><span class="palette-heading">Default</span><button type="button" class="palette-choice" data-palette="mono" aria-pressed="true"><span class="swatches"><i style="background:#111"></i><i style="background:#555"></i><i style="background:#888"></i><i style="background:#d2d2d2"></i></span><span>Mono</span></button></div>
+<div><span class="palette-heading">Big4-inspired</span><div class="palette-row">
+<button type="button" class="palette-choice" data-palette="deloitte" aria-pressed="false" title="Green, black and grey"><span class="swatches"><i style="background:#86bc25"></i><i style="background:#111"></i><i style="background:#888"></i></span><span>Deloitte-style</span></button>
+<button type="button" class="palette-choice" data-palette="pwc" aria-pressed="false" title="Orange, coral and charcoal"><span class="swatches"><i style="background:#d94f00"></i><i style="background:#db536a"></i><i style="background:#333"></i></span><span>PwC-style</span></button>
+<button type="button" class="palette-choice" data-palette="ey" aria-pressed="false" title="Yellow, grey and black"><span class="swatches"><i style="background:#ffe600"></i><i style="background:#888"></i><i style="background:#111"></i></span><span>EY-style</span></button>
+<button type="button" class="palette-choice" data-palette="kpmg" aria-pressed="false" title="Blue, purple and grey"><span class="swatches"><i style="background:#00338d"></i><i style="background:#483698"></i><i style="background:#888"></i></span><span>KPMG-style</span></button>
+</div></div>
+<div><span class="palette-heading">MBB-inspired</span><div class="palette-row">
+<button type="button" class="palette-choice" data-palette="mck" aria-pressed="false"><span class="swatches"><i style="background:#003f6b"></i><i style="background:#0077a8"></i><i style="background:#4b9fca"></i></span><span>McKinsey-style</span></button>
+<button type="button" class="palette-choice" data-palette="bcg" aria-pressed="false"><span class="swatches"><i style="background:#006b54"></i><i style="background:#888"></i><i style="background:#111"></i></span><span>BCG-style</span></button>
+<button type="button" class="palette-choice" data-palette="bain" aria-pressed="false"><span class="swatches"><i style="background:#a30b22"></i><i style="background:#888"></i><i style="background:#111"></i></span><span>Bain-style</span></button>
+</div></div></div><input id="sqlp-palette" type="hidden" value="mono"></div>
         <div><label for="sqlp-x">Category / X axis</label><select id="sqlp-x"><option value="">Run a query first</option></select></div>
         <div><label for="sqlp-y">Value / Y axis</label><select id="sqlp-y"><option value="">Run a query first</option></select></div>
-        <div><label for="sqlp-group">Group / second category</label><select id="sqlp-group"><option value="">Optional</option></select></div>
+        <div><label for="sqlp-y-multi">Additional Y series (multi-select)</label><select id="sqlp-y-multi" multiple size="3" aria-describedby="sqlp-y-help"></select><p id="sqlp-y-help" class="hint">Use Ctrl/Cmd to select multiple measures.</p></div>
+        <div><label for="sqlp-group">Series / Group</label><select id="sqlp-group"><option value="">Optional</option></select></div>
         <div><label for="sqlp-extra">Second numeric series</label><select id="sqlp-extra"><option value="">Optional</option></select></div>
-        <div class="wide"><label for="sqlp-title">Chart title</label><input id="sqlp-title" type="text" value="Average salary by department"></div>
+        <div class="wide"><label for="sqlp-title">Action title</label><input id="sqlp-title" type="text" value="Headcount is concentrated in a few departments"></div>
+        <div class="wide"><label for="sqlp-subtitle">Subtitle</label><input id="sqlp-subtitle" type="text" value=""></div>
         <div><label for="sqlp-x-title">X-axis title</label><input id="sqlp-x-title" type="text" value="Department"></div>
         <div><label for="sqlp-y-title">Y-axis title</label><input id="sqlp-y-title" type="text" value="Average salary"></div>
+        <div class="wide"><label for="sqlp-footnote">Source footnote</label><input id="sqlp-footnote" type="text" value="Source: Sample employee dataset"></div>
+        <div class="chart-toggles wide"><label><input type="checkbox" id="sqlp-labels"> Data labels</label><label><input type="checkbox" id="sqlp-gridlines" checked> Gridlines</label><label><input type="checkbox" id="sqlp-legend" checked> Legend</label><label for="sqlp-sort">Sort</label><select id="sqlp-sort"><option value="none">None</option><option value="asc">Ascending</option><option value="desc">Descending</option></select></div>
       </div>
-      <div class="row" style="margin-top:.75rem"><button id="sqlp-render" class="primary" type="button" disabled>Update chart</button><button id="sqlp-png" type="button" disabled>Export PNG</button><button id="sqlp-ppt" type="button" disabled>Export PowerPoint</button></div>
+      <div class="row" style="margin-top:.75rem"><button id="sqlp-render" class="primary" type="button" disabled>Update chart</button><button id="sqlp-png" type="button" disabled>Export PNG 2×</button><button id="sqlp-svg" type="button" disabled>Export SVG</button><button id="sqlp-ppt" type="button" disabled>Export PowerPoint</button><button id="sqlp-copy-link" type="button">Copy link</button></div>
       <p class="hint">Pick columns from your query output. For a useful chart, return one category column and one numeric column.</p>
       <div id="sqlp-chart" role="img" aria-label="Chart preview"></div>
       <p class="hint">Palette names are visual references, not official brand colors or endorsements.</p>
     </section>
   </div>
+  <footer class="sqlp-footer">theanalyst.in - your data stays in your browser.</footer>
 </div>
 
 <script type="module">
@@ -124,35 +170,68 @@ let duckdb, echarts, pptxgen;
 
 (() => {
 const $ = id => document.getElementById(id);
-const state = {db:null,conn:null,ready:false,columns:[],rows:[],chart:null,loadedSamples:new Set(),queryText:''};
+const state = {db:null,conn:null,ready:false,initPromise:null,columns:[],rows:[],chart:null,chartPromise:null,chartOption:null,editor:null,editorLoading:false,loadedSamples:new Set(),queryText:'',pendingConfig:null};
 const palettes = {
-  mono:['#111111','#555555','#888888','#b0b0b0','#d2d2d2'],
-  mck:['#003f6b','#0077a8','#4b9fca','#82bfdc','#b7d9e9'],
-  bcg:['#006b54','#269879','#6bb99c','#9bcdb9','#c7e2d6'],
-  bain:['#a30b22','#cf3145','#e46b78','#ed9da6','#f4c9ce'],
-  big4:['#111111','#0076a8','#4c8c2b','#d4a72c','#b13b2e'],
-  pwc:['#d94f00','#f28c28','#ffbd69','#7a3f25','#333333']
+ mono:['#111111','#555555','#888888','#b0b0b0','#d2d2d2'],
+ deloitte:['#86bc25','#111111','#666666','#b8b8b8','#e1e1e1'],
+ pwc:['#d94f00','#eb8c00','#db536a','#7a3f25','#333333'],
+ ey:['#ffe600','#555555','#111111','#999999','#d9d9d9'],
+ kpmg:['#00338d','#483698','#00a3e0','#7f77b9','#9b9b9b'],
+ mck:['#003f6b','#0077a8','#4b9fca','#82bfdc','#b7d9e9'],
+ bcg:['#006b54','#269879','#6bb99c','#9bcdb9','#c7e2d6'],
+ bain:['#a30b22','#cf3145','#e46b78','#ed9da6','#f4c9ce']
 };
 const examples = {
-  employees:'SELECT department, ROUND(AVG(salary), 0) AS avg_salary, COUNT(*) AS employees\nFROM employees\nGROUP BY department\nORDER BY avg_salary DESC;',
-  sales:'SELECT region, ROUND(SUM(revenue), 0) AS revenue\nFROM sales\nGROUP BY region\nORDER BY revenue DESC;',
-  web:'SELECT channel, SUM(visitors) AS visitors, SUM(conversions) AS conversions\nFROM web_events\nGROUP BY channel\nORDER BY visitors DESC;'
+ employees:'SELECT department, COUNT(*) AS headcount FROM employees GROUP BY department ORDER BY headcount DESC;',
+ headcount:'SELECT department, COUNT(*) AS headcount FROM employees GROUP BY department ORDER BY headcount DESC;',
+ topLocations:'SELECT location, ROUND(AVG(salary),0) AS avg_salary FROM employees GROUP BY location ORDER BY avg_salary DESC LIMIT 10;',
+ monthlyHiring:'SELECT DATE_TRUNC(\'month\', CAST(join_date AS DATE)) AS month, COUNT(*) AS hires FROM employees GROUP BY month ORDER BY month;',
+ cumulativeHiring:'WITH monthly AS (SELECT DATE_TRUNC(\'month\', CAST(join_date AS DATE)) AS month, COUNT(*) AS hires FROM employees GROUP BY month) SELECT month, SUM(hires) OVER (ORDER BY month) AS cumulative_hires FROM monthly ORDER BY month;',
+ genderHeadcount:'SELECT department, gender, COUNT(*) AS headcount FROM employees GROUP BY department, gender ORDER BY department, gender;',
+ attritionShare:'SELECT department, SUM(attrition_flag) AS attrition, COUNT(*)-SUM(attrition_flag) AS retained FROM employees GROUP BY department ORDER BY attrition DESC;',
+ salaryTenure:'SELECT tenure_years, salary, performance_rating FROM employees WHERE tenure_years IS NOT NULL;',
+ performanceHeatmap:'SELECT department, grade, ROUND(AVG(performance_rating),2) AS avg_rating FROM employees GROUP BY department, grade ORDER BY department, grade;',
+ salaryHistogram:'SELECT width_bucket(salary, (SELECT MIN(salary) FROM employees), (SELECT MAX(salary)+1 FROM employees), 10) AS salary_bin, COUNT(*) AS employees FROM employees GROUP BY salary_bin ORDER BY salary_bin;',
+ salaryBoxplot:'SELECT grade, MIN(salary) AS min_salary, quantile_cont(salary,0.25) AS q1, quantile_cont(salary,0.5) AS median, quantile_cont(salary,0.75) AS q3, MAX(salary) AS max_salary FROM employees GROUP BY grade ORDER BY grade;',
+ genderPayGap:'SELECT grade, gender, ROUND(AVG(salary),0) AS avg_salary FROM employees GROUP BY grade, gender ORDER BY grade, gender;',
+ attritionLocation:'SELECT location, ROUND(100.0*SUM(attrition_flag)/COUNT(*),1) AS attrition_pct FROM employees GROUP BY location ORDER BY attrition_pct DESC;',
+ combo:'SELECT DATE_TRUNC(\'month\', CAST(join_date AS DATE)) AS month, COUNT(*) AS hires, ROUND(AVG(salary),0) AS avg_salary FROM employees GROUP BY month ORDER BY month;',
+ waterfall:'SELECT department, -SUM(attrition_flag) AS attrition_impact FROM employees GROUP BY department ORDER BY attrition_impact;',
+ treemap:'SELECT department, COUNT(*) AS headcount FROM employees GROUP BY department ORDER BY headcount DESC;',
+ funnel:`SELECT * FROM (VALUES ('Applied',1000),('Screened',720),('Interviewed',350),('Offered',120),('Hired',85)) AS funnel(stage,candidates);`,
+ radar:'SELECT department, ROUND(AVG(performance_rating),2) AS avg_rating, ROUND(AVG(bonus_pct),2) AS avg_bonus, ROUND(AVG(tenure_years),2) AS avg_tenure FROM employees GROUP BY department ORDER BY department;',
+ gauge:'SELECT \'Company average rating\' AS metric, AVG(performance_rating) AS avg_rating FROM employees;',
+ sankey:'SELECT department, location, COUNT(*) AS headcount FROM employees GROUP BY department, location;',
+ sales:'SELECT region, ROUND(SUM(revenue),0) AS revenue FROM sales GROUP BY region ORDER BY revenue DESC;',
+ web:'SELECT channel, SUM(visitors) AS visitors, SUM(conversions) AS conversions FROM web_events GROUP BY channel ORDER BY visitors DESC;'
 };
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function quote(n){return '"'+String(n).replace(/"/g,'""')+'"';}
 function status(msg,error=false){$('sqlp-status').textContent=msg;$('sqlp-status').classList.toggle('error',error);}
+function friendlySqlError(error){const message=String(error?.message||error||'Unknown SQL error');if(/parser error|syntax error|unexpected/i.test(message))return 'SQL syntax error. Check quotes, commas, and clause order. Details: '+message;if(/catalog error|table .* does not exist|not found/i.test(message))return 'A table or column could not be found. Check its spelling and make sure the table is loaded. Details: '+message;if(/conversion error|cannot cast|type mismatch/i.test(message))return 'The query has a data type mismatch. Check casts and the values being compared. Details: '+message;return 'Query failed. Check the SQL and selected table. Details: '+message;}
 function toText(v){if(v===null||v===undefined)return 'NULL';if(typeof v==='bigint')return v.toString();if(v instanceof Date)return v.toISOString();if(typeof v==='object')return JSON.stringify(v);return String(v);}
 function employeeCSV(){
- const depts=['Analytics','Sales','Operations','Finance','Marketing','Technology','Human Resources','Strategy'];
- const cities=['Bengaluru','Mumbai','Hyderabad','Chennai','Pune','Delhi','Kolkata','Gurugram'];
- const first=['Aarav','Aditi','Aditya','Ananya','Arjun','Diya','Isha','Kabir','Kavya','Meera','Neel','Rohan','Sana','Vihaan','Zoya','Ishaan','Mira','Dev','Tara','Reyansh'];
- const last=['Sharma','Patel','Rao','Iyer','Mehta','Singh','Nair','Kapoor','Das','Khan','Joshi','Reddy','Malhotra','Sen','Pillai'];
- const out=['employee_id,employee_name,department,city,salary,joining_date,performance_score,employment_type'];
+ const departments=['Engineering','Sales','Operations','Finance','Marketing','People','Analytics','Strategy'];
+ const titles={Engineering:['Software Engineer','Senior Engineer','Engineering Manager'],Sales:['Account Executive','Sales Manager','Sales Analyst'],Operations:['Operations Analyst','Operations Manager','Program Lead'],Finance:['Financial Analyst','Finance Manager','Controller'],Marketing:['Marketing Specialist','Growth Manager','Brand Lead'],People:['People Partner','Recruiter','People Manager'],Analytics:['Data Analyst','Senior Analyst','Analytics Lead'],Strategy:['Strategy Analyst','Consultant','Strategy Manager']};
+ const grades=['G1','G2','G3','G4','G5','G6'];
+ const locations=['Bengaluru','Mumbai','Hyderabad','Chennai','Pune','Delhi NCR','Kolkata','Gurugram'];
+ const genders=['Female','Male','Non-binary','Prefer not to say'];
+ const first=['Aarav','Aditi','Aditya','Ananya','Arjun','Diya','Isha','Kabir','Kavya','Meera','Neel','Rohan','Sana','Vihaan','Zoya','Ishaan','Mira','Dev','Tara','Reyansh','Nisha','Kiran','Priya','Rahul'];
+ const last=['Sharma','Patel','Rao','Iyer','Mehta','Singh','Nair','Kapoor','Das','Khan','Joshi','Reddy','Malhotra','Sen','Pillai','Chawla','Gupta','Menon'];
+ const out=['emp_id,name,department,designation,grade,location,gender,join_date,tenure_years,salary,bonus_pct,performance_rating,attrition_flag,manager_id'];
+ const gradeBase={G1:360000,G2:520000,G3:760000,G4:1080000,G5:1510000,G6:2050000};
  for(let i=1;i<=1000;i++){
-  const dept=depts[(i*7+i%5)%depts.length],city=cities[(i*3+i%7)%cities.length],name=first[(i*11)%first.length]+' '+last[(i*13)%last.length];
-  const salary=450000+((i*7919)%1450000),year=2017+(i%10),month=String((i%12)+1).padStart(2,'0'),day=String((i%27)+1).padStart(2,'0');
-  const score=(2.5+((i*17)%26)/10).toFixed(1),type=i%9===0?'Contract':'Full-time';
-  out.push([i,'"'+name+'"',dept,city,salary,year+'-'+month+'-'+day,score,type].join(','));
+  const dept=departments[(i*7+Math.floor(i/9))%departments.length],grade=grades[(i*13+Math.floor(i/7))%grades.length];
+  const gi=grades.indexOf(grade),manager=gi===0?'':String(1001+Math.floor(i/11)%95);
+  const year=2017+(i%10),month=String((i*7%12)+1).padStart(2,'0'),day=String((i*11%27)+1).padStart(2,'0');
+  const tenure=Math.max(0,Math.round(((2026-year)+(12-Number(month))/12)*10)/10);
+  const risk=['Sales','Operations','People'].includes(dept)?0.19:['Engineering','Analytics'].includes(dept)?0.075:0.12;
+  const attrition=(i%97<risk*97||i%211===0)?1:0;
+  const salary=gradeBase[grade]+((i*7919)%Math.round(gradeBase[grade]*0.28));
+  const bonus=([0,1,2,3,4,5][gi]*2.5+(i*3%12)).toFixed(1);
+  const rating=(2.4+((i*17)%27)/10).toFixed(1);
+  const title=titles[dept][(i+gi)%titles[dept].length];
+  out.push([i,'"'+first[(i*11)%first.length]+' '+last[(i*13)%last.length]+'"',dept,'"'+title+'"',grade,locations[(i*3+i%7)%locations.length],genders[(i*5+Math.floor(i/8))%genders.length],year+'-'+month+'-'+day,tenure,salary,bonus,rating,attrition,manager||''].join(','));
  }
  return out.join('\n');
 }
@@ -172,7 +251,7 @@ async function refreshTables(){
  const r=await state.conn.query("SELECT table_name FROM information_schema.tables WHERE table_schema='main' AND table_type='BASE TABLE' ORDER BY table_name");
  const names=r.toArray().map(x=>String(x.table_name));
  $('sqlp-tables').innerHTML=names.map(n=>'<button type="button" data-table="'+esc(n)+'">'+esc(n)+'</button>').join('');
- $('sqlp-tables').querySelectorAll('[data-table]').forEach(b=>b.addEventListener('click',()=>{$('sqlp-query').value='SELECT * FROM '+quote(b.dataset.table)+' LIMIT 100;';}));
+ $('sqlp-tables').querySelectorAll('[data-table]').forEach(b=>b.addEventListener('click',()=>{state.pendingConfig=null;setQuery('SELECT * FROM '+quote(b.dataset.table)+' LIMIT 100;');}));
 }
 function fillSelect(id,cols,preferred,blank=false){
  const el=$(id),old=el.value;el.innerHTML='';
@@ -180,6 +259,39 @@ function fillSelect(id,cols,preferred,blank=false){
  cols.forEach(c=>{const o=document.createElement('option');o.value=c.name;o.textContent=c.name;el.appendChild(o);});
  if(cols.some(c=>c.name===old))el.value=old;else if(cols.some(c=>c.name===preferred))el.value=preferred;else if(!blank&&cols.length)el.selectedIndex=Math.min(id==='sqlp-x'?0:1,cols.length-1);
 }
+function getQuery(){return state.editor?state.editor.state.doc.toString():$('sqlp-query').value;}
+function setQuery(value){$('sqlp-query').value=String(value??'');if(state.editor){const doc=state.editor.state.doc;state.editor.dispatch({changes:{from:0,to:doc.length,insert:$('sqlp-query').value}});}}
+async function initCodeMirror(){
+ if(state.editor||state.editorLoading)return;state.editorLoading=true;
+ try{
+  const [st,view,cmd,lang,sqlLang]=await Promise.all([
+   import('https://esm.sh/@codemirror/state@6.4.1'),
+   import('https://esm.sh/@codemirror/view@6.36.2'),
+   import('https://esm.sh/@codemirror/commands@6.6.0'),
+   import('https://esm.sh/@codemirror/language@6.10.2'),
+   import('https://esm.sh/@codemirror/lang-sql@6.8.0')
+  ]);
+  const initial=$('sqlp-query').value;
+  state.editor=new view.EditorView({state:st.EditorState.create({doc:initial,extensions:[
+   view.lineNumbers(),view.highlightActiveLineGutter(),view.highlightSpecialChars(),cmd.history(),lang.foldGutter(),view.drawSelection(),view.dropCursor(),lang.indentOnInput(),lang.syntaxHighlighting(lang.defaultHighlightStyle),lang.bracketMatching(),view.rectangularSelection(),view.crosshairCursor(),view.highlightActiveLine(),view.keymap.of([{key:'Mod-Enter',run:()=>{run();return true;}},...cmd.defaultKeymap,...cmd.historyKeymap,cmd.indentWithTab]),sqlLang.sql(),view.EditorView.contentAttributes.of({'aria-label':'SQL query editor'}),view.EditorView.lineWrapping,view.EditorView.updateListener.of(update=>{if(update.docChanged){$('sqlp-query').value=update.state.doc.toString();state.pendingConfig=null;persistConfig();}})
+  ]}),parent:$('sqlp-editor-host')});
+  $('sqlp-query').hidden=true;state.editor.focus();
+ }catch(e){status('CodeMirror could not load; the plain SQL editor remains available.');}
+ finally{state.editorLoading=false;}
+}
+function selectedYNames(){const extra=Array.from($('sqlp-y-multi')?.selectedOptions||[]).map(o=>o.value);return [...new Set([$('sqlp-y').value,...extra].filter(Boolean))];}
+function configState(){return {query:getQuery(),type:selectedChart(),x:$('sqlp-x').value,y:$('sqlp-y').value,ys:selectedYNames(),group:$('sqlp-group').value,extra:$('sqlp-extra').value,title:$('sqlp-title').value,subtitle:$('sqlp-subtitle').value,xTitle:$('sqlp-x-title').value,yTitle:$('sqlp-y-title').value,footnote:$('sqlp-footnote').value,palette:$('sqlp-palette').value,labels:$('sqlp-labels').checked,gridlines:$('sqlp-gridlines').checked,legend:$('sqlp-legend').checked,sort:$('sqlp-sort').value};}
+function persistConfig(){try{localStorage.setItem('theanalyst.sql.session',JSON.stringify(configState()));}catch(_){}}
+function restoreConfig(config){if(!config||typeof config!=='object')return;
+ if(config.query)setQuery(config.query);
+ for(const [key,id] of [['x','sqlp-x'],['y','sqlp-y'],['group','sqlp-group'],['extra','sqlp-extra'],['title','sqlp-title'],['subtitle','sqlp-subtitle'],['xTitle','sqlp-x-title'],['yTitle','sqlp-y-title'],['footnote','sqlp-footnote'],['palette','sqlp-palette'],['sort','sqlp-sort']])if(config[key]!=null&&$(id))$(id).value=config[key];
+ for(const key of ['labels','gridlines','legend'])if(config[key]!=null)$('sqlp-'+key).checked=!!config[key];
+ if(Array.isArray(config.ys))Array.from($('sqlp-y-multi').options).forEach(o=>o.selected=config.ys.includes(o.value));
+ if(config.type)selectChart(config.type);
+}
+function readHashConfig(){try{const h=location.hash.match(/#config=([^&]+)/);if(h)return JSON.parse(decodeURIComponent(escape(atob(h[1]))));}catch(_){}return null;}
+function copyConfigLink(){const cfg=configState();const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(cfg))));const url=location.href.split('#')[0]+'#config='+encoded;history.replaceState(null,'',url);if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>status('Shareable configuration link copied. The link contains no data.'),()=>status('Link updated in address bar; copy it from there.'));else status('Link updated in address bar; copy it from there.');}
+function setPalette(name){$('sqlp-palette').value=name;document.querySelectorAll('#sqlp [data-palette]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.palette===name)));}
 function renderRows(cols,rows){
  state.columns=cols;state.rows=rows;
  $('sqlp-result-meta').textContent=rows.length.toLocaleString()+' rows · '+cols.length+' columns';
@@ -187,14 +299,49 @@ function renderRows(cols,rows){
  if(!rows.length){$('sqlp-results').textContent='Query returned zero rows.';return;}
  const visible=rows.slice(0,200);
  $('sqlp-results').innerHTML='<div class="table-wrap"><table><thead><tr>'+cols.map(c=>'<th>'+esc(c.name)+'</th>').join('')+'</tr></thead><tbody>'+visible.map(row=>'<tr>'+row.map(v=>'<td>'+esc(toText(v))+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>'+(rows.length>visible.length?'<p class="muted">Showing 200 rows; exports include the complete result.</p>':'');
- cols.forEach(c=>{c.numeric=rows.some(r=>{const v=r[c.index];return typeof v==='number'||typeof v==='bigint'||(typeof v==='string'&&v.trim()!==''&&Number.isFinite(Number(v));});});
+ cols.forEach(c=>{c.numeric=rows.some(r=>{const v=r[c.index];return typeof v==='number'||typeof v==='bigint'||(typeof v==='string'&&v.trim()!==''&&Number.isFinite(Number(v)));});});
  const nums=cols.filter(c=>c.numeric),cats=cols.filter(c=>!c.numeric);
- fillSelect('sqlp-x',cols,cats[0]?.name||cols[0]?.name);
- fillSelect('sqlp-y',cols,nums[0]?.name||cols[1]?.name);
+ fillSelect('sqlp-x',cols,cats[0]?.name||nums[0]?.name||cols[0]?.name);
+ fillSelect('sqlp-y',cols,cats.length===0&&nums.length>1?nums[1].name:nums[0]?.name||cols[1]?.name);
+ if(!$('sqlp-x-title').dataset.custom)$('sqlp-x-title').value=$('sqlp-x').value||'Category';
+ if(!$('sqlp-y-title').dataset.custom)$('sqlp-y-title').value=$('sqlp-y').value||'Value';
+ fillSelect('sqlp-y-multi',nums,nums[1]?.name,true);
  fillSelect('sqlp-group',cats,cats[1]?.name,true);
  fillSelect('sqlp-extra',nums,nums[1]?.name,true);
- selectChart(nums.length>=2&&cols[0]?.numeric&&cols[1]?.numeric?'scatter':cats.length>=2&&nums.length?'stackedBar':nums.length?'bar':'treemap');
+ const dateCol=cats.find(col=>/date|month|time/i.test(col.name)||rows.some(row=>row[col.index] instanceof Date||/^\\d{4}-\\d{2}/.test(String(row[col.index]??''))));
+ const auto=nums.length>=2&&cats.length===0?'scatter':dateCol&&nums.length?'line':cats.length>=2&&nums.length?'heatmap':cats.length===1&&nums.length&&rows.length<=6?'pie':nums.length?'bar':'treemap';
+ selectChart(auto);
  updateChartAvailability();$('sqlp-render').disabled=!cols.length;$('sqlp-download').disabled=!cols.length;
+}
+async function profileTable(name){
+ try{
+  const table=quote(name),countResult=await state.conn.query('SELECT COUNT(*) AS n FROM '+table),rowCount=Number(countResult.toArray()[0].n);
+  const schemaResult=await state.conn.query('DESCRIBE SELECT * FROM '+table),schema=schemaResult.toArray().map((r,i)=>({name:String(r.column_name),type:String(r.column_type),index:i}));
+  if(!schema.length)return;
+  const statsSql='SELECT '+schema.map((col,i)=>'COUNT('+quote(col.name)+') AS nn'+i+', COUNT(DISTINCT '+quote(col.name)+') AS dd'+i).join(', ')+' FROM '+table;
+  const stats=(await state.conn.query(statsSql)).toArray()[0];
+  const preview=(await state.conn.query('SELECT * FROM '+table+' LIMIT 10')).toArray().map(row=>schema.map(col=>row[col.name]));
+  $('sqlp-profile').hidden=false;
+  $('sqlp-profile-metrics').innerHTML='<div class="profile-metric"><strong>'+rowCount.toLocaleString()+'</strong><span>Rows in '+esc(name)+'</span></div><div class="profile-metric"><strong>'+schema.length+'</strong><span>Columns</span></div><div class="profile-metric"><strong>'+schema.reduce((n,col,i)=>n+rowCount-Number(stats['nn'+i]),0).toLocaleString()+'</strong><span>Null cells</span></div>';
+  $('sqlp-schema').innerHTML='<table><thead><tr><th>Column</th><th>Inferred type</th><th>Nulls</th><th>Distinct</th></tr></thead><tbody>'+schema.map((col,i)=>'<tr><td>'+esc(col.name)+'</td><td>'+esc(col.type)+'</td><td>'+(rowCount-Number(stats['nn'+i]))+'</td><td>'+Number(stats['dd'+i]).toLocaleString()+'</td></tr>').join('')+'</tbody></table>';
+  $('sqlp-preview').innerHTML='<table><thead><tr>'+schema.map(col=>'<th>'+esc(col.name)+'</th>').join('')+'</tr></thead><tbody>'+preview.map(row=>'<tr>'+row.map(v=>'<td>'+esc(toText(v))+'</td>').join('')+'</tr>').join('')+'</tbody></table>';
+ }catch(e){$('sqlp-import-status').textContent='Loaded the table, but could not profile its schema: '+(e.message||String(e));}
+}
+function updateProfile(cols,rows){
+ const card=$('sqlp-profile');if(!card)return;card.hidden=!cols.length;
+ $('sqlp-profile-metrics').innerHTML='<div class="profile-metric"><strong>'+rows.length.toLocaleString()+'</strong><span>Rows in query result</span></div><div class="profile-metric"><strong>'+cols.length+'</strong><span>Columns</span></div><div class="profile-metric"><strong>'+rows.reduce((n,r)=>n+r.filter(v=>v==null).length,0).toLocaleString()+'</strong><span>Null cells</span></div>';
+ $('sqlp-schema').innerHTML='<table><thead><tr><th>Column</th><th>Inferred type</th><th>Nulls</th><th>Distinct</th></tr></thead><tbody>'+cols.map(c=>{const values=rows.map(r=>r[c.index]),nonnull=values.filter(v=>v!=null);let type='VARCHAR';if(nonnull.length&&nonnull.every(v=>typeof v==='number'||typeof v==='bigint'))type='NUMERIC';else if(nonnull.length&&nonnull.every(v=>v instanceof Date||/^\\d{4}-\\d{2}-\\d{2}/.test(String(v))))type='DATE / TIMESTAMP';return '<tr><td>'+esc(c.name)+'</td><td>'+type+'</td><td>'+values.filter(v=>v==null).length+'</td><td>'+new Set(nonnull.map(toText)).size+'</td></tr>';}).join('')+'</tbody></table>';
+ const preview=rows.slice(0,10);$('sqlp-preview').innerHTML=cols.length&&preview.length?'<table><thead><tr>'+cols.map(c=>'<th>'+esc(c.name)+'</th>').join('')+'</tr></thead><tbody>'+preview.map(row=>'<tr>'+row.map(v=>'<td>'+esc(toText(v))+'</td>').join('')+'</tr>').join('')+'</tbody></table>':'<p class="muted">No rows to preview.</p>';
+}
+function refreshSavedQueries(){
+ let saved=[];try{saved=JSON.parse(localStorage.getItem('theanalyst.sql.savedQueries')||'[]');}catch(_){}
+ const el=$('sqlp-saved-query');if(!el)return;el.innerHTML='<option value="">Saved queries…</option>'+saved.map((q,i)=>'<option value="'+i+'">'+esc(q.name)+'</option>').join('');
+}
+function saveQuery(){
+ const sql=getQuery().trim();if(!sql){status('Write a query before saving.',true);return;}
+ const name=prompt('Name this query:','My query');if(!name||!name.trim())return;
+ let saved=[];try{saved=JSON.parse(localStorage.getItem('theanalyst.sql.savedQueries')||'[]');}catch(_){}
+ saved=saved.filter(q=>q.name!==name.trim());saved.push({name:name.trim(),sql});localStorage.setItem('theanalyst.sql.savedQueries',JSON.stringify(saved));refreshSavedQueries();status('Saved query “'+name.trim()+'” in this browser.');
 }
 function csvDownload(){
  const cell=v=>{const s=toText(v);return /[",\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
@@ -203,15 +350,20 @@ function csvDownload(){
 }
 function downloadBlob(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1200);}
 async function run(){
- const sql=$('sqlp-query').value.trim();if(!sql){status('Enter a query first.',true);return;}
+ if(!state.ready){try{await init();}catch(_){return;}}
+ const sql=getQuery().trim();if(!sql){status('Enter a query first.',true);return;}
  $('sqlp-run').disabled=true;status('Running query…');const t=performance.now();
  try{
+  if(/\bemployees\b/i.test(sql)&&!state.loadedSamples.has('employees'))await loadSample('employees');
   const result=await state.conn.query(sql),cols=result.schema.fields.map((f,i)=>({name:f.name,index:i}));
   state.queryText=sql;
   const rows=result.toArray().map(row=>cols.map(c=>row[c.name]));
-  renderRows(cols,rows);status('Query completed in '+((performance.now()-t)/1000).toFixed(2)+'s.');await refreshTables();drawChart();
- }catch(e){status(e.message||String(e),true);}
- finally{$('sqlp-run').disabled=!state.ready;}
+  renderRows(cols,rows);await refreshTables();
+  status('Query completed in '+((performance.now()-t)/1000).toFixed(2)+'s.');
+  await drawChart();
+  if(state.pendingConfig){const config=state.pendingConfig;state.pendingConfig=null;restoreConfig(config);setPalette(config.palette||'mono');updateChartAvailability();await drawChart();}
+ }catch(e){status(friendlySqlError(e),true);}
+ finally{$('sqlp-run').disabled=false;}
 }
 function selectedChart(){return document.querySelector('#sqlp [data-chart][aria-pressed="true"]')?.dataset.chart||'bar';}
 function selectChart(type){document.querySelectorAll('#sqlp [data-chart]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.chart===type)));if($('sqlp-chart-note'))$('sqlp-chart-note').textContent='Selected: '+type+'.';}
@@ -244,103 +396,175 @@ function chartData(){
 async function chartSql(type){
  const y=quote($('sqlp-y').value),query=state.queryText.replace(/;\s*$/,'').trim();
  if(type==='histogram'){
+  if(/bin/i.test($('sqlp-x').value))return {items:chartData().items.map(v=>({name:v.name,value:v.value}))};
   const sql=`WITH src AS (${query}), stats AS (SELECT MIN(TRY_CAST(${y} AS DOUBLE)) mn, MAX(TRY_CAST(${y} AS DOUBLE)) mx FROM src), b AS (SELECT CASE WHEN mx=mn THEN 0 ELSE LEAST(9,GREATEST(0,CAST(FLOOR((TRY_CAST(s.${y} AS DOUBLE)-mn)/NULLIF(mx-mn,0)*10) AS INTEGER))) END n,mn,mx FROM src s CROSS JOIN stats WHERE TRY_CAST(s.${y} AS DOUBLE) IS NOT NULL) SELECT CAST(n AS VARCHAR)||' ('||ROUND(mn+n*(mx-mn)/10,2)||'–'||ROUND(mn+(n+1)*(mx-mn)/10,2)||')' AS bin,COUNT(*) frequency FROM b GROUP BY n,mn,mx ORDER BY n`;
   const r=await state.conn.query(sql);return {items:r.toArray().map(v=>({name:String(v.bin),value:Number(v.frequency)}))};
  }
  if(type==='boxplot'){
-  const g=$('sqlp-group').value,qg=g?quote(g):null;
-  const sql=`WITH src AS (${query}) SELECT ${qg?qg+',':''} MIN(TRY_CAST(${y} AS DOUBLE)) mn,quantile_cont(TRY_CAST(${y} AS DOUBLE),0.25) q1,quantile_cont(TRY_CAST(${y} AS DOUBLE),0.5) med,quantile_cont(TRY_CAST(${y} AS DOUBLE),0.75) q3,MAX(TRY_CAST(${y} AS DOUBLE)) mx FROM src WHERE TRY_CAST(${y} AS DOUBLE) IS NOT NULL ${qg?'GROUP BY '+qg:''}`;
-  const r=await state.conn.query(sql);return {rows:r.toArray().map(v=>({name:g?String(v[g]):$('sqlp-y').value,value:[Number(v.mn),Number(v.q1),Number(v.med),Number(v.q3),Number(v.mx)]}))};
+  const ix=state.columns.findIndex(col=>col.name===$('sqlp-x').value);
+  const precomputed=['min_salary','q1','median','q3','max_salary'].map(name=>state.columns.findIndex(col=>col.name===name));
+  if(precomputed.every(i=>i>=0))return {rows:state.rows.map(row=>({name:String(row[ix]),value:precomputed.map(i=>Number(row[i]))}))};
+  const group=$('sqlp-x').value||$('sqlp-group').value,qg=group?quote(group):null;
+  const sql=`WITH src AS (${query}) SELECT ${qg?qg+',':''} MIN(TRY_CAST(${y} AS DOUBLE)) mn,quantile_cont(TRY_CAST(${y} AS DOUBLE),0.25) q1,quantile_cont(TRY_CAST(${y} AS DOUBLE),0.5) med,quantile_cont(TRY_CAST(${y} AS DOUBLE),0.75) q3,MAX(TRY_CAST(${y} AS DOUBLE)) mx FROM src WHERE TRY_CAST(${y} AS DOUBLE) IS NOT NULL ${qg?'GROUP BY '+qg:''} ${qg?'ORDER BY '+qg:''}`;
+  const r=await state.conn.query(sql);return {rows:r.toArray().map(v=>({name:group?String(v[group]):$('sqlp-y').value,value:[Number(v.mn),Number(v.q1),Number(v.med),Number(v.q3),Number(v.mx)]}))};
  }
 }
 async function drawChart(){
- if(!state.chart||!state.columns.length)return;updateChartAvailability();
+ if(!state.columns.length)return;
+ if(!state.chart){try{await initEcharts();}catch(e){$('sqlp-chart-note').textContent='Chart modules could not load. Check the browser connection and retry. '+(e.message||String(e));return;}}
+ updateChartAvailability();
  const type=selectedChart(),a=compatibility(type);if(!a.valid){$('sqlp-chart-note').textContent=a.why;return;}
- const d=chartData(),pal=palettes[$('sqlp-palette').value]||palettes.mono,title=$('sqlp-title').value.trim(),xt=$('sqlp-x-title').value.trim(),yt=$('sqlp-y-title').value.trim();
+ const d=chartData(),pal=palettes[$('sqlp-palette').value]||palettes.mono,title=$('sqlp-title').value.trim(),subtitle=$('sqlp-subtitle').value.trim(),xt=$('sqlp-x-title').value.trim(),yt=$('sqlp-y-title').value.trim(),showLabels=$('sqlp-labels').checked,showGrid=$('sqlp-gridlines').checked,showLegend=$('sqlp-legend').checked,sort=$('sqlp-sort').value;
  try{
   const sp=['histogram','boxplot'].includes(type)?await chartSql(type):null;
-  const base={backgroundColor:'#fff',animation:false,color:pal,title:{text:title,left:'center',top:8,textStyle:{fontSize:16,color:'#111'}},tooltip:{trigger:['pie','treemap','funnel','gauge','radar'].includes(type)?'item':'axis'},grid:{left:60,right:25,top:65,bottom:65,containLabel:true}};
-  const cat={type:'category',name:xt,nameLocation:'middle',nameGap:38,data:d.items.map(v=>v.name),axisLabel:{color:'#444',rotate:d.items.length>7?25:0,hideOverlap:true},axisLine:{lineStyle:{color:'#aaa'}}},val={type:'value',name:yt,nameLocation:'middle',nameGap:45,axisLabel:{color:'#555'},splitLine:{lineStyle:{color:'#eee'}}};
+  let chartItems=d.items.slice();if(sort!=='none')chartItems.sort((a,b)=>sort==='asc'?a.value-b.value:b.value-a.value);
+  const base={backgroundColor:'#fff',animation:false,color:pal,title:{text:title,subtext:subtitle,left:'center',top:8,textStyle:{fontSize:16,color:'#111'},subtextStyle:{fontSize:11,color:'#666'}},tooltip:{trigger:['pie','treemap','funnel','gauge','radar'].includes(type)?'item':'axis'},legend:{show:showLegend,top:subtitle?52:38},grid:{left:60,right:25,top:subtitle?82:65,bottom:65,containLabel:true},graphic:$('sqlp-footnote').value?[{type:'text',left:12,bottom:8,style:{text:$('sqlp-footnote').value,fontSize:10,fill:'#666'}}]:[]};
+  const cat={type:'category',name:xt,nameLocation:'middle',nameGap:38,data:chartItems.map(v=>v.name),axisLabel:{color:'#444',rotate:chartItems.length>7?25:0,hideOverlap:true},axisLine:{lineStyle:{color:'#aaa'}}},val={type:'value',name:yt,nameLocation:'middle',nameGap:45,axisLabel:{color:'#555'},splitLine:{show:showGrid,lineStyle:{color:'#eee'}}};
+  const labelOpt=showLabels?{show:true,position:type==='horizontalBar'?'right':'top',color:'#111',fontSize:10}:{};
   let series=[];
-  if(type==='pie')series=[{type:'pie',radius:['42%','68%'],data:d.items.map(v=>({name:v.name,value:v.value})),label:{color:'#111'},itemStyle:{borderColor:'#fff',borderWidth:2}}];
-  else if(type==='treemap')series=[{type:'treemap',data:d.items.map(v=>({name:v.name,value:v.value})),label:{color:'#fff'}}];
-  else if(type==='funnel')series=[{type:'funnel',sort:'descending',data:d.items.map(v=>({name:v.name,value:v.value})),label:{color:'#fff',position:'inside'}}];
+  if(type==='pie')series=[{type:'pie',radius:['40%','70%'],data:chartItems.map(v=>({name:v.name,value:v.value})),label:{show:showLabels,color:'#111'},itemStyle:{borderColor:'#fff',borderWidth:2}}];
+  else if(type==='treemap')series=[{type:'treemap',data:chartItems.map(v=>({name:v.name,value:v.value})),label:{show:true,color:'#fff'}}];
+  else if(type==='funnel')series=[{type:'funnel',sort:'descending',data:chartItems.map(v=>({name:v.name,value:v.value})),label:{show:true,color:'#fff',position:'inside'}}];
   else if(type==='gauge'){const v=d.items.reduce((s,v)=>s+v.value,0)/Math.max(1,d.items.length);series=[{type:'gauge',max:Math.max(1,...d.items.map(v=>v.value))*1.15,progress:{show:true},detail:{formatter:v=>Number(v).toLocaleString()},data:[{value:v,name:d.y}]}];}
-  else if(type==='radar'){const items=d.items.slice(0,12);base.radar={indicator:items.map(v=>({name:v.name,max:Math.max(1,...items.map(a=>a.value))*1.1}))};series=[{type:'radar',data:[{value:items.map(v=>v.value),name:d.y}],areaStyle:{opacity:.18}}];}
+  else if(type==='radar'){const measures=selectedYNames().filter(n=>isNum(n));const indicators=measures.map(n=>({name:n,max:Math.max(1,...state.rows.map(row=>Number(row[state.columns.findIndex(c=>c.name===n)])||0))*1.1}));base.radar={indicator:indicators};series=state.rows.slice(0,12).map(row=>({name:String(row[d.xi]),type:'radar',data:[{name:String(row[d.xi]),value:measures.map(n=>Number(row[state.columns.findIndex(c=>c.name===n)])||0)}],areaStyle:{opacity:.04}}));}
   else if(type==='scatter'){base.xAxis={type:'value',name:xt};base.yAxis={type:'value',name:yt};series=[{type:'scatter',data:d.rows.slice(0,1000).map(r=>[Number(r[d.xi]),Number(r[d.yi])]).filter(v=>v.every(Number.isFinite)),symbolSize:8}];}
   else if(type==='heatmap'||type==='sankey'){
    const pairs=new Map();d.items.forEach(v=>{const k=v.name+'|||'+v.group;pairs.set(k,(pairs.get(k)||0)+v.value);});
    if(type==='sankey'){base.grid={left:20,right:20,top:55,bottom:20};series=[{type:'sankey',data:[...new Set(d.items.flatMap(v=>[v.name,v.group]))].map(name=>({name})),links:[...pairs].map(([k,value])=>{const [source,target]=k.split('|||');return {source,target,value};}),lineStyle:{color:'source',curveness:.5}}];}
    else{const xs=[...new Set(d.items.map(v=>v.name))],ys=[...new Set(d.items.map(v=>v.group))];base.xAxis={type:'category',data:xs};base.yAxis={type:'category',data:ys};base.visualMap={min:0,max:Math.max(1,...pairs.values()),calculable:true,orient:'horizontal',left:'center',bottom:5};series=[{type:'heatmap',data:[...pairs].map(([k,value])=>{const [x,y]=k.split('|||');return [xs.indexOf(x),ys.indexOf(y),value];})}];}
   }
-  else if(type==='histogram'){base.xAxis={...cat,data:sp.items.map(v=>v.name),name:xt||'Bins'};base.yAxis={...val,name:yt||'Frequency'};series=[{type:'bar',data:sp.items.map(v=>v.value)}];}
+  else if(type==='histogram'){base.xAxis={...cat,data:sp.items.map(v=>v.name),name:xt||'Bins'};base.yAxis={...val,name:yt||'Frequency'};series=[{type:'bar',data:sp.items.map(v=>v.value),label:labelOpt}];}
   else if(type==='boxplot'){base.xAxis={type:'category',data:sp.rows.map(v=>v.name),name:xt};base.yAxis=val;series=[{type:'boxplot',data:sp.rows.map(v=>v.value)}];}
-  else if(type==='combo'){base.xAxis=cat;base.yAxis=[val,{type:'value',name:$('sqlp-extra').value,position:'right',splitLine:{show:false}}];series=[{type:'bar',name:d.y,data:d.items.map(v=>v.value)},{type:'line',name:d.e,yAxisIndex:1,data:d.items.map(v=>v.extra),lineStyle:{width:3}}];base.legend={top:38};}
-  else if(type==='stackedBar'){base.xAxis=cat;base.yAxis=val;const groups=[...new Set(d.items.map(v=>v.group))];series=groups.map(g=>({name:g,type:'bar',stack:'total',data:d.items.filter(v=>v.group===g).map(v=>v.value)}));base.legend={top:38};}
-  else if(type==='waterfall'){base.xAxis=cat;base.yAxis=val;let total=0;series=[{type:'bar',data:d.items.map(v=>{total+=v.value;return total;})}];}
-  else{base.xAxis=type==='horizontalBar'?{...cat,inverse:true}:cat;base.yAxis=val;const ct=type==='horizontalBar'||type==='bar'?'bar':type==='area'?'line':type;series=[{type:ct,name:d.y,data:d.items.map(v=>v.value),symbolSize:7,...(type==='area'?{areaStyle:{opacity:.2}}:{})}];}
-  base.series=series;state.chart.setOption(base,true);$('sqlp-png').disabled=false;$('sqlp-ppt').disabled=false;
+  else if(type==='combo'){base.xAxis=cat;base.yAxis=[val,{type:'value',name:$('sqlp-extra').value,position:'right',splitLine:{show:false}}];series=[{type:'bar',name:d.y,data:chartItems.map(v=>v.value),label:labelOpt},{type:'line',name:d.e,yAxisIndex:1,data:chartItems.map(v=>v.extra),lineStyle:{width:3},label:labelOpt}];}
+  else if(type==='stackedBar'){const categories=[...new Set(chartItems.map(v=>v.name))],groups=[...new Set(chartItems.map(v=>v.group))];base.xAxis={...cat,data:categories};base.yAxis=val;series=groups.map(g=>({name:g,type:'bar',stack:'total',data:categories.map(name=>chartItems.filter(v=>v.name===name&&v.group===g).reduce((sum,v)=>sum+v.value,0)),label:labelOpt}));}
+  else if(type==='waterfall'){base.xAxis=cat;base.yAxis=val;let total=0;const baseVals=[],deltaVals=[];chartItems.forEach(v=>{baseVals.push(v.value>=0?total:total+v.value);total+=v.value;deltaVals.push(Math.abs(v.value));});series=[{name:'Offset',type:'bar',stack:'wf',itemStyle:{color:'transparent',borderColor:'transparent'},emphasis:{itemStyle:{color:'transparent'}},data:baseVals},{name:'Change',type:'bar',stack:'wf',data:chartItems.map((v,i)=>({value:deltaVals[i],itemStyle:{color:v.value>=0?pal[1]:pal[0]}})),label:labelOpt}];}
+  else{if(type==='horizontalBar'){base.xAxis={...val,name:yt};base.yAxis={...cat,inverse:true,name:xt};}else{base.xAxis=cat;base.yAxis=val;}
+   const ct=type==='horizontalBar'||type==='bar'?'bar':type==='area'?'line':type;
+   const ys=selectedYNames().filter(n=>n!==d.y&&state.columns.some(c=>c.name===n&&c.numeric));
+   series=[{type:ct,name:d.y,data:chartItems.map(v=>v.value),symbolSize:7,label:labelOpt,...(type==='area'?{areaStyle:{opacity:.2}}:{})},...ys.map(name=>{const idx=state.columns.findIndex(c=>c.name===name);return {type:ct,name,data:state.rows.map(r=>Number(r[idx])),symbolSize:7,label:labelOpt,...(type==='area'?{areaStyle:{opacity:.2}}:{})};})];}
+  base.series=series;state.chart.setOption(base,true);$('sqlp-chart').dataset.chartType=type;state.chartOption=base;$('sqlp-png').disabled=false;$('sqlp-svg').disabled=false;$('sqlp-ppt').disabled=false;persistConfig();
  }catch(e){$('sqlp-chart-note').textContent='Chart error: '+(e.message||String(e));}
 }
 async function exportPpt(){
  try{
-  drawChart();
+  await drawChart();
   const png=state.chart.getDataURL({type:'png',pixelRatio:2,backgroundColor:'#ffffff'});
   if(!pptxgen)({default:pptxgen}=await import('https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/+esm'));
   const pptx=new pptxgen();pptx.layout='LAYOUT_WIDE';pptx.author='The Analyst';pptx.subject='SQL Playground chart';pptx.title=$('sqlp-title').value||'SQL chart';
   const slide=pptx.addSlide();slide.background={color:'FFFFFF'};
   slide.addText($('sqlp-title').value||'SQL chart',{x:.55,y:.25,w:12.2,h:.45,fontFace:'Aptos Display',fontSize:22,bold:true,color:'111111',margin:0});
   slide.addImage({data:png,x:.55,y:.9,w:12.2,h:5.8,sizingCrop:false});
-  slide.addText('Created with theanalyst.in SQL Playground',{x:.55,y:7.05,w:12,h:.2,fontSize:8,color:'777777',margin:0});
+  slide.addText($('sqlp-footnote').value||'Source not specified',{x:.55,y:7.05,w:12,h:.2,fontSize:8,color:'777777',margin:0});
   await pptx.writeFile({fileName:'sql-playground-chart.pptx'});
   status('PowerPoint exported.');
  }catch(e){status('PowerPoint export failed: '+(e.message||String(e)),true);}
 }
 async function importFiles(){
+ if(!state.ready){try{await init();}catch(_){return;}}
  const files=Array.from($('sqlp-files').files||[]).filter(f=>/\.csv$/i.test(f.name));
  if(!files.length){$('sqlp-import-status').textContent='Choose at least one CSV file.';return;}
  $('sqlp-import').disabled=true;$('sqlp-import-status').textContent='Importing '+files.length+' file(s)…';
  try{
-  for(const f of files){const name=tableName(f.name),csv=await f.text();await addTable(name,csv,'upload_'+Date.now());}
+  for(const f of files){const name=tableName(f.name),csv=await f.text();await addTable(name,csv,'upload_'+Date.now());await profileTable(name);}
   await refreshTables();$('sqlp-import-status').textContent='Imported '+files.length+' CSV file(s). Choose a table above or query it by name.';
-  if(files.length===1)$('sqlp-query').value='SELECT * FROM '+quote(tableName(files[0].name))+' LIMIT 100;';
- }catch(e){$('sqlp-import-status').textContent='Import failed: '+(e.message||String(e));}
+  if(files.length===1)setQuery('SELECT * FROM '+quote(tableName(files[0].name))+' LIMIT 100;');
+ }catch(e){$('sqlp-import-status').textContent='CSV could not be parsed. Check that the file has a header row and consistent delimiters. Details: '+(e.message||String(e));}
  finally{$('sqlp-import').disabled=!state.ready;}
 }
 async function loadSample(key){
  const s=samples[key];if(!s||state.loadedSamples.has(key))return;
  $('sqlp-engine').textContent='Loading '+s.name+'…';if(!s.csv)s.csv=employeeCSV();
- await addTable(s.name,s.csv,'sample');state.loadedSamples.add(key);await refreshTables();$('sqlp-engine').textContent='DuckDB ready';
+ await addTable(s.name,s.csv,'sample');state.loadedSamples.add(key);await refreshTables();await profileTable(s.name);$('sqlp-engine').textContent='DuckDB ready';
+}
+async function initEcharts(){
+ if(state.chart)return state.chart;if(state.chartPromise)return state.chartPromise;
+ $('sqlp-chart-note').textContent='Loading chart modules…';
+ state.chartPromise=(async()=>{
+  echarts=await import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/core.js/+esm');
+  const chartModules=await Promise.all([
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/bar/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/line/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/pie/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/scatter/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/heatmap/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/boxplot/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/treemap/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/funnel/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/radar/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/gauge/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/chart/sankey/install.js/+esm')
+  ]);
+  const componentModules=await Promise.all([
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/title/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/tooltip/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/grid/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/legend/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/visualMap/install.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/component/radar/install.js/+esm')
+  ]);
+  const rendererModules=await Promise.all([
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/renderer/installCanvasRenderer.js/+esm'),
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/lib/renderer/installSVGRenderer.js/+esm')
+  ]);
+  echarts.use([...chartModules,...componentModules,...rendererModules].map(module=>module.install));
+  state.chart=echarts.init($('sqlp-chart'),null,{renderer:'canvas'});return state.chart;
+ })();
+ try{return await state.chartPromise;}catch(e){state.chartPromise=null;throw e;}
 }
 async function init(){
- try{
-  status('Loading DuckDB engine…');duckdb=await import('https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.29.0/+esm');
-  const bundle=await duckdb.selectBundle(duckdb.getJsDelivrBundles());
-  const workerUrl=URL.createObjectURL(new Blob(['importScripts("'+bundle.mainWorker+'");'],{type:'text/javascript'}));
-  const worker=new Worker(workerUrl);state.db=new duckdb.AsyncDuckDB(new duckdb.ConsoleLogger(),worker);
-  await state.db.instantiate(bundle.mainModule,bundle.pthreadWorker);URL.revokeObjectURL(workerUrl);
-  state.conn=await state.db.connect();state.ready=true;$('sqlp-engine').textContent='Preparing employee sample…';
-  await loadSample('employees');echarts=await import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/+esm');
-  state.chart=echarts.init($('sqlp-chart'),null,{renderer:'canvas'});window.addEventListener('resize',()=>state.chart&&state.chart.resize());
-  $('sqlp-run').disabled=false;$('sqlp-import').disabled=false;status('DuckDB ready. Run SQL or choose a sample dataset.');await run();
- }catch(e){$('sqlp-engine').textContent='Engine unavailable';status('Could not start DuckDB. Reload the page or check browser/CDN restrictions. '+(e.message||String(e)),true);}
+ if(state.ready)return true;if(state.initPromise)return state.initPromise;
+ state.initPromise=(async()=>{
+  try{
+   $('sqlp-engine').textContent='Loading DuckDB…';status('Loading DuckDB-Wasm only when you need it…');
+   duckdb=await import('https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.29.0/+esm');
+   const bundle=await duckdb.selectBundle(duckdb.getJsDelivrBundles());
+   const workerUrl=URL.createObjectURL(new Blob(['importScripts("'+bundle.mainWorker+'");'],{type:'text/javascript'}));
+   const worker=new Worker(workerUrl);state.db=new duckdb.AsyncDuckDB(new duckdb.ConsoleLogger(),worker);
+   await state.db.instantiate(bundle.mainModule,bundle.pthreadWorker);URL.revokeObjectURL(workerUrl);
+   state.conn=await state.db.connect();state.ready=true;$('sqlp-engine').textContent='DuckDB ready';
+   $('sqlp-run').disabled=false;$('sqlp-import').disabled=false;
+   let restore=readHashConfig();if(!restore){try{restore=JSON.parse(localStorage.getItem('theanalyst.sql.session')||'null');}catch(_){}}
+   if(restore){state.pendingConfig=restore;if(restore.query)setQuery(restore.query);setPalette(restore.palette||'mono');}
+   status('DuckDB ready. Choose a sample, import a CSV, or run SQL.');
+   return true;
+  }catch(e){
+   $('sqlp-engine').textContent='Engine unavailable';status('Could not start DuckDB. Reload the page or check browser/CDN restrictions. '+(e.message||String(e)),true);
+   state.initPromise=null;throw e;
+  }
+ })();
+ return state.initPromise;
 }
 $('sqlp-run').addEventListener('click',run);
 $('sqlp-query').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run();}});
-$('sqlp-example').addEventListener('click',()=>{$('sqlp-query').value=examples.employees;});
-$('sqlp-clear').addEventListener('click',()=>{$('sqlp-query').value='';$('sqlp-query').focus();});
+$('sqlp-query').addEventListener('focus',initCodeMirror,{once:true});
+$('sqlp-query').addEventListener('input',()=>{state.pendingConfig=null;persistConfig();});
+$('sqlp-example').addEventListener('click',()=>{state.pendingConfig=null;setQuery(examples[$('sqlp-query-examples').value]||examples.headcount);});
+$('sqlp-query-examples').addEventListener('change',()=>{state.pendingConfig=null;setQuery(examples[$('sqlp-query-examples').value]||examples.headcount);});
+$('sqlp-save-query').addEventListener('click',saveQuery);
+$('sqlp-saved-query').addEventListener('change',()=>{state.pendingConfig=null;let saved=[];try{saved=JSON.parse(localStorage.getItem('theanalyst.sql.savedQueries')||'[]');}catch(_){}const q=saved[Number($('sqlp-saved-query').value)];if(q)setQuery(q.sql);});
+refreshSavedQueries();
+$('sqlp-clear').addEventListener('click',()=>{setQuery('');state.editor?state.editor.focus():$('sqlp-query').focus();});
 $('sqlp-download').addEventListener('click',csvDownload);
 $('sqlp-import').addEventListener('click',importFiles);
+const dropzone=$('sqlp-dropzone');
+['dragenter','dragover'].forEach(type=>dropzone.addEventListener(type,e=>{e.preventDefault();dropzone.style.background='#f7f7f7';}));
+['dragleave','drop'].forEach(type=>dropzone.addEventListener(type,e=>{e.preventDefault();dropzone.style.background='#fff';}));
+dropzone.addEventListener('drop',e=>{const files=Array.from(e.dataTransfer?.files||[]).filter(f=>f.name.toLowerCase().endsWith('.csv'));if(!files.length){$('sqlp-import-status').textContent='Drop CSV files to import them.';return;}const dt=new DataTransfer();files.forEach(f=>dt.items.add(f));$('sqlp-files').files=dt.files;importFiles();});
 $('sqlp-render').addEventListener('click',drawChart);
-['sqlp-palette','sqlp-x','sqlp-y','sqlp-group','sqlp-extra','sqlp-title','sqlp-x-title','sqlp-y-title'].forEach(id=>$(id).addEventListener('change',()=>{updateChartAvailability();drawChart();}));
-document.querySelectorAll('#sqlp [data-chart]').forEach(b=>{b.dataset.baseTitle=b.title;b.addEventListener('click',()=>{if(!b.disabled){selectChart(b.dataset.chart);updateChartAvailability();drawChart();}});});
+['sqlp-x','sqlp-y','sqlp-y-multi','sqlp-group','sqlp-extra','sqlp-title','sqlp-subtitle','sqlp-x-title','sqlp-y-title','sqlp-footnote','sqlp-sort','sqlp-labels','sqlp-gridlines','sqlp-legend'].forEach(id=>$(id).addEventListener('change',()=>{updateChartAvailability();drawChart();persistConfig();}));
+['sqlp-x-title','sqlp-y-title'].forEach(id=>$(id).addEventListener('input',()=>{$(id).dataset.custom='true';}));
+document.querySelectorAll('#sqlp [data-palette]').forEach(b=>b.addEventListener('click',()=>{setPalette(b.dataset.palette);drawChart();persistConfig();}));
+document.querySelectorAll('#sqlp [data-chart]').forEach(b=>{b.dataset.baseTitle=b.title;b.addEventListener('click',()=>{if(!b.disabled){selectChart(b.dataset.chart);updateChartAvailability();drawChart();persistConfig();}});});
+$('sqlp-copy-link').addEventListener('click',copyConfigLink);
+$('sqlp-svg').addEventListener('click',()=>{if(!state.chart||!state.chartOption)return;let svgChart;const host=document.createElement('div');host.style.cssText='position:fixed;left:-10000px;top:0;width:1200px;height:675px';document.body.appendChild(host);try{svgChart=echarts.init(host,null,{renderer:'svg',width:1200,height:675});svgChart.setOption(state.chartOption,true);const svg=svgChart.getDataURL({type:'svg',backgroundColor:'#fff'});const body=svg.includes(',')?decodeURIComponent(svg.slice(svg.indexOf(',')+1)):svg;downloadBlob(new Blob([body],{type:'image/svg+xml;charset=utf-8'}),'sql-playground-chart.svg');}catch(e){status('SVG export failed: '+(e.message||String(e)),true);}finally{if(svgChart)svgChart.dispose();host.remove();}});
+new ResizeObserver(()=>state.chart&&state.chart.resize()).observe($('sqlp-chart'));
 $('sqlp-more-toggle').addEventListener('click',()=>{const el=$('sqlp-more-charts'),open=el.hidden;el.hidden=!open;$('sqlp-more-toggle').setAttribute('aria-expanded',String(open));$('sqlp-more-toggle').textContent=open?'Fewer chart types −':'More chart types +';});
-['sqlp-title','sqlp-x-title','sqlp-y-title'].forEach(id=>$(id).addEventListener('input',()=>{if(state.chart)drawChart();}));
-$('sqlp-png').addEventListener('click',()=>{if(state.chart)downloadBlob(dataURItoBlob(state.chart.getDataURL({type:'png',pixelRatio:3,backgroundColor:'#ffffff'})),'sql-playground-chart.png');});
+['sqlp-title','sqlp-subtitle','sqlp-x-title','sqlp-y-title','sqlp-footnote'].forEach(id=>$(id).addEventListener('input',()=>{if(state.chart)drawChart();persistConfig();}));
+$('sqlp-png').addEventListener('click',()=>{if(state.chart)downloadBlob(dataURItoBlob(state.chart.getDataURL({type:'png',pixelRatio:2,backgroundColor:'#ffffff'})),'sql-playground-chart.png');});
 $('sqlp-ppt').addEventListener('click',exportPpt);
 
 function dataURItoBlob(uri){const parts=uri.split(','),mime=parts[0].match(/:(.*?);/)[1],raw=atob(parts[1]),arr=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)arr[i]=raw.charCodeAt(i);return new Blob([arr],{type:mime});}
-document.querySelectorAll('#sqlp [data-sample]').forEach(b=>b.addEventListener('click',async()=>{try{if(!state.ready){status('DuckDB is still loading.');return;}await loadSample(b.dataset.sample);$('sqlp-query').value=examples[b.dataset.sample];await run();}catch(e){status('Could not load sample: '+(e.message||String(e)),true);}}));
-init();
+document.querySelectorAll('#sqlp [data-sample]').forEach(b=>b.addEventListener('click',async()=>{try{if(!state.ready)await init();state.pendingConfig=null;await loadSample(b.dataset.sample);setQuery(examples[b.dataset.sample]);await run();}catch(e){status('Could not load sample: '+(e.message||String(e)),true);}}));
+status('Choose a sample, import a CSV, or run SQL to initialize DuckDB.');
 })();
 </script>

@@ -1,0 +1,67 @@
+name: SQL Playground checks
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sql-playground-checks-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-browser-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build static Jekyll site
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check embedded JavaScript syntax
+        run: |
+          python - <<'PY'
+          import re
+          source = open('sql-playground.html', encoding='utf-8').read()
+          match = re.search(r'<script type="module">(.*?)</script>', source, re.S)
+          assert match, 'SQL Playground module script not found'
+          open('/tmp/sql-playground.mjs', 'w', encoding='utf-8').write(match.group(1))
+          PY
+          node --check /tmp/sql-playground.mjs
+
+      - name: Install temporary Playwright test dependency
+        run: npm install --no-save --package-lock=false playwright
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Serve built static site
+        run: |
+          python -m http.server 4000 --directory _site > /tmp/site.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4000/sql-playground/ > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/site.log
+          exit 1
+
+      - name: Test responsive layout, chart types, and exports
+        run: node scripts/test-sql-playground.mjs
+
+      - name: Upload 375px and 1280px screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sql-playground-responsive-screenshots
+          path: /tmp/sql-playground-screenshots/*.png
+          if-no-files-found: ignore
