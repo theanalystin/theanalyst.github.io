@@ -10,7 +10,7 @@ permalink: /sql-playground/
 #sqlp *{box-sizing:border-box}#sqlp h1{font-size:clamp(2rem,5vw,3rem);letter-spacing:-.055em;line-height:1.05;margin:.25rem 0 .6rem}#sqlp h2{font-size:1rem;letter-spacing:-.02em;margin:0 0 .8rem}#sqlp p{line-height:1.5}#sqlp .muted{color:var(--muted);font-size:.84rem}#sqlp .eyebrow{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:750;margin:0}
 #sqlp .intro{max-width:700px;color:var(--muted);margin:.5rem 0 1.2rem}#sqlp .steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.5rem;margin:1.3rem 0}#sqlp .step{border:1px solid var(--line);border-radius:8px;padding:.7rem .8rem;min-width:0}#sqlp .step b{display:block;font-size:.78rem;margin-bottom:.2rem}#sqlp .step span{color:var(--muted);font-size:.76rem}
 #sqlp .panel{border:1px solid var(--line);border-radius:10px;padding:1rem;min-width:0;margin-bottom:.8rem;background:var(--paper)}#sqlp .panel-head{display:flex;align-items:center;justify-content:space-between;gap:.7rem;flex-wrap:wrap;margin-bottom:.65rem}#sqlp .panel-head h2{margin:0}#sqlp .pill{border:1px solid var(--line);border-radius:999px;padding:.25rem .55rem;font-size:.74rem;color:var(--muted)}
-#sqlp button,#sqlp select,#sqlp input,#sqlp textarea{font:inherit}#sqlp button{border:1px solid #cfcfcf;border-radius:7px;background:#fff;color:#111;padding:.58rem .78rem;cursor:pointer;transition:background .15s}#sqlp button:hover{background:#f2f2f2}#sqlp button.primary{background:#111;color:#fff;border-color:#111}#sqlp button.primary:hover{background:#333}#sqlp button:disabled{opacity:.45;cursor:not-allowed}#sqlp select,#sqlp input[type=text],#sqlp input[type=file]{width:100%;border:1px solid #d2d2d2;border-radius:7px;padding:.55rem;background:#fff;color:#111;min-width:0}#sqlp label{display:block;font-size:.78rem;font-weight:650;margin:.55rem 0 .3rem}
+#sqlp button,#sqlp select,#sqlp input,#sqlp textarea{font:inherit}#sqlp button{border:1px solid #cfcfcf;border-radius:7px;background:#fff;color:#111;padding:.58rem .78rem;cursor:pointer;transition:background .15s}#sqlp button:hover{background:#f2f2f2}#sqlp button:focus-visible,#sqlp select:focus-visible,#sqlp input:focus-visible,#sqlp textarea:focus-visible{outline:2px solid #111;outline-offset:2px}#sqlp button.primary{background:#111;color:#fff;border-color:#111}#sqlp button.primary:hover{background:#333}#sqlp button:disabled{opacity:.45;cursor:not-allowed}#sqlp select,#sqlp input[type=text],#sqlp input[type=file]{width:100%;border:1px solid #d2d2d2;border-radius:7px;padding:.55rem;background:#fff;color:#111;min-width:0}#sqlp label{display:block;font-size:.78rem;font-weight:650;margin:.55rem 0 .3rem}
 #sqlp .row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}#sqlp .row>*{min-width:0}#sqlp .dataset{flex:1;text-align:left;min-width:140px}#sqlp .dataset strong{display:block}#sqlp .dataset small{display:block;color:var(--muted);font-size:.75rem;margin-top:.2rem}
 #sqlp textarea{background:#fff;color:#111;border:1px solid #d2d2d2}
 #sqlp .cm-editor{border:1px solid #d2d2d2;border-radius:7px;font-size:.88rem;min-height:215px;color:#111;background:#fff}
@@ -33,7 +33,7 @@ permalink: /sql-playground/
 #sqlp .chart-more{margin:.15rem 0 .8rem}#sqlp .chart-more[hidden]{display:none}#sqlp .chart-more-toggle{font-size:.8rem}
 #sqlp .chart-note{font-size:.76rem;color:var(--muted);min-height:1.1em;margin:.4rem 0 .7rem}
 @media(max-width:780px){#sqlp .chart-picker{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:780px){#sqlp .steps{grid-template-columns:repeat(2,minmax(0,1fr))}#sqlp .workspace{grid-template-columns:1fr}#sqlp .chart-controls{grid-template-columns:repeat(2,minmax(0,1fr))}#sqlp #sqlp-chart{height:320px}}@media(max-width:420px){#sqlp .profile-metrics{grid-template-columns:1fr}#sqlp .query-tools{grid-template-columns:1fr}#sqlp .panel{padding:.75rem}#sqlp .chart-controls{grid-template-columns:1fr}#sqlp .chart-controls .wide{grid-column:auto}#sqlp .steps{gap:.35rem}#sqlp .step{padding:.6rem}}
+@media(max-width:780px){#sqlp .steps{grid-template-columns:1fr}#sqlp .workspace{grid-template-columns:1fr}#sqlp .chart-controls{grid-template-columns:repeat(2,minmax(0,1fr))}#sqlp #sqlp-chart{height:320px}}@media(max-width:420px){#sqlp .profile-metrics{grid-template-columns:1fr}#sqlp .query-tools{grid-template-columns:1fr}#sqlp .panel{padding:.75rem}#sqlp .chart-controls{grid-template-columns:1fr}#sqlp .chart-controls .wide{grid-column:auto}#sqlp .steps{gap:.35rem}#sqlp .step{padding:.6rem}}
 </style>
 
 <div id="sqlp">
@@ -206,6 +206,7 @@ const examples = {
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function quote(n){return '"'+String(n).replace(/"/g,'""')+'"';}
 function status(msg,error=false){$('sqlp-status').textContent=msg;$('sqlp-status').classList.toggle('error',error);}
+function friendlySqlError(error){const message=String(error?.message||error||'Unknown SQL error');if(/parser error|syntax error|unexpected/i.test(message))return 'SQL syntax error. Check quotes, commas, and clause order. Details: '+message;if(/catalog error|table .* does not exist|not found/i.test(message))return 'A table or column could not be found. Check its spelling and make sure the table is loaded. Details: '+message;if(/conversion error|cannot cast|type mismatch/i.test(message))return 'The query has a data type mismatch. Check casts and the values being compared. Details: '+message;return 'Query failed. Check the SQL and selected table. Details: '+message;}
 function toText(v){if(v===null||v===undefined)return 'NULL';if(typeof v==='bigint')return v.toString();if(v instanceof Date)return v.toISOString();if(typeof v==='object')return JSON.stringify(v);return String(v);}
 function employeeCSV(){
  const departments=['Engineering','Sales','Operations','Finance','Marketing','People','Analytics','Strategy'];
@@ -352,7 +353,7 @@ async function run(){
   state.queryText=sql;
   const rows=result.toArray().map(row=>cols.map(c=>row[c.name]));
   renderRows(cols,rows);status('Query completed in '+((performance.now()-t)/1000).toFixed(2)+'s.');await refreshTables();drawChart();
- }catch(e){status(e.message||String(e),true);}
+ }catch(e){status(friendlySqlError(e),true);}
  finally{$('sqlp-run').disabled=!state.ready;}
 }
 function selectedChart(){return document.querySelector('#sqlp [data-chart][aria-pressed="true"]')?.dataset.chart||'bar';}
@@ -476,11 +477,13 @@ async function init(){
   const charts=await import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/charts.js');
   const components=await import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/components.js');
   const renderers=await import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/renderers.js');
-  echarts.use([charts.BarChart,charts.LineChart,charts.PieChart,charts.ScatterChart,charts.HeatmapChart,charts.BoxplotChart,charts.TreemapChart,charts.FunnelChart,charts.RadarChart,charts.GaugeChart,charts.SankeyChart,components.TitleComponent,components.TooltipComponent,components.GridComponent,components.LegendComponent,components.VisualMapComponent,renderers.CanvasRenderer,renderers.SVGRenderer]);
+  echarts.use([charts.BarChart,charts.LineChart,charts.PieChart,charts.ScatterChart,charts.HeatmapChart,charts.BoxplotChart,charts.TreemapChart,charts.FunnelChart,charts.RadarChart,charts.GaugeChart,charts.SankeyChart,components.TitleComponent,components.TooltipComponent,components.GridComponent,components.LegendComponent,components.VisualMapComponent,components.RadarComponent,renderers.CanvasRenderer,renderers.SVGRenderer]);
   state.chart=echarts.init($('sqlp-chart'),null,{renderer:'canvas'});
   $('sqlp-run').disabled=false;$('sqlp-import').disabled=false;
-  const hashConfig=readHashConfig();if(hashConfig)restoreConfig(hashConfig);else{try{restoreConfig(JSON.parse(localStorage.getItem('theanalyst.sql.session')||'null'));}catch(_){}}
+  let restore=readHashConfig();if(!restore){try{restore=JSON.parse(localStorage.getItem('theanalyst.sql.session')||'null');}catch(_){}}
+  if(restore)restoreConfig(restore);
   setPalette($('sqlp-palette').value||'mono');status('DuckDB ready. Run SQL or choose a sample dataset.');await run();
+  if(restore){restoreConfig(restore);setPalette(restore.palette||'mono');updateChartAvailability();await drawChart();}
  }catch(e){$('sqlp-engine').textContent='Engine unavailable';status('Could not start DuckDB. Reload the page or check browser/CDN restrictions. '+(e.message||String(e)),true);}
 }
 $('sqlp-run').addEventListener('click',run);
@@ -497,7 +500,7 @@ $('sqlp-import').addEventListener('click',importFiles);
 const dropzone=$('sqlp-dropzone');
 ['dragenter','dragover'].forEach(type=>dropzone.addEventListener(type,e=>{e.preventDefault();dropzone.style.background='#f7f7f7';}));
 ['dragleave','drop'].forEach(type=>dropzone.addEventListener(type,e=>{e.preventDefault();dropzone.style.background='#fff';}));
-dropzone.addEventListener('drop',e=>{const files=Array.from(e.dataTransfer?.files||[]).filter(f=>/\\.csv$/i.test(f.name));if(!files.length){$('sqlp-import-status').textContent='Drop CSV files to import them.';return;}const dt=new DataTransfer();files.forEach(f=>dt.items.add(f));$('sqlp-files').files=dt.files;importFiles();});
+dropzone.addEventListener('drop',e=>{const files=Array.from(e.dataTransfer?.files||[]).filter(f=>f.name.toLowerCase().endsWith('.csv'));if(!files.length){$('sqlp-import-status').textContent='Drop CSV files to import them.';return;}const dt=new DataTransfer();files.forEach(f=>dt.items.add(f));$('sqlp-files').files=dt.files;importFiles();});
 $('sqlp-render').addEventListener('click',drawChart);
 ['sqlp-x','sqlp-y','sqlp-y-multi','sqlp-group','sqlp-extra','sqlp-title','sqlp-subtitle','sqlp-x-title','sqlp-y-title','sqlp-footnote','sqlp-sort','sqlp-labels','sqlp-gridlines','sqlp-legend'].forEach(id=>$(id).addEventListener('change',()=>{updateChartAvailability();drawChart();persistConfig();}));
 document.querySelectorAll('#sqlp [data-palette]').forEach(b=>b.addEventListener('click',()=>{setPalette(b.dataset.palette);drawChart();persistConfig();}));
