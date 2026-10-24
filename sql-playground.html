@@ -67,29 +67,29 @@ permalink: /sql-playground/
 #sqlp .sqlp-footer{border-top:1px solid var(--line);margin-top:1.5rem;padding-top:1rem;color:var(--muted);font-size:.78rem}
 @media(max-width:1100px){#sqlp .steps{grid-template-columns:repeat(2,minmax(0,1fr))}#sqlp .chart-controls{grid-template-columns:repeat(2,minmax(0,1fr))}#sqlp #sqlp-chart{height:360px}}@media(max-width:780px){#sqlp .chart-picker{grid-template-columns:repeat(2,minmax(0,1fr))}#sqlp .steps{grid-template-columns:1fr}#sqlp .query-tools{grid-template-columns:1fr}}@media(max-width:520px){#sqlp .profile-metrics{grid-template-columns:1fr}#sqlp .panel{padding:.75rem}#sqlp .chart-controls{grid-template-columns:1fr}#sqlp .chart-controls .wide{grid-column:auto}#sqlp .steps{gap:.35rem}#sqlp .step{padding:.6rem}#sqlp #sqlp-chart{height:300px}}
 
-@media(max-width:640px){
-  #sqlp .palette-groups{display:grid;grid-template-columns:minmax(0,1fr);gap:.45rem}
-  #sqlp .palette-groups>div{display:grid;grid-template-columns:100px minmax(0,1fr);align-items:center;gap:.35rem}
-  #sqlp .palette-heading{margin:0!important;line-height:1.2}
-  #sqlp .palette-row{display:flex;flex-wrap:wrap;gap:.25rem}
-  #sqlp .palette-choice{min-width:0;padding:.3rem .4rem;gap:.2rem}
-  #sqlp .palette-choice .swatches{max-width:82px}
+
+/* Palette layout: compact families on desktop, stacked without overflow on phones. */
+#sqlp .palette-groups{display:grid;grid-template-columns:max-content max-content max-content;align-items:start;justify-content:start;column-gap:.7rem;row-gap:.45rem}
+#sqlp .palette-groups>div{display:flex;flex-direction:column;gap:.3rem;min-width:0}
+#sqlp .palette-row{display:flex;flex-wrap:nowrap;gap:.3rem;min-width:0}
+#sqlp .palette-choice{min-width:82px;max-width:100%;padding:.35rem .4rem}
+#sqlp .palette-choice .swatches{max-width:100%}
+@media(max-width:900px){
+  #sqlp .palette-groups{grid-template-columns:minmax(0,1fr);row-gap:.4rem}
+  #sqlp .palette-groups>div{display:grid;grid-template-columns:100px minmax(0,1fr);align-items:center;gap:.4rem}
+  #sqlp .palette-row{flex-wrap:wrap;min-width:0}
+  #sqlp .palette-choice{min-width:0}
+}
+@media(max-width:520px){
+  #sqlp .palette-groups{gap:.35rem}
+  #sqlp .palette-groups>div{grid-template-columns:76px minmax(0,1fr);gap:.3rem}
+  #sqlp .palette-heading{line-height:1.2;margin:0!important}
+  #sqlp .palette-row{gap:.25rem}
+  #sqlp .palette-choice{padding:.3rem .35rem;font-size:.68rem}
+  #sqlp .palette-choice .swatches{max-width:74px}
+  #sqlp #sqlp-chart{height:300px}
 }
 
-/* Keep palette families together instead of wrapping MBB to a new row. */
-#sqlp .palette-groups{display:grid;grid-template-columns:max-content max-content max-content;align-items:start;justify-content:start;column-gap:.7rem;row-gap:.35rem}
-#sqlp .palette-groups>div{min-width:0}
-#sqlp .palette-row{flex-wrap:nowrap}
-@media(max-width:900px){
-  #sqlp .palette-groups{grid-template-columns:minmax(0,1fr)}
-  #sqlp .palette-groups>div{display:grid;grid-template-columns:100px minmax(0,1fr);align-items:center;gap:.35rem}
-  #sqlp .palette-row{flex-wrap:wrap}
-}
-@media(max-width:640px){
-  #sqlp .palette-groups{gap:.35rem}
-  #sqlp .palette-groups>div{grid-template-columns:88px minmax(0,1fr)}
-  #sqlp .palette-choice{min-width:0;padding:.25rem .35rem}
-}
 </style>
 
 <div id="sqlp">
@@ -215,7 +215,7 @@ permalink: /sql-playground/
     </div>
     <p class="hint">PNG exports at 2× resolution; SVG is vector; PowerPoint contains one 16:9 slide with the chart and source note. Copy link shares the query and chart settings only, never uploaded data.</p>
   </section>
-  <footer class="sqlp-footer">theanalyst.in - your data stays in your browser.</footer>
+  <footer class="sqlp-footer">Your data stays in your browser.</footer>
 </div>
 
 <script type="module">
