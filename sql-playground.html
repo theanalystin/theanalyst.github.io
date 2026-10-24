@@ -139,10 +139,11 @@ permalink: /sql-playground/
           <option value="rankSalaries">10. Window function — salary rank</option>
           <option value="customersWithoutOrders">11. LEFT JOIN — customers without orders</option>
           <option value="orderDetail">12. Multi-table JOIN — order line detail</option>
-        </select><p class="hint">Choose an example, inspect the SQL, then run it. Examples include joins, aggregation, date analysis and window functions.</p></div>
+        </select><p class="hint">Choose an example to load it into the editor. Then edit any part of the SQL or replace it with your own query and click <strong>Run query</strong>. You can query the sample tables or tables imported from CSV.</p></div>
         <div><p class="hint">Your query runs in this browser. Save useful SQL locally, or format it before running.</p><div class="row" style="margin-top:.5rem"><button id="sqlp-format" type="button">Format SQL</button><button id="sqlp-save-query" type="button">Save query</button></div></div>
       </div>
-      <label for="sqlp-query">SQL query</label>
+      <label for="sqlp-query">SQL query — editable</label>
+      <p class="hint">This is a normal, editable SQL editor. Sample queries are starting points, not locked templates.</p>
       <div id="sqlp-editor-host" aria-label="SQL editor"></div>
       <textarea id="sqlp-query" spellcheck="false" aria-label="SQL query editor">SELECT department, COUNT(*) AS headcount FROM employees GROUP BY department ORDER BY headcount DESC;</textarea>
       <div class="row" style="margin-top:.6rem">
@@ -746,7 +747,7 @@ $('sqlp-png').addEventListener('click',()=>{if(state.chart)downloadBlob(dataURIt
 $('sqlp-ppt').addEventListener('click',exportPpt);
 
 function dataURItoBlob(uri){const parts=uri.split(','),mime=parts[0].match(/:(.*?);/)[1],raw=atob(parts[1]),arr=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)arr[i]=raw.charCodeAt(i);return new Blob([arr],{type:mime});}
-document.querySelectorAll('#sqlp [data-sample]').forEach(b=>b.addEventListener('click',async()=>{try{if(!state.ready)await init();state.pendingConfig=null;await loadSample(b.dataset.sample);setQuery(examples[b.dataset.sample]);await run();}catch(e){status('Could not load sample: '+(e.message||String(e)),true);}}));
+document.querySelectorAll('#sqlp [data-sample]').forEach(b=>b.addEventListener('click',async()=>{try{if(!state.ready)await init();state.pendingConfig=null;await loadSample(b.dataset.sample);setQuery(examples.headcount);await run();}catch(e){status('Could not load sample: '+(e.message||String(e)),true);}}));
 status('Choose a sample, import a CSV, or run SQL to initialize DuckDB.');
 })();
 </script>
