@@ -49,13 +49,19 @@ try {
       );
       if (!previewBeforeExport) throw new Error('Live chart preview must appear before export controls');
       const cases = [
-        ['headcount','bar'], ['topLocations','horizontalBar'], ['monthlyHiring','line'],
-        ['cumulativeHiring','area'], ['genderHeadcount','stackedBar'], ['attritionShare','pie'],
-        ['salaryTenure','scatter'], ['performanceHeatmap','heatmap'], ['salaryHistogram','histogram'],
-        ['salaryBoxplot','boxplot']
+        ['SELECT department, COUNT(*) AS headcount FROM employees GROUP BY department ORDER BY headcount DESC;', 'bar'],
+        ['SELECT department, COUNT(*) AS headcount FROM employees GROUP BY department ORDER BY headcount DESC;', 'horizontalBar'],
+        ['SELECT join_date AS month, COUNT(*) AS hires FROM employees GROUP BY join_date ORDER BY join_date;', 'line'],
+        ['SELECT join_date AS month, SUM(COUNT(*)) OVER (ORDER BY join_date) AS cumulative_hires FROM employees GROUP BY join_date ORDER BY join_date;', 'area'],
+        ['SELECT department, gender, COUNT(*) AS headcount FROM employees GROUP BY department, gender ORDER BY department, gender;', 'stackedBar'],
+        ['SELECT department, COUNT(*) AS headcount FROM employees GROUP BY department ORDER BY headcount DESC;', 'pie'],
+        ['SELECT tenure_years, salary, performance_rating FROM employees;', 'scatter'],
+        ['SELECT department, grade, ROUND(AVG(performance_rating),2) AS avg_rating FROM employees GROUP BY department, grade ORDER BY department, grade;', 'heatmap'],
+        ['SELECT salary FROM employees;', 'histogram'],
+        ['SELECT grade, salary FROM employees;', 'boxplot']
       ];
-      for (const [queryKey, chartType] of cases) {
-        await page.locator('#sqlp-query-examples').selectOption(queryKey);
+      for (const [sql, chartType] of cases) {
+        await page.locator('.cm-content').fill(sql);
         await page.locator('#sqlp-run').click();
         await page.waitForFunction(() => (document.querySelector('#sqlp-status')?.textContent || '').startsWith('Query completed'), null, { timeout: 30000 });
         const tile = page.locator(`#sqlp [data-chart="${chartType}"]`);
@@ -69,7 +75,7 @@ try {
             columns: Array.from(document.querySelectorAll('#sqlp-x option')).map(o => o.value),
             types: Array.from(document.querySelectorAll('#sqlp-chart-picker [data-chart]')).map(button => ({ type: button.dataset.chart, disabled: button.disabled }))
           }));
-          throw new Error(`Chart ${chartType} was disabled for sample query ${queryKey}: ${JSON.stringify(diagnostic)}`);
+          throw new Error(`Chart ${chartType} was disabled for SQL ${sql}: ${JSON.stringify(diagnostic)}`);
         }
         await tile.click();
         await page.waitForFunction(type => document.querySelector('#sqlp-chart')?.dataset.chartType === type, chartType, { timeout: 15000 });
