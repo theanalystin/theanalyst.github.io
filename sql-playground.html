@@ -80,13 +80,7 @@ permalink: /sql-playground/
           <option value="departmentGender">4. Headcount by department and gender</option>
           <option value="employeeDetail">5. Employee details for custom analysis</option>
         </select><p class="hint">Load a starter, edit the SQL, and run it. Chart type is selected separately, so you can use your own query with any compatible chart.</p></div>
-        <div><label for="sqlp-saved-query">Saved queries (editable copies)</label><select id="sqlp-saved-query"><option value="">Saved queries…</option></select>
-          <div class="row" style="margin-top:.45rem">
-            <button id="sqlp-update-saved" type="button" disabled>Update selected</button>
-            <button id="sqlp-rename-saved" type="button" disabled>Rename</button>
-            <button id="sqlp-delete-saved" type="button" disabled>Delete</button>
-          </div>
-        </div>
+        <div><p class="hint">Edit the SQL below and run it freely. Changes are temporary and are not saved automatically.</p></div>
       </div>
       <label for="sqlp-query">SQL query</label>
       <div id="sqlp-editor-host" aria-label="SQL editor"></div>
@@ -94,7 +88,6 @@ permalink: /sql-playground/
       <div class="row" style="margin-top:.6rem">
         <button class="primary" id="sqlp-run" type="button">Run query</button>
         <button id="sqlp-example" type="button">Load selected</button>
-        <button id="sqlp-save-query" type="button">Save query</button>
         <button id="sqlp-clear" type="button">Clear</button>
       </div>
       <p id="sqlp-status" class="status" role="status" aria-live="polite">Choose a sample, import a CSV, or run SQL to start the browser engine.</p>
@@ -277,10 +270,9 @@ async function initCodeMirror(){
  finally{state.editorLoading=false;}
 }
 function selectedYNames(){const extra=Array.from($('sqlp-y-multi')?.selectedOptions||[]).map(o=>o.value);return [...new Set([$('sqlp-y').value,...extra].filter(Boolean))];}
-function configState(){return {query:getQuery(),type:selectedChart(),x:$('sqlp-x').value,y:$('sqlp-y').value,ys:selectedYNames(),group:$('sqlp-group').value,extra:$('sqlp-extra').value,title:$('sqlp-title').value,subtitle:$('sqlp-subtitle').value,xTitle:$('sqlp-x-title').value,yTitle:$('sqlp-y-title').value,footnote:$('sqlp-footnote').value,palette:$('sqlp-palette').value,labels:$('sqlp-labels').checked,gridlines:$('sqlp-gridlines').checked,legend:$('sqlp-legend').checked,sort:$('sqlp-sort').value};}
+function configState(){return {type:selectedChart(),x:$('sqlp-x').value,y:$('sqlp-y').value,ys:selectedYNames(),group:$('sqlp-group').value,extra:$('sqlp-extra').value,title:$('sqlp-title').value,subtitle:$('sqlp-subtitle').value,xTitle:$('sqlp-x-title').value,yTitle:$('sqlp-y-title').value,footnote:$('sqlp-footnote').value,palette:$('sqlp-palette').value,labels:$('sqlp-labels').checked,gridlines:$('sqlp-gridlines').checked,legend:$('sqlp-legend').checked,sort:$('sqlp-sort').value};}
 function persistConfig(){try{localStorage.setItem('theanalyst.sql.session',JSON.stringify(configState()));}catch(_){}}
 function restoreConfig(config){if(!config||typeof config!=='object')return;
- if(config.query)setQuery(config.query);
  for(const [key,id] of [['x','sqlp-x'],['y','sqlp-y'],['group','sqlp-group'],['extra','sqlp-extra'],['title','sqlp-title'],['subtitle','sqlp-subtitle'],['xTitle','sqlp-x-title'],['yTitle','sqlp-y-title'],['footnote','sqlp-footnote'],['palette','sqlp-palette'],['sort','sqlp-sort']])if(config[key]!=null&&$(id))$(id).value=config[key];
  for(const key of ['labels','gridlines','legend'])if(config[key]!=null)$('sqlp-'+key).checked=!!config[key];
  if(Array.isArray(config.ys))Array.from($('sqlp-y-multi').options).forEach(o=>o.selected=config.ys.includes(o.value));
@@ -542,7 +534,7 @@ async function init(){
    state.conn=await state.db.connect();state.ready=true;$('sqlp-engine').textContent='DuckDB ready';
    $('sqlp-run').disabled=false;$('sqlp-import').disabled=false;
    let restore=readHashConfig();if(!restore){try{restore=JSON.parse(localStorage.getItem('theanalyst.sql.session')||'null');}catch(_){}}
-   if(restore){state.pendingConfig=restore;if(restore.query)setQuery(restore.query);setPalette(restore.palette||'mono');}
+   if(restore){state.pendingConfig=restore;setPalette(restore.palette||'mono');}
    status('DuckDB ready. Choose a sample, import a CSV, or run SQL.');
    return true;
   }catch(e){
@@ -558,12 +550,6 @@ $('sqlp-query').addEventListener('focus',initCodeMirror,{once:true});
 $('sqlp-query').addEventListener('input',()=>{state.pendingConfig=null;persistConfig();});
 $('sqlp-example').addEventListener('click',()=>{state.pendingConfig=null;setQuery(examples[$('sqlp-query-examples').value]||examples.headcount);});
 $('sqlp-query-examples').addEventListener('change',()=>{state.pendingConfig=null;setQuery(examples[$('sqlp-query-examples').value]||examples.headcount);});
-$('sqlp-save-query').addEventListener('click',saveQuery);
-$('sqlp-saved-query').addEventListener('change',()=>{state.pendingConfig=null;const saved=readSavedQueries(),i=selectedSavedIndex();if(saved[i])setQuery(saved[i].sql);refreshSavedQueries(i);});
-$('sqlp-update-saved').addEventListener('click',updateSelectedSavedQuery);
-$('sqlp-rename-saved').addEventListener('click',renameSelectedSavedQuery);
-$('sqlp-delete-saved').addEventListener('click',deleteSelectedSavedQuery);
-refreshSavedQueries();
 $('sqlp-clear').addEventListener('click',()=>{setQuery('');state.editor?state.editor.focus():$('sqlp-query').focus();});
 $('sqlp-download').addEventListener('click',csvDownload);
 $('sqlp-import').addEventListener('click',importFiles);
