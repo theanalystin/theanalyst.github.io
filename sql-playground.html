@@ -249,7 +249,7 @@ function fillSelect(id,cols,preferred,blank=false){
  cols.forEach(c=>{const o=document.createElement('option');o.value=c.name;o.textContent=c.name;el.appendChild(o);});
  if(cols.some(c=>c.name===old))el.value=old;else if(cols.some(c=>c.name===preferred))el.value=preferred;else if(!blank&&cols.length)el.selectedIndex=Math.min(id==='sqlp-x'?0:1,cols.length-1);
 }
-function getQuery(){return state.editor?state.editor.state.doc.toString():$('sqlp-query').value;}
+function getQuery(){const editorText=state.editor?state.editor.state.doc.toString():'';const textareaText=$('sqlp-query').value||'';return editorText.trim()?editorText:textareaText;}
 function setQuery(value){$('sqlp-query').value=String(value??'');if(state.editor){const doc=state.editor.state.doc;state.editor.dispatch({changes:{from:0,to:doc.length,insert:$('sqlp-query').value}});}}
 async function initCodeMirror(){
  if(state.editor||state.editorLoading)return;state.editorLoading=true;
