@@ -108,7 +108,7 @@ permalink: /sql-playground/
         <section class="panel">
     <div class="panel-head"><h2>01 — Choose your data</h2><span class="pill" id="sqlp-engine">Ready when you are</span></div>
     <div class="row">
-      <button type="button" class="dataset" data-sample="employees"><strong>Sample database · 10 rows × 10 columns</strong><small>Employees, departments, grade, location, tenure, salary and performance</small></button>
+      <button type="button" class="dataset" data-sample="employees"><strong>Sample database · relational tables</strong><small>Employees, departments, customers, products, orders and order items — ready for JOIN practice</small></button>
     </div>
     <div class="row" style="margin-top:.7rem;align-items:flex-end">
       <div id="sqlp-dropzone" class="drop" style="flex:1;min-width:220px"><label for="sqlp-files">Or import CSV files (drop here or browse)</label><input id="sqlp-files" type="file" accept=".csv,text/csv" multiple><p class="hint">Drop one or more CSV files here.</p></div>
@@ -126,14 +126,21 @@ permalink: /sql-playground/
       <section class="panel">
       <div class="panel-head"><h2>02 — Write your SQL</h2><span class="pill">Ctrl / ⌘ + Enter</span></div>
       <div class="query-tools">
-        <div><label for="sqlp-query-examples">5 starter queries</label><select id="sqlp-query-examples">
-          <option value="headcount">1. Headcount by department</option>
-          <option value="salaryByGrade">2. Average salary by grade</option>
-          <option value="hiringTrend">3. Hiring trend by date</option>
-          <option value="departmentGender">4. Headcount by department and gender</option>
-          <option value="employeeDetail">5. Employee details for custom analysis</option>
-        </select><p class="hint">Load a starter, edit the SQL, and run it. Chart type is selected separately, so you can use your own query with any compatible chart.</p></div>
-        <div><p class="hint">Edit the SQL below and run it freely. Changes are temporary and are not saved automatically.</p></div>
+        <div><label for="sqlp-query-examples">SQL examples · beginner to analyst</label><select id="sqlp-query-examples">
+          <option value="headcount">1. GROUP BY — headcount by department</option>
+          <option value="salaryByGrade">2. AVG — salary by grade</option>
+          <option value="hiringTrend">3. Dates — hiring trend</option>
+          <option value="departmentGender">4. GROUP BY — department and gender</option>
+          <option value="employeeDetail">5. ORDER BY — highest-paid employees</option>
+          <option value="departmentJoin">6. JOIN — employees and departments</option>
+          <option value="customerOrders">7. JOIN — customer order totals</option>
+          <option value="productRevenue">8. JOIN — revenue by product</option>
+          <option value="monthlyRevenue">9. Dates — monthly revenue</option>
+          <option value="rankSalaries">10. Window function — salary rank</option>
+          <option value="customersWithoutOrders">11. LEFT JOIN — customers without orders</option>
+          <option value="orderDetail">12. Multi-table JOIN — order line detail</option>
+        </select><p class="hint">Choose an example, inspect the SQL, then run it. Examples include joins, aggregation, date analysis and window functions.</p></div>
+        <div><p class="hint">Your query runs in this browser. Save useful SQL locally, or format it before running.</p><div class="row" style="margin-top:.5rem"><button id="sqlp-format" type="button">Format SQL</button><button id="sqlp-save-query" type="button">Save query</button></div></div>
       </div>
       <label for="sqlp-query">SQL query</label>
       <div id="sqlp-editor-host" aria-label="SQL editor"></div>
@@ -142,6 +149,13 @@ permalink: /sql-playground/
         <button class="primary" id="sqlp-run" type="button">Run query</button>
         <button id="sqlp-example" type="button">Load selected</button>
         <button id="sqlp-clear" type="button">Clear</button>
+      </div>
+      <div class="row" style="margin-top:.55rem;align-items:flex-end">
+        <div style="flex:1;min-width:190px"><label for="sqlp-saved-query">Saved queries · this browser only</label><select id="sqlp-saved-query"><option value="">Saved queries…</option></select></div>
+        <button id="sqlp-load-saved" type="button">Load saved</button>
+        <button id="sqlp-update-saved" type="button" disabled>Update</button>
+        <button id="sqlp-rename-saved" type="button" disabled>Rename</button>
+        <button id="sqlp-delete-saved" type="button" disabled>Delete</button>
       </div>
       <p id="sqlp-status" class="status" role="status" aria-live="polite">Choose a sample, import a CSV, or run SQL to start the browser engine.</p>
       <div style="margin-top:1rem">
@@ -241,6 +255,13 @@ const examples = {
  hiringTrend:'SELECT join_date AS hire_date, COUNT(*) AS hires FROM employees GROUP BY join_date ORDER BY join_date;',
  departmentGender:'SELECT department, gender, COUNT(*) AS headcount FROM employees GROUP BY department, gender ORDER BY department, gender;',
  employeeDetail:'SELECT name, department, tenure_years, salary, performance_rating FROM employees ORDER BY salary DESC;',
+ departmentJoin:'SELECT e.name, e.department, d.manager, d.budget FROM employees e LEFT JOIN departments d USING (department) ORDER BY e.department, e.name;',
+ customerOrders:'SELECT c.customer_name, c.segment, COUNT(DISTINCT o.order_id) AS orders, ROUND(SUM(oi.quantity * p.unit_price * (1 - oi.discount)), 2) AS net_sales FROM customers c JOIN orders o USING (customer_id) JOIN order_items oi USING (order_id) JOIN products p USING (product_id) GROUP BY c.customer_id, c.customer_name, c.segment ORDER BY net_sales DESC;',
+ productRevenue:'SELECT p.product_name, p.category, ROUND(SUM(oi.quantity * p.unit_price * (1 - oi.discount)), 2) AS net_revenue FROM products p JOIN order_items oi USING (product_id) GROUP BY p.product_id, p.product_name, p.category ORDER BY net_revenue DESC;',
+ monthlyRevenue:"SELECT DATE_TRUNC('month', o.order_date)::DATE AS month, ROUND(SUM(oi.quantity * p.unit_price * (1 - oi.discount)), 2) AS net_revenue FROM orders o JOIN order_items oi USING (order_id) JOIN products p USING (product_id) GROUP BY 1 ORDER BY 1;",
+ rankSalaries:'SELECT name, department, salary, DENSE_RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS salary_rank FROM employees ORDER BY department, salary_rank;',
+ customersWithoutOrders:'SELECT c.customer_id, c.customer_name, c.city, c.segment FROM customers c LEFT JOIN orders o USING (customer_id) WHERE o.order_id IS NULL ORDER BY c.customer_name;',
+ orderDetail:'SELECT o.order_id, o.order_date, c.customer_name, p.product_name, oi.quantity, p.unit_price, oi.discount, ROUND(oi.quantity * p.unit_price * (1 - oi.discount), 2) AS line_total FROM orders o JOIN customers c USING (customer_id) JOIN order_items oi USING (order_id) JOIN products p USING (product_id) ORDER BY o.order_date DESC, o.order_id LIMIT 100;',
  topLocations:'SELECT location, ROUND(AVG(salary),0) AS avg_salary FROM employees GROUP BY location ORDER BY avg_salary DESC LIMIT 10;',
  monthlyHiring:'SELECT join_date AS month, COUNT(*) AS hires FROM employees GROUP BY join_date ORDER BY join_date;',
  cumulativeHiring:'SELECT join_date AS month, SUM(COUNT(*)) OVER (ORDER BY join_date) AS cumulative_hires FROM employees GROUP BY join_date ORDER BY join_date;',
@@ -285,6 +306,30 @@ function employeeCSV(){
 const samples={
  employees:{name:'employees',csv:null}
 };
+function relatedSampleCSVs(){
+ const departments=[
+  ['Engineering','Priya Menon',5200000,'Bengaluru'],['Sales','Rahul Verma',3100000,'Mumbai'],
+  ['Analytics','Sneha Rao',2800000,'Hyderabad'],['Operations','Vikram Shah',2400000,'Chennai'],
+  ['Finance','Megha Iyer',2200000,'Pune'],['Marketing','Karan Das',2600000,'Delhi NCR'],
+  ['People','Nisha Kapoor',1800000,'Kolkata'],['Support','Dev Patel',1600000,'Bengaluru']
+ ];
+ const customers=Array.from({length:24},(_,i)=>[1001+i,['Aarav Retail','Bluebird Labs','Cedar Foods','Delta Stores','Evergreen Co','Fable Studio','Grove Market','Harbor Health'][i%8]+' '+(Math.floor(i/8)+1),['Bengaluru','Mumbai','Hyderabad','Chennai','Pune','Delhi NCR'][i%6],['SMB','Mid-market','Enterprise'][i%3]]);
+ const products=[
+  [201,'Analytics Starter','Software',12000],[202,'Analytics Pro','Software',28000],[203,'SQL Training','Training',8500],
+  [204,'Dashboard Pack','Services',18000],[205,'Data Quality Audit','Services',32000],[206,'Cloud Credits','Cloud',6500],
+  [207,'Team Workshop','Training',24000],[208,'Executive Report','Services',15000]
+ ];
+ const orders=Array.from({length:42},(_,i)=>[5001+i,1001+((i*7+3)%24),'2026-'+String(1+(i%9)).padStart(2,'0')+'-'+String(1+((i*5)%27)).padStart(2,'0'),['completed','completed','completed','processing','cancelled'][i%5]]);
+ const items=orders.flatMap((o,i)=>[0,1].map(j=>[o[0],201+((i+j*3)%8),1+((i+j)%5),[0,0.05,0.1,0.15][(i+j)%4]]));
+ const csv=(header,rows)=>[header,...rows.map(row=>row.join(','))].join('\n');
+ return {
+  departments:csv('department,manager,budget,location',departments),
+  customers:csv('customer_id,customer_name,city,segment',customers),
+  products:csv('product_id,product_name,category,unit_price',products),
+  orders:csv('order_id,customer_id,order_date,status',orders),
+  order_items:csv('order_id,product_id,quantity,discount',items)
+ };
+}
 function tableName(filename){let n=filename.replace(/\.csv$/i,'').toLowerCase().replace(/[^a-z0-9_]+/g,'_').replace(/^([^a-z_])/,'t_$1').replace(/_+/g,'_');return n||'imported_data';}
 async function addTable(name,csv,tag){
  const virtual=tag+'_'+name+'.csv';
@@ -333,7 +378,9 @@ function renderRows(cols,rows){
  if(!cols.length){$('sqlp-results').textContent='Query ran without tabular output.';return;}
  if(!rows.length){$('sqlp-results').textContent='Query returned zero rows.';return;}
  const visible=rows.slice(0,200);
- $('sqlp-results').innerHTML='<div class="table-wrap"><table><thead><tr>'+cols.map(c=>'<th>'+esc(c.name)+'</th>').join('')+'</tr></thead><tbody>'+visible.map(row=>'<tr>'+row.map(v=>'<td>'+esc(toText(v))+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>'+(rows.length>visible.length?'<p class="muted">Showing 200 rows; exports include the complete result.</p>':'');
+ $('sqlp-results').innerHTML='<label for="sqlp-result-search">Filter visible results</label><input id="sqlp-result-search" type="text" placeholder="Search values in the first 200 rows…" style="width:100%;max-width:420px;margin:0 0 .55rem;padding:.5rem;border:1px solid #d2d2d2;border-radius:7px"><div class="table-wrap"><table><thead><tr>'+cols.map(c=>'<th>'+esc(c.name)+'</th>').join('')+'</tr></thead><tbody>'+visible.map(row=>'<tr>'+row.map(v=>'<td>'+esc(toText(v))+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>'+(rows.length>visible.length?'<p class="muted">Showing the first 200 rows; filtering applies to these visible rows. CSV export includes the complete result.</p>':'');
+ const search=$('sqlp-result-search');
+ search.addEventListener('input',()=>{const q=search.value.toLocaleLowerCase();$('sqlp-results').querySelectorAll('tbody tr').forEach(tr=>{tr.hidden=!tr.textContent.toLocaleLowerCase().includes(q);});});
  cols.forEach(c=>{c.numeric=numericType(c.type)||rows.some(r=>{const v=r[c.index];return typeof v==='number'||typeof v==='bigint'||(typeof v==='string'&&v.trim()!==''&&Number.isFinite(Number(v)));});});
  const nums=cols.filter(c=>c.numeric),cats=cols.filter(c=>!c.numeric);
  fillSelect('sqlp-x',cols,cats[0]?.name||nums[0]?.name||cols[0]?.name);
@@ -414,13 +461,13 @@ async function run(){
  const sql=String(getQuery()||'').trim();if(!sql){status('Enter a query first.',true);return;}
  $('sqlp-run').disabled=true;status('Running the SQL in the editor…');const t=performance.now();
  try{
-  // Load the employee sample only when the query actually references that table.
-  if(/\bemployees\b/i.test(sql)&&!state.loadedSamples.has('employees'))await loadSample('employees');
+  // Load the relational sample only when a query references one of its tables.
+  if(/\b(employees|departments|customers|products|orders|order_items)\b/i.test(sql)&&!state.loadedSamples.has('employees'))await loadSample('employees');
   const result=await state.conn.query(sql),cols=result.schema.fields.map((f,i)=>({name:f.name,index:i,type:String(f.type??'')}));
   state.queryText=sql;
   const rows=result.toArray().map(row=>cols.map(c=>row[c.name]));
   renderRows(cols,rows);await refreshTables();
-  status('Custom SQL completed in '+((performance.now()-t)/1000).toFixed(2)+'s · '+rows.length.toLocaleString()+' rows.');
+  status('Query completed in '+((performance.now()-t)/1000).toFixed(2)+'s · '+rows.length.toLocaleString()+' rows · '+cols.length.toLocaleString()+' columns.');
   await drawChart();
   if(state.pendingConfig){const config=state.pendingConfig;state.pendingConfig=null;restoreConfig(config);setPalette(config.palette||'mono');updateChartAvailability();await drawChart();}
  }catch(e){status(friendlySqlError(e),true);}
@@ -544,8 +591,15 @@ async function importFiles(){
 }
 async function loadSample(key){
  const s=samples[key];if(!s||state.loadedSamples.has(key))return;
- $('sqlp-engine').textContent='Loading '+s.name+'…';if(!s.csv)s.csv=employeeCSV();
- await addTable(s.name,s.csv,'sample');state.loadedSamples.add(key);await refreshTables();await profileTable(s.name);$('sqlp-engine').textContent='DuckDB ready';
+ $('sqlp-engine').textContent='Loading sample tables…';
+ if(!s.csv)s.csv=employeeCSV();
+ await addTable(s.name,s.csv,'sample');
+ const related=relatedSampleCSVs();
+ for(const [name,csv] of Object.entries(related))await addTable(name,csv,'sample');
+ state.loadedSamples.add(key);
+ await refreshTables();
+ await profileTable(s.name);
+ $('sqlp-engine').textContent='DuckDB ready · 6 tables';
 }
 async function initEcharts(){
  if(state.chart)return state.chart;
@@ -592,6 +646,26 @@ $('sqlp-query').addEventListener('input',()=>{state.pendingConfig=null;persistCo
 $('sqlp-example').addEventListener('click',()=>{state.pendingConfig=null;setQuery(examples[$('sqlp-query-examples').value]||examples.headcount);});
 $('sqlp-query-examples').addEventListener('change',()=>{state.pendingConfig=null;setQuery(examples[$('sqlp-query-examples').value]||examples.headcount);});
 $('sqlp-clear').addEventListener('click',()=>{setQuery('');state.editor?state.editor.focus():$('sqlp-query').focus();});
+$('sqlp-format').addEventListener('click',()=>{
+ const sql=getQuery().trim();
+ if(!sql){status('Write a query before formatting.',true);return;}
+ const formatted=sql.replace(/\s+/g,' ').replace(/\s*,\s*/g,', ').replace(/\s*\(\s*/g,'(').replace(/\s*\)\s*/g,')')
+  .replace(/\b(SELECT|FROM|WHERE|GROUP BY|HAVING|ORDER BY|LIMIT|OFFSET|JOIN|LEFT JOIN|RIGHT JOIN|FULL JOIN|INNER JOIN|CROSS JOIN|ON|USING|UNION ALL|UNION|WITH|AS|AND|OR|CASE|WHEN|THEN|ELSE|END|OVER|PARTITION BY)\b/gi,'\n$1')
+  .replace(/^\n/,'').replace(/\n(FROM|WHERE|GROUP BY|HAVING|ORDER BY|LIMIT|OFFSET|JOIN|LEFT JOIN|RIGHT JOIN|FULL JOIN|INNER JOIN|CROSS JOIN|UNION ALL|UNION|ON|USING)\b/g,'\n$1')
+  .replace(/;?$/,';').trim();
+ setQuery(formatted);status('SQL formatted locally. Review the result before running.');
+});
+$('sqlp-save-query').addEventListener('click',saveQuery);
+$('sqlp-load-saved').addEventListener('click',()=>{
+ const i=selectedSavedIndex(),saved=readSavedQueries();
+ if(i<0||!saved[i]){status('Choose a saved query first.',true);return;}
+ setQuery(saved[i].sql);status('Loaded saved query “'+saved[i].name+'”.');
+});
+$('sqlp-update-saved').addEventListener('click',updateSelectedSavedQuery);
+$('sqlp-rename-saved').addEventListener('click',renameSelectedSavedQuery);
+$('sqlp-delete-saved').addEventListener('click',deleteSelectedSavedQuery);
+$('sqlp-saved-query').addEventListener('change',()=>refreshSavedQueries(selectedSavedIndex()));
+refreshSavedQueries();
 $('sqlp-download').addEventListener('click',csvDownload);
 $('sqlp-import').addEventListener('click',importFiles);
 const dropzone=$('sqlp-dropzone');
