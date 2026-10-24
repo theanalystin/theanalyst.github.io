@@ -66,6 +66,15 @@ permalink: /sql-playground/
 #sqlp .chart-note{font-size:.76rem;color:var(--muted);min-height:1.1em;margin:.4rem 0 .7rem}
 #sqlp .sqlp-footer{border-top:1px solid var(--line);margin-top:1.5rem;padding-top:1rem;color:var(--muted);font-size:.78rem}
 @media(max-width:1100px){#sqlp .steps{grid-template-columns:repeat(2,minmax(0,1fr))}#sqlp .chart-controls{grid-template-columns:repeat(2,minmax(0,1fr))}#sqlp #sqlp-chart{height:360px}}@media(max-width:780px){#sqlp .chart-picker{grid-template-columns:repeat(2,minmax(0,1fr))}#sqlp .steps{grid-template-columns:1fr}#sqlp .query-tools{grid-template-columns:1fr}}@media(max-width:520px){#sqlp .profile-metrics{grid-template-columns:1fr}#sqlp .panel{padding:.75rem}#sqlp .chart-controls{grid-template-columns:1fr}#sqlp .chart-controls .wide{grid-column:auto}#sqlp .steps{gap:.35rem}#sqlp .step{padding:.6rem}#sqlp #sqlp-chart{height:300px}}
+
+@media(max-width:640px){
+  #sqlp .palette-groups{display:grid;grid-template-columns:minmax(0,1fr);gap:.45rem}
+  #sqlp .palette-groups>div{display:grid;grid-template-columns:100px minmax(0,1fr);align-items:center;gap:.35rem}
+  #sqlp .palette-heading{margin:0!important;line-height:1.2}
+  #sqlp .palette-row{display:flex;flex-wrap:wrap;gap:.25rem}
+  #sqlp .palette-choice{min-width:0;padding:.3rem .4rem;gap:.2rem}
+  #sqlp .palette-choice .swatches{max-width:82px}
+}
 </style>
 
 <div id="sqlp">
