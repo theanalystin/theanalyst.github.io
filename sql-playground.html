@@ -287,7 +287,17 @@ function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&l
 function quote(n){return '"'+String(n).replace(/"/g,'""')+'"';}
 function status(msg,error=false){$('sqlp-status').textContent=msg;$('sqlp-status').classList.toggle('error',error);}
 function friendlySqlError(error){const message=String(error?.message||error||'Unknown SQL error');if(/parser error|syntax error|unexpected/i.test(message))return 'SQL syntax error. Check quotes, commas, and clause order. Details: '+message;if(/catalog error|table .* does not exist|not found/i.test(message))return 'A table or column could not be found. Check its spelling and make sure the table is loaded. Details: '+message;if(/conversion error|cannot cast|type mismatch/i.test(message))return 'The query has a data type mismatch. Check casts and the values being compared. Details: '+message;return 'Query failed. Check the SQL and selected table. Details: '+message;}
-function toText(v){if(v===null||v===undefined)return 'NULL';if(typeof v==='bigint')return v.toString();if(v instanceof Date)return v.toISOString();if(typeof v==='object')return JSON.stringify(v);return String(v);}
+function toText(v,type=''){
+ if(v===null||v===undefined)return 'NULL';
+ if(typeof v==='bigint')return v.toString();
+ if(v instanceof Date)return /DATE/i.test(String(type))&&!/TIME|TIMESTAMP/i.test(String(type))?v.toISOString().slice(0,10):v.toISOString();
+ if(typeof v==='number'&&Number.isFinite(v)&&/DATE|TIMESTAMP/i.test(String(type))&&Math.abs(v)>100000000000){
+  const d=new Date(v);
+  if(!Number.isNaN(d.getTime()))return /DATE/i.test(String(type))&&!/TIME|TIMESTAMP/i.test(String(type))?d.toISOString().slice(0,10):d.toISOString();
+ }
+ if(typeof v==='object')return JSON.stringify(v);
+ return String(v);
+}
 function employeeCSV(){
  return [
   'emp_id,name,department,grade,location,gender,join_date,tenure_years,salary,performance_rating',
@@ -429,7 +439,7 @@ function renderRows(cols,rows){
  if(!cols.length){$('sqlp-results').textContent='Query ran without tabular output.';return;}
  if(!rows.length){$('sqlp-results').textContent='Query returned zero rows.';return;}
  const visible=rows.slice(0,200);
- $('sqlp-results').innerHTML='<label for="sqlp-result-search">Filter visible results</label><input id="sqlp-result-search" type="text" placeholder="Search values in the first 200 rows…" style="width:100%;max-width:420px;margin:0 0 .55rem;padding:.5rem;border:1px solid #d2d2d2;border-radius:7px"><div class="table-wrap"><table><thead><tr>'+cols.map(c=>'<th>'+esc(c.name)+'</th>').join('')+'</tr></thead><tbody>'+visible.map(row=>'<tr>'+row.map(v=>'<td>'+esc(toText(v))+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>'+(rows.length>visible.length?'<p class="muted">Showing the first 200 rows; filtering applies to these visible rows. CSV export includes the complete result.</p>':'');
+ $('sqlp-results').innerHTML='<label for="sqlp-result-search">Filter visible results</label><input id="sqlp-result-search" type="text" placeholder="Search values in the first 200 rows…" style="width:100%;max-width:420px;margin:0 0 .55rem;padding:.5rem;border:1px solid #d2d2d2;border-radius:7px"><div class="table-wrap"><table><thead><tr>'+cols.map(c=>'<th>'+esc(c.name)+'</th>').join('')+'</tr></thead><tbody>'+visible.map(row=>'<tr>'+row.map((v,i)=>'<td>'+esc(toText(v,cols[i]?.type))+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>'+(rows.length>visible.length?'<p class="muted">Showing the first 200 rows; filtering applies to these visible rows. CSV export includes the complete result.</p>':'');
  const search=$('sqlp-result-search');
  search.addEventListener('input',()=>{const q=search.value.toLocaleLowerCase();$('sqlp-results').querySelectorAll('tbody tr').forEach(tr=>{tr.hidden=!tr.textContent.toLocaleLowerCase().includes(q);});});
  cols.forEach(c=>{c.numeric=numericType(c.type)||rows.some(r=>{const v=r[c.index];return typeof v==='number'||typeof v==='bigint'||(typeof v==='string'&&v.trim()!==''&&Number.isFinite(Number(v)));});});
@@ -457,14 +467,14 @@ async function profileTable(name){
   $('sqlp-profile').hidden=false;
   $('sqlp-profile-metrics').innerHTML='<div class="profile-metric"><strong>'+rowCount.toLocaleString()+'</strong><span>Rows in '+esc(name)+'</span></div><div class="profile-metric"><strong>'+schema.length+'</strong><span>Columns</span></div><div class="profile-metric"><strong>'+schema.reduce((n,col,i)=>n+rowCount-Number(stats['nn'+i]),0).toLocaleString()+'</strong><span>Null cells</span></div>';
   $('sqlp-schema').innerHTML='<table><thead><tr><th>Column</th><th>Inferred type</th><th>Nulls</th><th>Distinct</th></tr></thead><tbody>'+schema.map((col,i)=>'<tr><td>'+esc(col.name)+'</td><td>'+esc(col.type)+'</td><td>'+(rowCount-Number(stats['nn'+i]))+'</td><td>'+Number(stats['dd'+i]).toLocaleString()+'</td></tr>').join('')+'</tbody></table>';
-  $('sqlp-preview').innerHTML='<table><thead><tr>'+schema.map(col=>'<th>'+esc(col.name)+'</th>').join('')+'</tr></thead><tbody>'+preview.map(row=>'<tr>'+row.map(v=>'<td>'+esc(toText(v))+'</td>').join('')+'</tr>').join('')+'</tbody></table>';
+  $('sqlp-preview').innerHTML='<table><thead><tr>'+schema.map(col=>'<th>'+esc(col.name)+'</th>').join('')+'</tr></thead><tbody>'+preview.map(row=>'<tr>'+row.map((v,i)=>'<td>'+esc(toText(v,schema[i]?.type))+'</td>').join('')+'</tr>').join('')+'</tbody></table>';
  }catch(e){$('sqlp-import-status').textContent='Loaded the table, but could not profile its schema: '+(e.message||String(e));}
 }
 function updateProfile(cols,rows){
  const card=$('sqlp-profile');if(!card)return;card.hidden=!cols.length;
  $('sqlp-profile-metrics').innerHTML='<div class="profile-metric"><strong>'+rows.length.toLocaleString()+'</strong><span>Rows in query result</span></div><div class="profile-metric"><strong>'+cols.length+'</strong><span>Columns</span></div><div class="profile-metric"><strong>'+rows.reduce((n,r)=>n+r.filter(v=>v==null).length,0).toLocaleString()+'</strong><span>Null cells</span></div>';
  $('sqlp-schema').innerHTML='<table><thead><tr><th>Column</th><th>Inferred type</th><th>Nulls</th><th>Distinct</th></tr></thead><tbody>'+cols.map(c=>{const values=rows.map(r=>r[c.index]),nonnull=values.filter(v=>v!=null);let type='VARCHAR';if(nonnull.length&&nonnull.every(v=>typeof v==='number'||typeof v==='bigint'))type='NUMERIC';else if(nonnull.length&&nonnull.every(v=>v instanceof Date||/^\\d{4}-\\d{2}-\\d{2}/.test(String(v))))type='DATE / TIMESTAMP';return '<tr><td>'+esc(c.name)+'</td><td>'+type+'</td><td>'+values.filter(v=>v==null).length+'</td><td>'+new Set(nonnull.map(toText)).size+'</td></tr>';}).join('')+'</tbody></table>';
- const preview=rows.slice(0,10);$('sqlp-preview').innerHTML=cols.length&&preview.length?'<table><thead><tr>'+cols.map(c=>'<th>'+esc(c.name)+'</th>').join('')+'</tr></thead><tbody>'+preview.map(row=>'<tr>'+row.map(v=>'<td>'+esc(toText(v))+'</td>').join('')+'</tr>').join('')+'</tbody></table>':'<p class="muted">No rows to preview.</p>';
+ const preview=rows.slice(0,10);$('sqlp-preview').innerHTML=cols.length&&preview.length?'<table><thead><tr>'+cols.map(c=>'<th>'+esc(c.name)+'</th>').join('')+'</tr></thead><tbody>'+preview.map(row=>'<tr>'+row.map((v,i)=>'<td>'+esc(toText(v,cols[i]?.type))+'</td>').join('')+'</tr>').join('')+'</tbody></table>':'<p class="muted">No rows to preview.</p>';
 }
 function readSavedQueries(){try{const value=JSON.parse(localStorage.getItem('theanalyst.sql.savedQueries')||'[]');return Array.isArray(value)?value.filter(q=>q&&typeof q.name==='string'&&typeof q.sql==='string'):[];}catch(_){return [];}}
 function selectedSavedIndex(){const value=$('sqlp-saved-query')?.value??'';return value===''?-1:Number(value);}
@@ -503,7 +513,7 @@ function deleteSelectedSavedQuery(){
 }
 function csvDownload(){
  const cell=v=>{const s=toText(v);return /[",\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
- const text=[state.columns.map(c=>c.name),...state.rows.map(r=>r.map(toText))].map(r=>r.map(cell).join(',')).join('\r\n');
+ const text=[state.columns.map(c=>c.name),...state.rows.map(r=>r.map((v,i)=>toText(v,state.columns[i]?.type)))].map(r=>r.map(cell).join(',')).join('\r\n');
  downloadBlob(new Blob([text],{type:'text/csv;charset=utf-8'}),'query-results.csv');
 }
 function downloadBlob(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1200);}
@@ -560,7 +570,7 @@ function chartData(){
  const x=$('sqlp-x').value,y=$('sqlp-y').value,g=$('sqlp-group').value,e=$('sqlp-extra').value;
  const xi=state.columns.findIndex(c=>c.name===x),yi=state.columns.findIndex(c=>c.name===y),gi=state.columns.findIndex(c=>c.name===g),ei=state.columns.findIndex(c=>c.name===e);
  const rows=state.rows.filter(r=>r[xi]!=null&&r[yi]!=null&&Number.isFinite(Number(r[yi])));
- return {x,y,g,e,xi,yi,gi,ei,rows,items:rows.map(r=>({name:String(r[xi]),group:gi>=0?String(r[gi]):'',value:Number(r[yi]),extra:ei>=0?Number(r[ei]):null})).slice(0,500)};
+ return {x,y,g,e,xi,yi,gi,ei,rows,items:rows.map(r=>({name:toText(r[xi],state.columns[xi]?.type),group:gi>=0?toText(r[gi],state.columns[gi]?.type):'',value:Number(r[yi]),extra:ei>=0?Number(r[ei]):null})).slice(0,500)};
 }
 async function chartSql(type){
  const y=quote($('sqlp-y').value),query=state.queryText.replace(/;\s*$/,'').trim();
