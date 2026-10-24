@@ -319,7 +319,7 @@ function relatedSampleCSVs(){
   [204,'Dashboard Pack','Services',18000],[205,'Data Quality Audit','Services',32000],[206,'Cloud Credits','Cloud',6500],
   [207,'Team Workshop','Training',24000],[208,'Executive Report','Services',15000]
  ];
- const orders=Array.from({length:42},(_,i)=>[5001+i,1001+((i*7+3)%24),'2026-'+String(1+(i%9)).padStart(2,'0')+'-'+String(1+((i*5)%27)).padStart(2,'0'),['completed','completed','completed','processing','cancelled'][i%5]]);
+ const orders=Array.from({length:18},(_,i)=>[5001+i,1001+((i*7+3)%24),'2026-'+String(1+(i%9)).padStart(2,'0')+'-'+String(1+((i*5)%27)).padStart(2,'0'),['completed','completed','completed','processing','cancelled'][i%5]]);
  const items=orders.flatMap((o,i)=>[0,1].map(j=>[o[0],201+((i+j*3)%8),1+((i+j)%5),[0,0.05,0.1,0.15][(i+j)%4]]));
  const csv=(header,rows)=>[header,...rows.map(row=>row.join(','))].join('\n');
  return {
