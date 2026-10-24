@@ -375,7 +375,14 @@ async function initCodeMirror(){
    doc:textarea.value,
    extensions:[
     lineNumbers(),highlightActiveLine(),syntaxHighlighting(defaultHighlightStyle),
-    sql({dialect:PostgreSQL}),autocompletion(),
+    sql({dialect:PostgreSQL,schema:{
+     employees:['emp_id','name','department','grade','location','gender','join_date','tenure_years','salary','performance_rating'],
+     departments:['department','manager','budget','location'],
+     customers:['customer_id','customer_name','city','segment'],
+     products:['product_id','product_name','category','unit_price'],
+     orders:['order_id','customer_id','order_date','status'],
+     order_items:['order_id','product_id','quantity','discount']
+    }}),autocompletion(),
     keymap.of([...defaultKeymap,...historyKeymap,...completionKeymap,{key:'Mod-Enter',run:()=>{run();return true;}}]),
     EditorView.updateListener.of(update=>{
      if(update.docChanged){
