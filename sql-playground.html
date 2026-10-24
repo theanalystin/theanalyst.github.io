@@ -251,24 +251,8 @@ function fillSelect(id,cols,preferred,blank=false){
 }
 function getQuery(){const editorText=state.editor?state.editor.state.doc.toString():'';const textareaText=$('sqlp-query').value||'';return editorText.trim()?editorText:textareaText;}
 function setQuery(value){$('sqlp-query').value=String(value??'');if(state.editor){const doc=state.editor.state.doc;state.editor.dispatch({changes:{from:0,to:doc.length,insert:$('sqlp-query').value}});}}
-async function initCodeMirror(){
- if(state.editor||state.editorLoading)return;state.editorLoading=true;
- try{
-  const [st,view,cmd,lang,sqlLang]=await Promise.all([
-   import('https://esm.sh/@codemirror/state@6.4.1'),
-   import('https://esm.sh/@codemirror/view@6.36.2'),
-   import('https://esm.sh/@codemirror/commands@6.6.0'),
-   import('https://esm.sh/@codemirror/language@6.10.2'),
-   import('https://esm.sh/@codemirror/lang-sql@6.8.0')
-  ]);
-  const initial=$('sqlp-query').value;
-  state.editor=new view.EditorView({state:st.EditorState.create({doc:initial,extensions:[
-   view.lineNumbers(),view.highlightActiveLineGutter(),view.highlightSpecialChars(),cmd.history(),lang.foldGutter(),view.drawSelection(),view.dropCursor(),lang.indentOnInput(),lang.syntaxHighlighting(lang.defaultHighlightStyle),lang.bracketMatching(),view.rectangularSelection(),view.crosshairCursor(),view.highlightActiveLine(),view.keymap.of([{key:'Mod-Enter',run:()=>{run();return true;}},...cmd.defaultKeymap,...cmd.historyKeymap,cmd.indentWithTab]),sqlLang.sql(),view.EditorView.contentAttributes.of({'aria-label':'SQL query editor'}),view.EditorView.lineWrapping,view.EditorView.updateListener.of(update=>{if(update.docChanged){$('sqlp-query').value=update.state.doc.toString();state.pendingConfig=null;persistConfig();}})
-  ]}),parent:$('sqlp-editor-host')});
-  $('sqlp-query').hidden=true;state.editor.focus();
- }catch(e){status('CodeMirror could not load; the plain SQL editor remains available.');}
- finally{state.editorLoading=false;}
-}
+function initCodeMirror(){return;}
+
 function selectedYNames(){const extra=Array.from($('sqlp-y-multi')?.selectedOptions||[]).map(o=>o.value);return [...new Set([$('sqlp-y').value,...extra].filter(Boolean))];}
 function configState(){return {type:selectedChart(),x:$('sqlp-x').value,y:$('sqlp-y').value,ys:selectedYNames(),group:$('sqlp-group').value,extra:$('sqlp-extra').value,title:$('sqlp-title').value,subtitle:$('sqlp-subtitle').value,xTitle:$('sqlp-x-title').value,yTitle:$('sqlp-y-title').value,footnote:$('sqlp-footnote').value,palette:$('sqlp-palette').value,labels:$('sqlp-labels').checked,gridlines:$('sqlp-gridlines').checked,legend:$('sqlp-legend').checked,sort:$('sqlp-sort').value};}
 function persistConfig(){try{localStorage.setItem('theanalyst.sql.session',JSON.stringify(configState()));}catch(_){}}
@@ -546,7 +530,6 @@ async function init(){
 }
 $('sqlp-run').addEventListener('click',run);
 $('sqlp-query').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run();}});
-$('sqlp-query').addEventListener('focus',initCodeMirror,{once:true});
 $('sqlp-query').addEventListener('input',()=>{state.pendingConfig=null;persistConfig();});
 $('sqlp-example').addEventListener('click',()=>{state.pendingConfig=null;setQuery(examples[$('sqlp-query-examples').value]||examples.headcount);});
 $('sqlp-query-examples').addEventListener('change',()=>{state.pendingConfig=null;setQuery(examples[$('sqlp-query-examples').value]||examples.headcount);});
