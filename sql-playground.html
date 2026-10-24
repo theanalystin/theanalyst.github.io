@@ -84,7 +84,13 @@ permalink: /sql-playground/
           <option value="genderPayGap">Gender pay gap by grade</option><option value="attritionLocation">Attrition rate by location</option><option value="combo">Monthly hires + average salary · Combo</option><option value="waterfall">Net attrition impact · Waterfall</option><option value="treemap">Headcount by department · Treemap</option><option value="funnel">Hiring funnel · Funnel</option><option value="radar">Department metrics · Radar</option><option value="gauge">Company performance rating · Gauge</option><option value="sankey">Department to location · Sankey</option>
           <option value="sales">Sales by region</option><option value="web">Visitors and conversions by channel</option>
         </select></div>
-        <div><label for="sqlp-saved-query">Saved queries</label><select id="sqlp-saved-query"><option value="">No saved queries yet</option></select></div>
+        <div><label for="sqlp-saved-query">Saved queries (editable copies)</label><select id="sqlp-saved-query"><option value="">Saved queries…</option></select>
+          <div class="row" style="margin-top:.45rem">
+            <button id="sqlp-update-saved" type="button" disabled>Update selected</button>
+            <button id="sqlp-rename-saved" type="button" disabled>Rename</button>
+            <button id="sqlp-delete-saved" type="button" disabled>Delete</button>
+          </div>
+        </div>
       </div>
       <label for="sqlp-query">SQL query</label>
       <div id="sqlp-editor-host" aria-label="SQL editor"></div>
@@ -340,15 +346,40 @@ function updateProfile(cols,rows){
  $('sqlp-schema').innerHTML='<table><thead><tr><th>Column</th><th>Inferred type</th><th>Nulls</th><th>Distinct</th></tr></thead><tbody>'+cols.map(c=>{const values=rows.map(r=>r[c.index]),nonnull=values.filter(v=>v!=null);let type='VARCHAR';if(nonnull.length&&nonnull.every(v=>typeof v==='number'||typeof v==='bigint'))type='NUMERIC';else if(nonnull.length&&nonnull.every(v=>v instanceof Date||/^\\d{4}-\\d{2}-\\d{2}/.test(String(v))))type='DATE / TIMESTAMP';return '<tr><td>'+esc(c.name)+'</td><td>'+type+'</td><td>'+values.filter(v=>v==null).length+'</td><td>'+new Set(nonnull.map(toText)).size+'</td></tr>';}).join('')+'</tbody></table>';
  const preview=rows.slice(0,10);$('sqlp-preview').innerHTML=cols.length&&preview.length?'<table><thead><tr>'+cols.map(c=>'<th>'+esc(c.name)+'</th>').join('')+'</tr></thead><tbody>'+preview.map(row=>'<tr>'+row.map(v=>'<td>'+esc(toText(v))+'</td>').join('')+'</tr>').join('')+'</tbody></table>':'<p class="muted">No rows to preview.</p>';
 }
-function refreshSavedQueries(){
- let saved=[];try{saved=JSON.parse(localStorage.getItem('theanalyst.sql.savedQueries')||'[]');}catch(_){}
- const el=$('sqlp-saved-query');if(!el)return;el.innerHTML='<option value="">Saved queries…</option>'+saved.map((q,i)=>'<option value="'+i+'">'+esc(q.name)+'</option>').join('');
+function readSavedQueries(){try{const value=JSON.parse(localStorage.getItem('theanalyst.sql.savedQueries')||'[]');return Array.isArray(value)?value.filter(q=>q&&typeof q.name==='string'&&typeof q.sql==='string'):[];}catch(_){return [];}}
+function selectedSavedIndex(){const value=$('sqlp-saved-query')?.value??'';return value===''?-1:Number(value);}
+function refreshSavedQueries(selectIndex=-1){
+ const saved=readSavedQueries(),el=$('sqlp-saved-query');if(!el)return;
+ el.innerHTML='<option value="">Saved queries…</option>'+saved.map((q,i)=>'<option value="'+i+'">'+esc(q.name)+'</option>').join('');
+ if(selectIndex>=0&&selectIndex<saved.length)el.value=String(selectIndex);
+ const selected=selectedSavedIndex()>=0&&selectedSavedIndex()<saved.length;
+ ['sqlp-update-saved','sqlp-rename-saved','sqlp-delete-saved'].forEach(id=>{if($(id))$(id).disabled=!selected;});
 }
 function saveQuery(){
  const sql=getQuery().trim();if(!sql){status('Write a query before saving.',true);return;}
  const name=prompt('Name this query:','My query');if(!name||!name.trim())return;
- let saved=[];try{saved=JSON.parse(localStorage.getItem('theanalyst.sql.savedQueries')||'[]');}catch(_){}
- saved=saved.filter(q=>q.name!==name.trim());saved.push({name:name.trim(),sql});localStorage.setItem('theanalyst.sql.savedQueries',JSON.stringify(saved));refreshSavedQueries();status('Saved query “'+name.trim()+'” in this browser.');
+ const saved=readSavedQueries(),clean=name.trim(),existing=saved.findIndex(q=>q.name.toLowerCase()===clean.toLowerCase());
+ if(existing>=0&&!confirm('A saved query with this name exists. Replace it?'))return;
+ const index=existing>=0?existing:saved.length;
+ if(existing>=0)saved[existing]={name:clean,sql};else saved.push({name:clean,sql});
+ localStorage.setItem('theanalyst.sql.savedQueries',JSON.stringify(saved));refreshSavedQueries(index);status('Saved query “'+clean+'”. You can update, rename, or delete it below.');
+}
+function updateSelectedSavedQuery(){
+ const i=selectedSavedIndex(),saved=readSavedQueries();if(i<0||!saved[i])return;
+ const sql=getQuery().trim();if(!sql){status('Write a query before updating the saved copy.',true);return;}
+ if(!confirm('Replace the saved SQL for “'+saved[i].name+'” with the current editor contents?'))return;
+ saved[i].sql=sql;localStorage.setItem('theanalyst.sql.savedQueries',JSON.stringify(saved));refreshSavedQueries(i);status('Updated saved query “'+saved[i].name+'”.');
+}
+function renameSelectedSavedQuery(){
+ const i=selectedSavedIndex(),saved=readSavedQueries();if(i<0||!saved[i])return;
+ const name=prompt('Rename saved query:',saved[i].name);if(!name||!name.trim())return;
+ const clean=name.trim();if(saved.some((q,j)=>j!==i&&q.name.toLowerCase()===clean.toLowerCase())){status('Another saved query already uses that name.',true);return;}
+ saved[i].name=clean;localStorage.setItem('theanalyst.sql.savedQueries',JSON.stringify(saved));refreshSavedQueries(i);status('Renamed saved query to “'+clean+'”.');
+}
+function deleteSelectedSavedQuery(){
+ const i=selectedSavedIndex(),saved=readSavedQueries();if(i<0||!saved[i])return;
+ if(!confirm('Delete saved query “'+saved[i].name+'” from this browser?'))return;
+ const name=saved[i].name;saved.splice(i,1);localStorage.setItem('theanalyst.sql.savedQueries',JSON.stringify(saved));refreshSavedQueries();status('Deleted saved query “'+name+'”.');
 }
 function csvDownload(){
  const cell=v=>{const s=toText(v);return /[",\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
@@ -540,7 +571,10 @@ $('sqlp-query').addEventListener('input',()=>{state.pendingConfig=null;persistCo
 $('sqlp-example').addEventListener('click',()=>{state.pendingConfig=null;setQuery(examples[$('sqlp-query-examples').value]||examples.headcount);});
 $('sqlp-query-examples').addEventListener('change',()=>{state.pendingConfig=null;setQuery(examples[$('sqlp-query-examples').value]||examples.headcount);});
 $('sqlp-save-query').addEventListener('click',saveQuery);
-$('sqlp-saved-query').addEventListener('change',()=>{state.pendingConfig=null;let saved=[];try{saved=JSON.parse(localStorage.getItem('theanalyst.sql.savedQueries')||'[]');}catch(_){}const q=saved[Number($('sqlp-saved-query').value)];if(q)setQuery(q.sql);});
+$('sqlp-saved-query').addEventListener('change',()=>{state.pendingConfig=null;const saved=readSavedQueries(),i=selectedSavedIndex();if(saved[i])setQuery(saved[i].sql);refreshSavedQueries(i);});
+$('sqlp-update-saved').addEventListener('click',updateSelectedSavedQuery);
+$('sqlp-rename-saved').addEventListener('click',renameSelectedSavedQuery);
+$('sqlp-delete-saved').addEventListener('click',deleteSelectedSavedQuery);
 refreshSavedQueries();
 $('sqlp-clear').addEventListener('click',()=>{setQuery('');state.editor?state.editor.focus():$('sqlp-query').focus();});
 $('sqlp-download').addEventListener('click',csvDownload);
