@@ -1,7 +1,7 @@
 ---
 layout: default
 title: SQL Playground
-description: Query a 10-row, 10-column sample database or your own CSV data with DuckDB, build ECharts visualizations, and export charts as PNG or PowerPoint.
+description: Practice SQL joins, aggregations and window functions on a fictional relational dataset or your own CSVs, build charts and export results.
 permalink: /sql-playground/
 ---
 
@@ -204,7 +204,7 @@ permalink: /sql-playground/
         <div class="wide"><label for="sqlp-subtitle">Subtitle</label><input id="sqlp-subtitle" type="text" value=""></div>
         <div><label for="sqlp-x-title">X-axis title</label><input id="sqlp-x-title" type="text" value=""></div>
         <div><label for="sqlp-y-title">Y-axis title</label><input id="sqlp-y-title" type="text" value=""></div>
-        <div class="wide"><label for="sqlp-footnote">Source footnote</label><input id="sqlp-footnote" type="text" value="Source: Sample employee dataset"></div>
+        <div class="wide"><label for="sqlp-footnote">Source footnote</label><input id="sqlp-footnote" type="text" value="Source: Fictional sample data"></div>
         <div class="chart-toggles wide"><label><input type="checkbox" id="sqlp-labels"> Data labels</label><label><input type="checkbox" id="sqlp-gridlines" checked> Gridlines</label><label><input type="checkbox" id="sqlp-legend" checked> Legend</label><label for="sqlp-sort">Sort</label><select id="sqlp-sort"><option value="none">None</option><option value="asc">Ascending</option><option value="desc">Descending</option></select></div>
       </div>
       
@@ -650,9 +650,8 @@ $('sqlp-format').addEventListener('click',()=>{
  const sql=getQuery().trim();
  if(!sql){status('Write a query before formatting.',true);return;}
  const formatted=sql.replace(/\s+/g,' ').replace(/\s*,\s*/g,', ').replace(/\s*\(\s*/g,'(').replace(/\s*\)\s*/g,')')
-  .replace(/\b(SELECT|FROM|WHERE|GROUP BY|HAVING|ORDER BY|LIMIT|OFFSET|JOIN|LEFT JOIN|RIGHT JOIN|FULL JOIN|INNER JOIN|CROSS JOIN|ON|USING|UNION ALL|UNION|WITH|AS|AND|OR|CASE|WHEN|THEN|ELSE|END|OVER|PARTITION BY)\b/gi,'\n$1')
-  .replace(/^\n/,'').replace(/\n(FROM|WHERE|GROUP BY|HAVING|ORDER BY|LIMIT|OFFSET|JOIN|LEFT JOIN|RIGHT JOIN|FULL JOIN|INNER JOIN|CROSS JOIN|UNION ALL|UNION|ON|USING)\b/g,'\n$1')
-  .replace(/;?$/,';').trim();
+  .replace(/\b(SELECT|FROM|WHERE|GROUP BY|HAVING|ORDER BY|LIMIT|OFFSET|LEFT JOIN|RIGHT JOIN|FULL JOIN|INNER JOIN|CROSS JOIN|JOIN|ON|USING|UNION ALL|UNION|WITH)\b/gi,'\n$1')
+  .replace(/^\n/,'').replace(/;?$/,';').trim();
  setQuery(formatted);status('SQL formatted locally. Review the result before running.');
 });
 $('sqlp-save-query').addEventListener('click',saveQuery);
