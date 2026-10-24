@@ -150,6 +150,7 @@ permalink: /sql-playground/
         <button class="primary" id="sqlp-run" type="button">Run query</button>
         <button id="sqlp-example" type="button">Load selected</button>
         <button id="sqlp-clear" type="button">Clear</button>
+        <button id="sqlp-plain-editor" type="button" title="Switch to a basic text editor if the highlighted editor is difficult to use">Use basic editor</button>
       </div>
       <div class="row" style="margin-top:.55rem;align-items:flex-end">
         <div style="flex:1;min-width:190px"><label for="sqlp-saved-query">Saved queries · this browser only</label><select id="sqlp-saved-query"><option value="">Saved queries…</option></select></div>
@@ -709,6 +710,7 @@ $('sqlp-query').addEventListener('input',()=>{state.pendingConfig=null;persistCo
 $('sqlp-example').addEventListener('click',()=>{state.pendingConfig=null;setQuery(examples[$('sqlp-query-examples').value]||examples.headcount);});
 $('sqlp-query-examples').addEventListener('change',()=>{state.pendingConfig=null;setQuery(examples[$('sqlp-query-examples').value]||examples.headcount);});
 $('sqlp-clear').addEventListener('click',()=>{setQuery('');state.editor?state.editor.focus():$('sqlp-query').focus();});
+$('sqlp-plain-editor').addEventListener('click',()=>{const current=getQuery();if(state.editor){state.editor.destroy();state.editor=null;}state.editorFailed=true;$('sqlp-editor-host').hidden=true;$('sqlp-query').hidden=false;setQuery(current);$('sqlp-query').focus();status('Basic text editor enabled. Edit your SQL and click Run query.');});
 $('sqlp-format').addEventListener('click',()=>{
  const sql=getQuery().trim();
  if(!sql){status('Write a query before formatting.',true);return;}
