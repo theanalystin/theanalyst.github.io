@@ -28,8 +28,9 @@ The generated site is written to `_site/`.
 
 ## SQL Playground features
 
-- Generates a fictional 1,000-row employee dataset in the browser and supports local CSV import.
+- Loads a fictional relational practice database (employees, departments, customers, products, orders and order items) on demand, plus local CSV import.
 - Uses DuckDB-Wasm for SQL queries and profiles table schema, null counts, distinct values, and sample rows.
+- Includes starter SQL for joins, aggregations, date analysis, and window functions; locally saved queries; SQL formatting; and result filtering.
 - Loads CodeMirror SQL editing and ECharts chart modules on demand.
 - Supports bar, horizontal bar, line, area, stacked bar, pie/donut, scatter, heatmap, histogram, boxplot, and additional chart types.
 - Exports query results as CSV and charts as PNG, SVG, or a PowerPoint slide.
