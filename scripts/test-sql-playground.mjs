@@ -107,6 +107,24 @@ try {
       const pptDownload = page.waitForEvent('download', { timeout: 20000 });
       await page.locator('#sqlp-ppt').click();
       if (!(await pptDownload).suggestedFilename().endsWith('.pptx')) throw new Error('PowerPoint export did not produce a PPTX file');
+
+      // Verify the relational sample is seeded and common analyst joins execute.
+      const relationalCases = [
+        ['SELECT COUNT(*) AS n FROM departments;', '8', 'departments'],
+        ['SELECT COUNT(*) AS n FROM customers;', '24', 'customers'],
+        ['SELECT COUNT(*) AS n FROM orders;', '18', 'orders'],
+        ['SELECT COUNT(*) AS n FROM order_items;', '36', 'order items'],
+        ['SELECT COUNT(*) AS n FROM employees e JOIN departments d USING (department);', '10', 'employee-department join'],
+        ['SELECT COUNT(*) AS n FROM customers c LEFT JOIN orders o USING (customer_id) WHERE o.order_id IS NULL;', '6', 'left join unmatched customers'],
+        ["SELECT COUNT(*) AS n FROM (SELECT DATE_TRUNC('month', o.order_date) AS month, SUM(oi.quantity * p.unit_price * (1 - oi.discount)) AS revenue FROM orders o JOIN order_items oi USING (order_id) JOIN products p USING (product_id) GROUP BY 1) monthly;", '9', 'monthly revenue aggregation']
+      ];
+      for (const [sql, expected, label] of relationalCases) {
+        await page.locator('.cm-content').fill(sql);
+        await page.locator('#sqlp-run').click();
+        await page.waitForFunction(() => (document.querySelector('#sqlp-status')?.textContent || '').startsWith('Query completed'), null, { timeout: 30000 });
+        const actual = await page.locator('#sqlp-results tbody tr:first-child td:first-child').textContent();
+        if ((actual || '').trim() !== expected) throw new Error(`Relational sample check failed for ${label}: expected ${expected}, got ${actual}`);
+      }
     }
     await page.close();
   }
