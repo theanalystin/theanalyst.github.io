@@ -1,7 +1,7 @@
 ---
 layout: default
 title: SQL Playground
-description: Query a 1,000-row employee dataset with DuckDB, build ECharts visualizations, and export charts as PNG or PowerPoint.
+description: Query a 10-row, 10-column sample database or your own CSV data with DuckDB, build ECharts visualizations, and export charts as PNG or PowerPoint.
 permalink: /sql-playground/
 ---
 
@@ -55,15 +55,13 @@ permalink: /sql-playground/
         <section class="panel">
     <div class="panel-head"><h2>01 — Choose your data</h2><span class="pill" id="sqlp-engine">Ready when you are</span></div>
     <div class="row">
-      <button type="button" class="dataset" data-sample="employees"><strong>Employee database · 1,000 rows</strong><small>Departments, salaries, locations, performance</small></button>
-      <button type="button" class="dataset" data-sample="sales"><strong>Sales</strong><small>Orders, regions, products, revenue</small></button>
-      <button type="button" class="dataset" data-sample="web"><strong>Web analytics</strong><small>Channels, visitors, conversions</small></button>
+      <button type="button" class="dataset" data-sample="employees"><strong>Sample database · 10 rows × 10 columns</strong><small>Employees, departments, grade, location, tenure, salary and performance</small></button>
     </div>
     <div class="row" style="margin-top:.7rem;align-items:flex-end">
       <div id="sqlp-dropzone" class="drop" style="flex:1;min-width:220px"><label for="sqlp-files">Or import CSV files (drop here or browse)</label><input id="sqlp-files" type="file" accept=".csv,text/csv" multiple><p class="hint">Drop one or more CSV files here.</p></div>
       <button class="primary" id="sqlp-import" type="button">Import CSV</button>
     </div>
-    <p class="file-note">CSV files are processed locally in your browser; they are not uploaded to The Analyst. Sample employee data is fictional.</p>
+    <p class="file-note">CSV files are processed locally in your browser; they are not uploaded to The Analyst. The sample database is fictional. You can write and run new SQL against either the sample table or any imported CSV table.</p>
     <div class="table-list" id="sqlp-tables"><span class="muted">Tables will appear here when DuckDB is ready.</span></div>
     <div id="sqlp-profile" class="profile-card" hidden>
       <div class="profile-metrics" id="sqlp-profile-metrics"></div>
@@ -75,15 +73,13 @@ permalink: /sql-playground/
       <section class="panel">
       <div class="panel-head"><h2>02 — Write your SQL</h2><span class="pill">Ctrl / ⌘ + Enter</span></div>
       <div class="query-tools">
-        <div><label for="sqlp-query-examples">Sample queries</label><select id="sqlp-query-examples">
-          <option value="headcount">Headcount by department · Bar</option><option value="topLocations">Top 10 locations by average salary · Horizontal bar</option>
-          <option value="monthlyHiring">Monthly hiring trend · Line</option><option value="cumulativeHiring">Cumulative headcount by month · Area</option>
-          <option value="genderHeadcount">Headcount by department and gender · Stacked bar</option><option value="attritionShare">Attrition share by department · Pie / donut</option>
-          <option value="salaryTenure">Salary vs tenure · Scatter</option><option value="performanceHeatmap">Average performance by department and grade · Heatmap</option>
-          <option value="salaryHistogram">Salary distribution in bins · Histogram</option><option value="salaryBoxplot">Salary spread by grade · Boxplot</option>
-          <option value="genderPayGap">Gender pay gap by grade</option><option value="attritionLocation">Attrition rate by location</option><option value="combo">Monthly hires + average salary · Combo</option><option value="waterfall">Net attrition impact · Waterfall</option><option value="treemap">Headcount by department · Treemap</option><option value="funnel">Hiring funnel · Funnel</option><option value="radar">Department metrics · Radar</option><option value="gauge">Company performance rating · Gauge</option><option value="sankey">Department to location · Sankey</option>
-          <option value="sales">Sales by region</option><option value="web">Visitors and conversions by channel</option>
-        </select></div>
+        <div><label for="sqlp-query-examples">5 starter queries</label><select id="sqlp-query-examples">
+          <option value="headcount">1. Headcount by department</option>
+          <option value="salaryByGrade">2. Average salary by grade</option>
+          <option value="hiringTrend">3. Hiring trend by date</option>
+          <option value="departmentGender">4. Headcount by department and gender</option>
+          <option value="employeeDetail">5. Employee details for custom analysis</option>
+        </select><p class="hint">Load a starter, edit the SQL, and run it. Chart type is selected separately, so you can use your own query with any compatible chart.</p></div>
         <div><label for="sqlp-saved-query">Saved queries (editable copies)</label><select id="sqlp-saved-query"><option value="">Saved queries…</option></select>
           <div class="row" style="margin-top:.45rem">
             <button id="sqlp-update-saved" type="button" disabled>Update selected</button>
@@ -191,28 +187,32 @@ const palettes = {
  bain:['#a30b22','#cf3145','#e46b78','#ed9da6','#f4c9ce']
 };
 const examples = {
- employees:'SELECT department, COUNT(*) AS headcount FROM employees GROUP BY department ORDER BY headcount DESC;',
+ employees:'SELECT * FROM employees;',
  headcount:'SELECT department, COUNT(*) AS headcount FROM employees GROUP BY department ORDER BY headcount DESC;',
+ salaryByGrade:'SELECT grade, ROUND(AVG(salary),0) AS avg_salary FROM employees GROUP BY grade ORDER BY grade;',
+ hiringTrend:'SELECT join_date AS hire_date, COUNT(*) AS hires FROM employees GROUP BY join_date ORDER BY join_date;',
+ departmentGender:'SELECT department, gender, COUNT(*) AS headcount FROM employees GROUP BY department, gender ORDER BY department, gender;',
+ employeeDetail:'SELECT name, department, tenure_years, salary, performance_rating FROM employees ORDER BY salary DESC;',
  topLocations:'SELECT location, ROUND(AVG(salary),0) AS avg_salary FROM employees GROUP BY location ORDER BY avg_salary DESC LIMIT 10;',
- monthlyHiring:'SELECT DATE_TRUNC(\'month\', CAST(join_date AS DATE)) AS month, COUNT(*) AS hires FROM employees GROUP BY month ORDER BY month;',
- cumulativeHiring:'WITH monthly AS (SELECT DATE_TRUNC(\'month\', CAST(join_date AS DATE)) AS month, COUNT(*) AS hires FROM employees GROUP BY month) SELECT month, SUM(hires) OVER (ORDER BY month) AS cumulative_hires FROM monthly ORDER BY month;',
+ monthlyHiring:'SELECT join_date AS month, COUNT(*) AS hires FROM employees GROUP BY join_date ORDER BY join_date;',
+ cumulativeHiring:'SELECT join_date AS month, SUM(COUNT(*)) OVER (ORDER BY join_date) AS cumulative_hires FROM employees GROUP BY join_date ORDER BY join_date;',
  genderHeadcount:'SELECT department, gender, COUNT(*) AS headcount FROM employees GROUP BY department, gender ORDER BY department, gender;',
- attritionShare:'SELECT department, SUM(attrition_flag) AS attrition, COUNT(*)-SUM(attrition_flag) AS retained FROM employees GROUP BY department ORDER BY attrition DESC;',
+ attritionShare:'SELECT department, COUNT(*) AS attrition, COUNT(*) AS retained FROM employees GROUP BY department ORDER BY department;',
  salaryTenure:'SELECT tenure_years, salary, performance_rating FROM employees WHERE tenure_years IS NOT NULL;',
  performanceHeatmap:'SELECT department, grade, ROUND(AVG(performance_rating),2) AS avg_rating FROM employees GROUP BY department, grade ORDER BY department, grade;',
- salaryHistogram:'SELECT width_bucket(salary, (SELECT MIN(salary) FROM employees), (SELECT MAX(salary)+1 FROM employees), 10) AS salary_bin, COUNT(*) AS employees FROM employees GROUP BY salary_bin ORDER BY salary_bin;',
+ salaryHistogram:'SELECT salary FROM employees;',
  salaryBoxplot:'SELECT grade, MIN(salary) AS min_salary, quantile_cont(salary,0.25) AS q1, quantile_cont(salary,0.5) AS median, quantile_cont(salary,0.75) AS q3, MAX(salary) AS max_salary FROM employees GROUP BY grade ORDER BY grade;',
  genderPayGap:'SELECT grade, gender, ROUND(AVG(salary),0) AS avg_salary FROM employees GROUP BY grade, gender ORDER BY grade, gender;',
- attritionLocation:'SELECT location, ROUND(100.0*SUM(attrition_flag)/COUNT(*),1) AS attrition_pct FROM employees GROUP BY location ORDER BY attrition_pct DESC;',
- combo:'SELECT DATE_TRUNC(\'month\', CAST(join_date AS DATE)) AS month, COUNT(*) AS hires, ROUND(AVG(salary),0) AS avg_salary FROM employees GROUP BY month ORDER BY month;',
- waterfall:'SELECT department, -SUM(attrition_flag) AS attrition_impact FROM employees GROUP BY department ORDER BY attrition_impact;',
+ attritionLocation:'SELECT location, ROUND(AVG(performance_rating),1) AS rating FROM employees GROUP BY location ORDER BY rating DESC;',
+ combo:'SELECT join_date AS month, COUNT(*) AS hires, ROUND(AVG(salary),0) AS avg_salary FROM employees GROUP BY join_date ORDER BY join_date;',
+ waterfall:'SELECT department, -COUNT(*) AS attrition_impact FROM employees GROUP BY department ORDER BY attrition_impact;',
  treemap:'SELECT department, COUNT(*) AS headcount FROM employees GROUP BY department ORDER BY headcount DESC;',
- funnel:`SELECT * FROM (VALUES ('Applied',1000),('Screened',720),('Interviewed',350),('Offered',120),('Hired',85)) AS funnel(stage,candidates);`,
- radar:'SELECT department, ROUND(AVG(performance_rating),2) AS avg_rating, ROUND(AVG(bonus_pct),2) AS avg_bonus, ROUND(AVG(tenure_years),2) AS avg_tenure FROM employees GROUP BY department ORDER BY department;',
+ funnel:`SELECT * FROM (VALUES ('Applied',10),('Screened',8),('Interviewed',5),('Offered',3),('Hired',2)) AS funnel(stage,candidates);`,
+ radar:'SELECT department, ROUND(AVG(performance_rating),2) AS avg_rating, ROUND(AVG(tenure_years),2) AS avg_tenure, ROUND(AVG(salary),0) AS avg_salary FROM employees GROUP BY department ORDER BY department;',
  gauge:'SELECT \'Company average rating\' AS metric, AVG(performance_rating) AS avg_rating FROM employees;',
  sankey:'SELECT department, location, COUNT(*) AS headcount FROM employees GROUP BY department, location;',
- sales:'SELECT region, ROUND(SUM(revenue),0) AS revenue FROM sales GROUP BY region ORDER BY revenue DESC;',
- web:'SELECT channel, SUM(visitors) AS visitors, SUM(conversions) AS conversions FROM web_events GROUP BY channel ORDER BY visitors DESC;'
+ sales:'SELECT department, ROUND(SUM(salary),0) AS revenue FROM employees GROUP BY department ORDER BY revenue DESC;',
+ web:'SELECT gender AS channel, COUNT(*) AS visitors, ROUND(AVG(performance_rating),1) AS conversions FROM employees GROUP BY gender ORDER BY visitors DESC;'
 };
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function quote(n){return '"'+String(n).replace(/"/g,'""')+'"';}
@@ -220,34 +220,22 @@ function status(msg,error=false){$('sqlp-status').textContent=msg;$('sqlp-status
 function friendlySqlError(error){const message=String(error?.message||error||'Unknown SQL error');if(/parser error|syntax error|unexpected/i.test(message))return 'SQL syntax error. Check quotes, commas, and clause order. Details: '+message;if(/catalog error|table .* does not exist|not found/i.test(message))return 'A table or column could not be found. Check its spelling and make sure the table is loaded. Details: '+message;if(/conversion error|cannot cast|type mismatch/i.test(message))return 'The query has a data type mismatch. Check casts and the values being compared. Details: '+message;return 'Query failed. Check the SQL and selected table. Details: '+message;}
 function toText(v){if(v===null||v===undefined)return 'NULL';if(typeof v==='bigint')return v.toString();if(v instanceof Date)return v.toISOString();if(typeof v==='object')return JSON.stringify(v);return String(v);}
 function employeeCSV(){
- const departments=['Engineering','Sales','Operations','Finance','Marketing','People','Analytics','Strategy'];
- const titles={Engineering:['Software Engineer','Senior Engineer','Engineering Manager'],Sales:['Account Executive','Sales Manager','Sales Analyst'],Operations:['Operations Analyst','Operations Manager','Program Lead'],Finance:['Financial Analyst','Finance Manager','Controller'],Marketing:['Marketing Specialist','Growth Manager','Brand Lead'],People:['People Partner','Recruiter','People Manager'],Analytics:['Data Analyst','Senior Analyst','Analytics Lead'],Strategy:['Strategy Analyst','Consultant','Strategy Manager']};
- const grades=['G1','G2','G3','G4','G5','G6'];
- const locations=['Bengaluru','Mumbai','Hyderabad','Chennai','Pune','Delhi NCR','Kolkata','Gurugram'];
- const genders=['Female','Male','Non-binary','Prefer not to say'];
- const first=['Aarav','Aditi','Aditya','Ananya','Arjun','Diya','Isha','Kabir','Kavya','Meera','Neel','Rohan','Sana','Vihaan','Zoya','Ishaan','Mira','Dev','Tara','Reyansh','Nisha','Kiran','Priya','Rahul'];
- const last=['Sharma','Patel','Rao','Iyer','Mehta','Singh','Nair','Kapoor','Das','Khan','Joshi','Reddy','Malhotra','Sen','Pillai','Chawla','Gupta','Menon'];
- const out=['emp_id,name,department,designation,grade,location,gender,join_date,tenure_years,salary,bonus_pct,performance_rating,attrition_flag,manager_id'];
- const gradeBase={G1:360000,G2:520000,G3:760000,G4:1080000,G5:1510000,G6:2050000};
- for(let i=1;i<=1000;i++){
-  const dept=departments[(i*7+Math.floor(i/9))%departments.length],grade=grades[(i*13+Math.floor(i/7))%grades.length];
-  const gi=grades.indexOf(grade),manager=gi===0?'':String(1001+Math.floor(i/11)%95);
-  const year=2017+(i%10),month=String((i*7%12)+1).padStart(2,'0'),day=String((i*11%27)+1).padStart(2,'0');
-  const tenure=Math.max(0,Math.round(((2026-year)+(12-Number(month))/12)*10)/10);
-  const risk=['Sales','Operations','People'].includes(dept)?0.19:['Engineering','Analytics'].includes(dept)?0.075:0.12;
-  const attrition=(i%97<risk*97||i%211===0)?1:0;
-  const salary=gradeBase[grade]+((i*7919)%Math.round(gradeBase[grade]*0.28));
-  const bonus=([0,1,2,3,4,5][gi]*2.5+(i*3%12)).toFixed(1);
-  const rating=(2.4+((i*17)%27)/10).toFixed(1);
-  const title=titles[dept][(i+gi)%titles[dept].length];
-  out.push([i,'"'+first[(i*11)%first.length]+' '+last[(i*13)%last.length]+'"',dept,'"'+title+'"',grade,locations[(i*3+i%7)%locations.length],genders[(i*5+Math.floor(i/8))%genders.length],year+'-'+month+'-'+day,tenure,salary,bonus,rating,attrition,manager||''].join(','));
- }
- return out.join('\n');
+ return [
+  'emp_id,name,department,grade,location,gender,join_date,tenure_years,salary,performance_rating',
+  '1,Aarav Sharma,Engineering,G3,Bengaluru,Male,2021-01-15,5.8,820000,4.4',
+  '2,Aditi Patel,Sales,G2,Mumbai,Female,2022-03-10,4.6,590000,4.1',
+  '3,Ananya Rao,Analytics,G4,Hyderabad,Female,2020-06-22,6.3,1190000,4.7',
+  '4,Arjun Iyer,Operations,G2,Chennai,Male,2023-02-01,3.7,560000,3.8',
+  '5,Diya Mehta,Finance,G3,Pune,Female,2021-09-13,5.1,790000,4.3',
+  '6,Kabir Singh,Marketing,G1,Delhi NCR,Male,2024-01-08,2.8,410000,3.6',
+  '7,Kavya Nair,People,G3,Kolkata,Female,2020-11-19,5.9,840000,4.6',
+  '8,Neel Kapoor,Engineering,G4,Gurugram,Non-binary,2019-04-03,7.5,1280000,4.8',
+  '9,Meera Das,Sales,G2,Bengaluru,Female,2023-07-17,3.2,610000,4.0',
+  '10,Rohan Khan,Analytics,G5,Hyderabad,Male,2018-08-27,8.2,1640000,4.9'
+ ].join('\\n');
 }
 const samples={
- employees:{name:'employees',csv:null},
- sales:{name:'sales',csv:'order_id,region,product,category,quantity,revenue\n1001,South,Notebook,Stationery,4,480\n1002,West,Desk,Office,1,8500\n1003,North,Pen,Stationery,12,180\n1004,East,Chair,Furniture,2,6400\n1005,South,Desk,Office,1,8500\n1006,West,Notebook,Stationery,8,960\n1007,North,Chair,Furniture,1,3200\n1008,East,Pen,Stationery,20,300\n1009,South,Chair,Furniture,2,6400\n1010,West,Desk,Office,1,8500\n1011,North,Notebook,Stationery,6,720\n1012,East,Desk,Office,1,8500'},
- web:{name:'web_events',csv:'event_id,channel,device,visitors,conversions\n1,Organic,Mobile,1200,96\n2,Paid Search,Desktop,850,71\n3,Email,Mobile,640,58\n4,Organic,Desktop,970,83\n5,Paid Search,Mobile,1100,77\n6,Email,Desktop,520,49\n7,Organic,Mobile,1380,112\n8,Paid Search,Desktop,900,74\n9,Email,Mobile,710,67'}
+ employees:{name:'employees',csv:null}
 };
 function tableName(filename){let n=filename.replace(/\.csv$/i,'').toLowerCase().replace(/[^a-z0-9_]+/g,'_').replace(/^([^a-z_])/,'t_$1').replace(/_+/g,'_');return n||'imported_data';}
 async function addTable(name,csv,tag){
