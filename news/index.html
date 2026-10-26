@@ -39,17 +39,23 @@ permalink: /news/
   const esc=s=>String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   function age(value){const d=new Date(value);if(isNaN(d))return"Recently";const n=Math.max(0,Math.floor((Date.now()-d.getTime())/60000));if(n<1)return"Just now";if(n<60)return n+" min ago";if(n<1440)return Math.floor(n/60)+" hr ago";return d.toLocaleDateString("en-IN",{day:"numeric",month:"short"});}
   function render(){if(!stories.length){list.innerHTML='<li class="news-empty">News could not be loaded. Please try Refresh again in a moment.</li>';return;}list.innerHTML=stories.map(s=>'<li class="news-item"><a class="news-headline" href="'+esc(s.link)+'" target="_blank" rel="noopener noreferrer">'+esc(s.title)+'</a><div class="news-meta"><span>'+esc(s.source)+'</span><span>'+esc(age(s.date))+'</span></div></li>').join("");}
+  function parseXml(text){
+    const xml=new DOMParser().parseFromString(text,"text/xml");
+    if(xml.querySelector("parsererror"))throw Error("Invalid RSS feed");
+    return Array.from(xml.querySelectorAll("item")).map(x=>({title:x.querySelector("title")?.textContent?.trim()||"",link:x.querySelector("link")?.textContent?.trim()||"",date:x.querySelector("pubDate")?.textContent||"",source:x.querySelector("source")?.textContent||"Google News"}));
+  }
   async function getFeed(url){
-    // Try RSS2JSON first, then a raw CORS proxy as a fallback.
+    // RSS2JSON is the primary CORS-friendly feed adapter.
     try{
       const r=await fetch("https://api.rss2json.com/v1/api.json?rss_url="+encodeURIComponent(url),{cache:"no-store"});
-      if(r.ok){const d=await r.json();if(d.status==="ok")return(d.items||[]).map(x=>({title:(x.title||"").trim(),link:x.link||"",date:x.pubDate||"",source:(x.author||"Google News").split(" - ")[0]}));}
+      if(r.ok){const d=await r.json();if(d.status==="ok"&&Array.isArray(d.items)&&d.items.length)return d.items.map(x=>({title:(x.title||"").trim(),link:x.link||"",date:x.pubDate||"",source:(x.author||"Google News").split(" - ")[0]}));}
     }catch(_){}
-    const r=await fetch("https://api.allorigins.win/raw?url="+encodeURIComponent(url),{cache:"no-store"});
+    // AllOrigins' /get endpoint returns the feed inside a JSON contents field.
+    const r=await fetch("https://api.allorigins.win/get?url="+encodeURIComponent(url),{cache:"no-store"});
     if(!r.ok)throw Error("News source unavailable");
-    const xml=new DOMParser().parseFromString(await r.text(),"text/xml");
-    if(xml.querySelector("parsererror"))throw Error("Invalid news feed");
-    return Array.from(xml.querySelectorAll("item")).map(x=>({title:x.querySelector("title")?.textContent?.trim()||"",link:x.querySelector("link")?.textContent?.trim()||"",date:x.querySelector("pubDate")?.textContent||"",source:x.querySelector("source")?.textContent||"Google News"}));
+    const d=await r.json();
+    if(!d.contents)throw Error("Empty news feed");
+    return parseXml(d.contents);
   }
   async function load(){
     if(busy)return;busy=true;button.disabled=true;button.textContent="Loading…";status.textContent="Fetching latest headlines…";
