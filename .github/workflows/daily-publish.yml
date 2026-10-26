@@ -1,10 +1,10 @@
 name: Deploy SQL Playground
-# Trigger a fresh deployment for the latest news-feed changes
+# Refresh the news feed and deploy the site every five minutes
 on:
   push:
     branches: [main]
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 permissions:
   contents: read
