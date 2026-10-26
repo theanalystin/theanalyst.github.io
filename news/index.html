@@ -24,33 +24,32 @@ permalink: /news/
 </section>
 <script>
 (function(){
-  const feeds=[
-    "https://news.google.com/rss/search?q=India+business+markets+when%3A2d&hl=en-IN&gl=IN&ceid=IN%3Aen",
-    "https://news.google.com/rss/search?q=Indian+stock+market+Nifty+Sensex+when%3A2d&hl=en-IN&gl=IN&ceid=IN%3Aen",
-    "https://news.google.com/rss/search?q=India+companies+earnings+IPO+when%3A2d&hl=en-IN&gl=IN&ceid=IN%3Aen",
-    "https://news.google.com/rss/search?q=India+economy+technology+startups+when%3A2d&hl=en-IN&gl=IN&ceid=IN%3Aen"
-  ];
   const status=document.getElementById("news-status"),list=document.getElementById("news-items"),refresh=document.getElementById("news-refresh");
   const prev=document.getElementById("news-prev"),next=document.getElementById("news-next"),pageLabel=document.getElementById("news-page-label");
   const perPage=20;let busy=false,stories=[],page=1;
   const esc=s=>String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   function age(value){const d=new Date(value);if(isNaN(d))return"Recently";const n=Math.max(0,Math.floor((Date.now()-d.getTime())/60000));if(n<1)return"Just now";if(n<60)return n+" min ago";if(n<1440)return Math.floor(n/60)+" hr ago";return d.toLocaleDateString("en-IN",{day:"numeric",month:"short"});}
   function render(){
-    if(!stories.length){list.innerHTML='<li class="news-empty">News could not be loaded. Please tap Refresh to try again.</li>';pageLabel.textContent="Page 1";prev.disabled=true;next.disabled=true;return;}
+    if(!stories.length){list.innerHTML='<li class="news-empty">News could not be loaded. Please try Refresh again shortly.</li>';pageLabel.textContent="Page 1";prev.disabled=true;next.disabled=true;return;}
     const pages=Math.ceil(stories.length/perPage);page=Math.min(page,pages);const visible=stories.slice((page-1)*perPage,page*perPage);
     list.innerHTML=visible.map(s=>'<li class="news-item"><a class="news-headline" href="'+esc(s.link)+'" target="_blank" rel="noopener noreferrer">'+esc(s.title)+'</a><div class="news-meta"><span>'+esc(s.source)+'</span><span>'+esc(age(s.date))+'</span></div></li>').join("");
     pageLabel.textContent="Page "+page+" of "+pages;prev.disabled=page<=1;next.disabled=page>=pages;
   }
-  function parseXml(text){const xml=new DOMParser().parseFromString(text,"text/xml");if(xml.querySelector("parsererror"))throw Error("Invalid RSS feed");return Array.from(xml.querySelectorAll("item")).map(x=>({title:x.querySelector("title")?.textContent?.trim()||"",link:x.querySelector("link")?.textContent?.trim()||"",date:x.querySelector("pubDate")?.textContent||"",source:x.querySelector("source")?.textContent||"Google News"}));}
-  async function getFeed(url){
-    try{const r=await fetch("https://api.rss2json.com/v1/api.json?rss_url="+encodeURIComponent(url),{cache:"no-store"});if(r.ok){const d=await r.json();if(d.status==="ok"&&Array.isArray(d.items)&&d.items.length)return d.items.map(x=>({title:(x.title||"").trim(),link:x.link||"",date:x.pubDate||"",source:(x.author||"Google News").split(" - ")[0]}));}}catch(_){}
-    const r=await fetch("https://api.allorigins.win/get?url="+encodeURIComponent(url),{cache:"no-store"});if(!r.ok)throw Error("News source unavailable");const d=await r.json();if(!d.contents)throw Error("Empty feed");return parseXml(d.contents);
-  }
   async function load(){
-    if(busy)return;busy=true;refresh.disabled=true;refresh.textContent="Loading…";status.textContent="Fetching headlines…";
-    try{const result=await Promise.allSettled(feeds.map(getFeed));const all=result.filter(x=>x.status==="fulfilled").flatMap(x=>x.value).filter(x=>x.title&&x.link);const unique=new Map();all.forEach(x=>{const k=x.title.toLowerCase().replace(/[^a-z0-9]+/g," ").trim();if(!unique.has(k))unique.set(k,x);});const fresh=[...unique.values()].sort((a,b)=>(new Date(b.date).getTime()||0)-(new Date(a.date).getTime()||0));if(!fresh.length)throw Error("No feeds loaded");stories=fresh;page=1;render();status.textContent="Updated "+new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"})+" · "+stories.length+" headlines";}catch(e){status.textContent=stories.length?"Refresh failed · Showing loaded headlines":"Could not connect to news feeds";render();}finally{busy=false;refresh.disabled=false;refresh.textContent="↻ Refresh";}
+    if(busy)return;busy=true;refresh.disabled=true;refresh.textContent="Loading…";status.textContent="Loading headlines…";
+    try{
+      const response=await fetch("/news-feed.json?refresh="+Date.now(),{cache:"no-store"});
+      if(!response.ok)throw Error("News feed not available yet");
+      const data=await response.json();
+      if(!Array.isArray(data.items)||!data.items.length)throw Error("News feed is empty");
+      stories=data.items;stories.sort((a,b)=>(new Date(b.date).getTime()||0)-(new Date(a.date).getTime()||0));page=1;render();
+      const updated=data.updated?new Date(data.updated).toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}):"recently";
+      status.textContent="Feed updated "+updated+" · "+stories.length+" headlines";
+    }catch(e){status.textContent="News feed is updating. Try again in a minute.";render();}
+    finally{busy=false;refresh.disabled=false;refresh.textContent="↻ Refresh";}
   }
-  prev.addEventListener("click",()=>{if(page>1){page--;render();window.scrollTo(0,0);}});next.addEventListener("click",()=>{if(page<Math.ceil(stories.length/perPage)){page++;render();window.scrollTo(0,0);}});
+  prev.addEventListener("click",()=>{if(page>1){page--;render();window.scrollTo(0,0);}});
+  next.addEventListener("click",()=>{if(page<Math.ceil(stories.length/perPage)){page++;render();window.scrollTo(0,0);}});
   refresh.addEventListener("click",load);load();setInterval(load,300000);
 })();
 </script>
