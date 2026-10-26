@@ -1,0 +1,101 @@
+---
+layout: none
+title: Business News | The Analyst
+permalink: /news/
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111315">
+<meta name="description" content="Live business, markets and company news curated for analysts by The Analyst.">
+<link rel="canonical" href="https://theanalyst.in/news/">
+<title>Business News | The Analyst</title>
+<style>
+:root{color-scheme:dark;--bg:#111315;--panel:#1d2022;--line:#45494b;--muted:#a8abad;--text:#f3f4f5;--blue:#459cf3;--green:#16c784}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:inherit;text-decoration:none}.shell{max-width:1100px;margin:auto;padding:0 22px}.topbar{position:sticky;top:0;z-index:5;background:#17191bf2;border-bottom:1px solid #303335;backdrop-filter:blur(14px)}.topinner{height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{font-size:25px;font-weight:800;letter-spacing:-.7px}.brand span{color:var(--blue)}.top-actions{display:flex;align-items:center;gap:10px}.iconbtn,.refresh{border:1px solid var(--line);background:#202326;color:var(--text);border-radius:11px;padding:9px 12px;cursor:pointer;font:inherit}.iconbtn{font-size:19px}.hero{padding:28px 0 18px}.eyebrow{color:var(--blue);font-size:12px;font-weight:800;letter-spacing:1.7px;text-transform:uppercase}.hero h1{font-size:clamp(28px,5vw,42px);line-height:1.1;letter-spacing:-1.4px;margin:7px 0 9px}.sub{color:var(--muted);margin:0}.statusline{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:20px 0}.status{color:var(--muted);font-size:13px;display:flex;align-items:center;gap:8px}.dot{width:8px;height:8px;background:var(--green);border-radius:50%;box-shadow:0 0 10px #16c78470}.market-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0 25px}.market-card{border:1px solid #565a5c;border-radius:15px;padding:17px;background:linear-gradient(140deg,#202426,#17191a);min-width:0}.market-label{font-weight:650;font-size:14px;color:#d6d8d9}.market-value{font-size:25px;font-weight:750;letter-spacing:-.7px;margin-top:5px}.market-note{font-size:12px;color:var(--muted)}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:24px 0 10px}.section-head h2{font-size:19px;margin:0}.filters{display:flex;gap:8px;overflow:auto;padding:3px 0 12px;scrollbar-width:thin}.filter{flex:0 0 auto;border:1px solid #3d4143;background:#1d2022;color:#c6c9ca;border-radius:999px;padding:8px 14px;font:inherit;font-size:13px;cursor:pointer}.filter.active{background:#18334a;border-color:#2b80c9;color:#7bbcff}.news-list{border-top:1px solid var(--line)}.story{padding:19px 0 18px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:start}.story:hover .headline{color:#85bfff}.headline{font-size:clamp(17px,2.3vw,21px);line-height:1.42;font-weight:550;letter-spacing:-.2px}.meta{display:flex;flex-wrap:wrap;gap:8px 12px;color:var(--muted);font-size:12px;margin-top:9px}.tag{color:#7ebeff;background:#1c2b39;border-radius:5px;padding:2px 7px;font-size:11px;font-weight:700}.story-arrow{color:#92989b;font-size:22px;padding:3px 4px}.skeleton{height:14px;background:linear-gradient(90deg,#25282a,#34383a,#25282a);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:5px;margin:10px 0}@keyframes shimmer{to{background-position:-200% 0}}.empty{padding:26px 0;color:var(--muted)}.foot{color:#777e82;font-size:12px;padding:25px 0 36px}.foot a{color:#86bfff}.error{padding:14px;border:1px solid #674b3d;background:#2a211d;border-radius:10px;color:#f1c4a8;margin:15px 0}.hide{display:none!important}@media(min-width:760px){.shell{padding:0 30px}.hero{padding-top:38px}.story{padding:22px 5px}.market-card{padding:20px}.market-value{font-size:29px}}@media(max-width:480px){.shell{padding:0 16px}.topinner{height:62px}.brand{font-size:22px}.market-strip{gap:8px}.market-card{padding:12px 10px;border-radius:12px}.market-label{font-size:12px}.market-value{font-size:20px}.market-note{font-size:11px}.hero{padding-top:23px}.story{gap:6px}.refresh{padding:8px 10px;font-size:13px}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="shell topinner"><a class="brand" href="/">The<span>Analyst</span></a><div class="top-actions"><a class="iconbtn" href="/" aria-label="Home">⌂</a><button class="refresh" id="refreshBtn" type="button">↻ Refresh</button></div></div></header>
+<main class="shell">
+<section class="hero"><div class="eyebrow">The Analyst · Newsroom</div><h1>Business &amp; Markets</h1><p class="sub">The latest business headlines, company updates and market-moving stories.</p></section>
+<section class="market-strip" aria-label="News coverage">
+<div class="market-card"><div class="market-label">MARKETS</div><div class="market-value">NIFTY · SENSEX</div><div class="market-note">Indian equity updates</div></div>
+<div class="market-card"><div class="market-label">COMPANIES</div><div class="market-value">Earnings &amp; IPOs</div><div class="market-note">Results, deals and leadership</div></div>
+<div class="market-card"><div class="market-label">ECONOMY</div><div class="market-value">India &amp; Global</div><div class="market-note">Policy, business and finance</div></div>
+</section>
+<div class="statusline"><div class="status"><span class="dot"></span><span id="statusText">Connecting to live news…</span></div><div class="status">Auto-refreshes every 5 minutes</div></div>
+<div class="section-head"><h2>Latest headlines</h2><span class="status" id="countText">Loading…</span></div>
+<nav class="filters" aria-label="Filter news">
+<button class="filter active" data-filter="all">Top stories</button>
+<button class="filter" data-filter="markets">Markets</button>
+<button class="filter" data-filter="companies">Companies</button>
+<button class="filter" data-filter="economy">Economy</button>
+<button class="filter" data-filter="technology">Technology</button>
+</nav>
+<div id="errorBox" class="error hide" role="status"></div>
+<section id="newsList" class="news-list" aria-live="polite" aria-label="Latest business news">
+<div class="skeleton"></div><div class="skeleton" style="width:82%"></div><div class="skeleton" style="width:65%;margin-bottom:26px"></div>
+</section>
+<footer class="foot">Headlines are sourced from public news feeds and link to the original publisher. Updates automatically every 5 minutes. <a href="/">Explore The Analyst</a>.</footer>
+</main>
+<script>
+(function(){
+  const feeds = [
+    {name:"Google News · Business",url:"https://news.google.com/rss/search?q=India+business+markets+when%3A2d&hl=en-IN&gl=IN&ceid=IN%3Aen",category:"economy"},
+    {name:"Google News · Markets",url:"https://news.google.com/rss/search?q=Indian+stock+market+Nifty+Sensex+when%3A2d&hl=en-IN&gl=IN&ceid=IN%3Aen",category:"markets"},
+    {name:"Google News · Companies",url:"https://news.google.com/rss/search?q=India+companies+earnings+IPO+business+when%3A2d&hl=en-IN&gl=IN&ceid=IN%3Aen",category:"companies"},
+    {name:"Google News · Technology",url:"https://news.google.com/rss/search?q=India+technology+startups+when%3A2d&hl=en-IN&gl=IN&ceid=IN%3Aen",category:"technology"}
+  ];
+  const endpoint="https://api.rss2json.com/v1/api.json?rss_url=";
+  const list=document.getElementById("newsList"),status=document.getElementById("statusText"),count=document.getElementById("countText"),error=document.getElementById("errorBox"),refresh=document.getElementById("refreshBtn");
+  let stories=[],active="all",busy=false,lastSuccess=null;
+  function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+  function categoryFor(title,description){
+    const s=(title+" "+description).toLowerCase();
+    if(/nifty|sensex|stock|share price|equity|market rally|market fall|bse|nse|ipo/.test(s))return "markets";
+    if(/startup|artificial intelligence|\bai\b|software|technology|tech giant|cyber/.test(s))return "technology";
+    if(/company|companies|earnings|profit|revenue|quarterly results|merger|acquisition|ceo|chairman|tata|reliance|infosys|wipro|hdfc|airtel/.test(s))return "companies";
+    return "economy";
+  }
+  function relativeDate(value){
+    const d=new Date(value);if(Number.isNaN(d.getTime()))return "Recently";
+    const mins=Math.max(0,Math.floor((Date.now()-d.getTime())/60000));
+    if(mins<1)return "Just now";if(mins<60)return mins+" min ago";
+    if(mins<1440)return Math.floor(mins/60)+" hr ago";
+    return d.toLocaleDateString("en-IN",{day:"numeric",month:"short"});
+  }
+  function render(){
+    const shown=stories.filter(s=>active==="all"||s.category===active);
+    count.textContent=shown.length+" stories";
+    if(!shown.length){list.innerHTML='<div class="empty">No stories in this category yet. Try another filter or refresh.</div>';return;}
+    list.innerHTML=shown.map(s=>'<article class="story"><div><a class="headline" href="'+esc(s.link)+'" target="_blank" rel="noopener noreferrer">'+esc(s.title)+'</a><div class="meta"><span>'+esc(s.source)+'</span><span>'+esc(relativeDate(s.date))+'</span><span class="tag">'+esc(s.category)+'</span></div></div><a class="story-arrow" href="'+esc(s.link)+'" target="_blank" rel="noopener noreferrer" aria-label="Read story">↗</a></article>').join("");
+  }
+  async function load(){
+    if(busy)return;busy=true;refresh.disabled=true;refresh.textContent="↻ Updating…";status.textContent="Refreshing news feeds…";error.classList.add("hide");
+    try{
+      const responses=await Promise.allSettled(feeds.map(async f=>{
+        const res=await fetch(endpoint+encodeURIComponent(f.url),{cache:"no-store"});
+        if(!res.ok)throw new Error("Feed request failed");
+        const data=await res.json();if(data.status!=="ok")throw new Error("Feed unavailable");
+        return (data.items||[]).map(item=>({title:(item.title||"").trim(),link:item.link||"",date:item.pubDate||"",source:(item.author||f.name).split(" - ")[0],category:categoryFor(item.title||"",item.description||"")}));
+      }));
+      const next=responses.filter(r=>r.status==="fulfilled").flatMap(r=>r.value).filter(s=>s.title&&s.link);
+      const unique=new Map();next.forEach(s=>{const key=s.title.toLowerCase().replace(/[^a-z0-9]+/g," ").trim();if(!unique.has(key))unique.set(key,s);});
+      const fresh=[...unique.values()].sort((a,b)=>(new Date(b.date).getTime()||0)-(new Date(a.date).getTime()||0));
+      if(!fresh.length&& !stories.length)throw new Error("No news feed could be reached. Check your connection and try again.");
+      if(fresh.length)stories=fresh;
+      lastSuccess=new Date();status.textContent="Updated "+lastSuccess.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"})+" · Live headlines";
+      render();
+      if(responses.every(r=>r.status==="rejected")){error.textContent="News sources could not be reached. Showing the most recently loaded headlines, if available.";error.classList.remove("hide");}
+    }catch(e){status.textContent=lastSuccess?"Last updated "+lastSuccess.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}):"News feed temporarily unavailable";error.textContent=e.message||"Unable to load news right now.";error.classList.remove("hide");if(!stories.length)list.innerHTML='<div class="empty">We couldn’t load live headlines. Please check your connection and tap Refresh to try again.</div>';}
+    finally{busy=false;refresh.disabled=false;refresh.textContent="↻ Refresh";}
+  }
+  document.querySelectorAll(".filter").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".filter").forEach(x=>x.classList.toggle("active",x===b));active=b.dataset.filter;render();}));
+  refresh.addEventListener("click",load);load();setInterval(load,5*60*1000);
+})();
+</script>
+</body>
+</html>
