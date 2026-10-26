@@ -2,6 +2,8 @@ name: Deploy SQL Playground
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: "*/30 * * * *"
   workflow_dispatch:
 permissions:
   contents: read
@@ -19,15 +21,53 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      - name: Fetch business news feeds
+        run: |
+          python3 - <<'PY'
+          import json, urllib.request, urllib.parse, xml.etree.ElementTree as ET
+          from datetime import datetime, timezone
+          queries = [
+            "India business markets when:2d",
+            "Indian stock market Nifty Sensex when:2d",
+            "India companies earnings IPO when:2d",
+            "India economy technology startups when:2d",
+          ]
+          items, seen = [], set()
+          for query in queries:
+              params = urllib.parse.urlencode({"q": query, "hl":"en-IN", "gl":"IN", "ceid":"IN:en"})
+              url = "https://news.google.com/rss/search?" + params
+              try:
+                  req = urllib.request.Request(url, headers={"User-Agent":"Mozilla/5.0 (compatible; NewsFeedBot/1.0)"})
+                  with urllib.request.urlopen(req, timeout=20) as response:
+                      root = ET.fromstring(response.read())
+                  for item in root.findall(".//item"):
+                      title = (item.findtext("title") or "").strip()
+                      link = (item.findtext("link") or "").strip()
+                      date = (item.findtext("pubDate") or "").strip()
+                      source = item.findtext("source") or "Google News"
+                      key = title.casefold()
+                      if title and link and key not in seen:
+                          seen.add(key)
+                          items.append({"title":title,"link":link,"date":date,"source":source})
+              except Exception as e:
+                  print(f"Feed failed for {query}: {e}")
+          items.sort(key=lambda x: x["date"], reverse=True)
+          with open("news-feed.json", "w", encoding="utf-8") as f:
+              json.dump({"updated":datetime.now(timezone.utc).isoformat(),"items":items}, f, ensure_ascii=False)
+          print(f"Saved {len(items)} headlines")
+          if not items:
+              raise SystemExit("No news headlines fetched; failing deployment to avoid publishing an empty feed")
+          PY
       - name: Build Jekyll site
         uses: actions/jekyll-build-pages@v1
         with:
           source: ./
           destination: ./_site
-      - name: Verify SQL Playground is present
+      - name: Verify site and news feed
         run: |
           test -f _site/index.html
           test -f _site/sql-playground/index.html
+          test -s _site/news-feed.json
       - uses: actions/upload-pages-artifact@v3
       - name: Deploy to GitHub Pages
         id: deployment
