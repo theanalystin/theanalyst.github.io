@@ -1,4 +1,5 @@
 name: Deploy SQL Playground
+# Trigger a fresh deployment for the latest news-feed changes
 on:
   push:
     branches: [main]
