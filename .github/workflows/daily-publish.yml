@@ -1,5 +1,6 @@
 name: Deploy SQL Playground
 # Refresh the news feed and deploy the site every five minutes
+# Deployment trigger: publish the latest site and static news feed
 on:
   push:
     branches: [main]
