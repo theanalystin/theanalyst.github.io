@@ -1,0 +1,9 @@
+{
+  "updated_utc": null,
+  "updated_ist": null,
+  "provider": "Yahoo Finance chart endpoint",
+  "source_url": "https://finance.yahoo.com/",
+  "quotes": {},
+  "errors": ["Hourly workflow has not run yet."],
+  "commentary": "The first automated market snapshot is pending. This page will populate after the scheduled workflow runs."
+}
