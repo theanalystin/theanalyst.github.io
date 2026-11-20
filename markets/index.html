@@ -1,0 +1,104 @@
+---
+layout: default
+title: India & US Market Radar
+description: A live-style market desk for Indian and US markets, with key indices, macro signals, sector moves and source-linked updates.
+permalink: /markets/
+---
+
+<style>
+.market-page{max-width:920px;margin:0 auto;padding:38px 0 70px}
+.market-hero{padding:26px 0 28px;border-bottom:1px solid var(--line)}
+.market-hero h1{font-size:clamp(2.4rem,6vw,4.2rem);margin:.12em 0 .2em}
+.market-hero .dek{max-width:720px}
+.market-kicker{font-size:.75rem;font-weight:750;letter-spacing:.13em;text-transform:uppercase;color:var(--accent)}
+.market-meta{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--muted);font-size:.8rem;margin-top:18px}
+.market-section{padding:28px 0;border-bottom:1px solid var(--line)}
+.market-section h2{font-size:1.8rem;margin:0 0 8px}
+.market-section>p{color:var(--muted);margin:0 0 18px}
+.market-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.market-card{border:1px solid var(--line);border-radius:7px;padding:16px;background:var(--paper)}
+.market-card strong{display:block;font-size:1rem;margin-bottom:4px}
+.market-card span{font-size:.82rem;color:var(--muted)}
+.market-note{background:var(--wash);border-left:3px solid var(--accent);padding:16px 18px;margin:18px 0;color:var(--muted)}
+.market-watch{margin:0;padding-left:20px}
+.market-watch li{padding:6px 0}
+.market-links{display:flex;gap:10px 18px;flex-wrap:wrap;margin-top:15px}
+.market-links a{font-weight:650;font-size:.9rem}
+.market-disclaimer{font-size:.82rem;color:var(--muted);border-top:1px solid var(--line);padding-top:18px;margin-top:26px}
+@media(max-width:650px){.market-grid{grid-template-columns:1fr}.market-page{padding-top:22px}}
+</style>
+
+<main class="market-page">
+  <header class="market-hero">
+    <p class="market-kicker">The Analyst · Market Desk</p>
+    <h1>Markets, <em>in context.</em></h1>
+    <p class="dek">A focused radar for Indian and US markets — tracking index direction, rates, currencies, sector leadership and the developments that can move risk sentiment.</p>
+    <div class="market-meta">
+      <span>Coverage: India · United States</span>
+      <span>Page updated: {{ site.time | date: "%d %b %Y, %H:%M" }} IST</span>
+      <span>Editorial format: data first, context second</span>
+    </div>
+  </header>
+
+  <section class="market-section" aria-labelledby="india-markets">
+    <h2 id="india-markets">India markets</h2>
+    <p>Core indicators to review during the Indian trading session. Values should always be read with their exchange timestamp and source.</p>
+    <div class="market-grid">
+      <div class="market-card"><strong>NIFTY 50</strong><span>Broad-market direction · NSE</span></div>
+      <div class="market-card"><strong>SENSEX</strong><span>Large-cap benchmark · BSE</span></div>
+      <div class="market-card"><strong>BANK NIFTY</strong><span>Banking sector risk appetite · NSE</span></div>
+      <div class="market-card"><strong>INDIA VIX</strong><span>Implied volatility indicator · NSE</span></div>
+      <div class="market-card"><strong>USD / INR</strong><span>Rupee and dollar movement</span></div>
+      <div class="market-card"><strong>FII / DII flows</strong><span>Institutional activity · when officially reported</span></div>
+    </div>
+    <div class="market-note"><strong>Reading the session:</strong> Watch breadth and sector participation alongside headline index moves. A narrow rally or sell-off can tell a different story from a broad market move.</div>
+    <div class="market-links">
+      <a href="https://www.nseindia.com/market-data/live-equity-market">NSE market data ↗</a>
+      <a href="https://www.bseindia.com/">BSE ↗</a>
+      <a href="https://www.rbi.org.in/">Reserve Bank of India ↗</a>
+    </div>
+  </section>
+
+  <section class="market-section" aria-labelledby="us-markets">
+    <h2 id="us-markets">United States markets</h2>
+    <p>Benchmarks and macro signals that shape global risk sentiment and can influence Indian assets through rates, dollar strength and technology demand.</p>
+    <div class="market-grid">
+      <div class="market-card"><strong>S&amp;P 500</strong><span>Broad US equity benchmark</span></div>
+      <div class="market-card"><strong>NASDAQ</strong><span>Growth and technology leadership</span></div>
+      <div class="market-card"><strong>DOW JONES</strong><span>30 large US-listed companies</span></div>
+      <div class="market-card"><strong>CBOE VIX</strong><span>US equity implied volatility</span></div>
+      <div class="market-card"><strong>US 10Y Treasury</strong><span>Long-term yield and discount-rate signal</span></div>
+      <div class="market-card"><strong>US Dollar Index</strong><span>Broad dollar strength</span></div>
+    </div>
+    <div class="market-note"><strong>Reading the session:</strong> Separate index performance from its drivers — real yields, earnings expectations, breadth and concentration in mega-cap stocks.</div>
+    <div class="market-links">
+      <a href="https://www.nasdaq.com/market-activity">Nasdaq market activity ↗</a>
+      <a href="https://www.nyse.com/markets">NYSE markets ↗</a>
+      <a href="https://www.federalreserve.gov/">Federal Reserve ↗</a>
+      <a href="https://home.treasury.gov/">US Treasury ↗</a>
+    </div>
+  </section>
+
+  <section class="market-section" aria-labelledby="cross-market">
+    <h2 id="cross-market">What connects the markets</h2>
+    <ul class="market-watch">
+      <li><strong>Rates:</strong> Federal Reserve expectations and US Treasury yields can change global equity valuations and capital flows.</li>
+      <li><strong>Currency:</strong> A stronger US dollar can add pressure to emerging-market currencies and imported input costs.</li>
+      <li><strong>Energy:</strong> Crude oil moves matter for India's trade balance, inflation outlook and energy-sensitive sectors.</li>
+      <li><strong>Earnings:</strong> Guidance from large technology, financial and consumer companies can shift sector sentiment across regions.</li>
+      <li><strong>Policy:</strong> RBI, Fed and government decisions should be assessed against the market's prior expectations.</li>
+    </ul>
+  </section>
+
+  <section class="market-section" aria-labelledby="editorial-standard">
+    <h2 id="editorial-standard">How to read The Analyst's updates</h2>
+    <p>Every market note should identify the observation time, distinguish confirmed data from interpretation, link to primary sources where possible and explain why the development matters.</p>
+    <div class="market-note">This page is the market-desk landing page. It does not display a fabricated live quote feed. Market levels, percentage changes and news updates will be added only when a verified data source and timestamp are available.</div>
+    <div class="market-links">
+      <a href="/news/">Business News →</a>
+      <a href="/sql-playground/">SQL Playground →</a>
+    </div>
+  </section>
+
+  <p class="market-disclaimer">Information is provided for education and general market awareness, not as investment advice or a recommendation to buy or sell any security. Market data may be delayed; always confirm prices and corporate disclosures with the relevant exchange or issuer.</p>
+</main>
