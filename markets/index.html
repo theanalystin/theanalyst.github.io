@@ -79,7 +79,16 @@ permalink: /markets/
     </div>
   </section>
 
-  <section class="market-section" aria-labelledby="cross-market">
+  <section class="market-section" aria-labelledby="hourly-snapshot">
+    <h2 id="hourly-snapshot">Hourly market snapshot</h2>
+    <p id="snapshot-status" role="status">Fetching latest snapshot…</p>
+    <div id="snapshot-commentary" class="market-note" hidden></div>
+    <div id="snapshot-india" class="market-grid" aria-label="India live market data"></div>
+    <h3 style="margin-top:28px">United States & global signals</h3>
+    <div id="snapshot-us" class="market-grid" aria-label="US market data"></div>
+    <p id="snapshot-sources" class="market-disclaimer"></p>
+  </section>
+\n  <section class="market-section" aria-labelledby="cross-market">
     <h2 id="cross-market">What connects the markets</h2>
     <ul class="market-watch">
       <li><strong>Rates:</strong> Federal Reserve expectations and US Treasury yields can change global equity valuations and capital flows.</li>
@@ -101,4 +110,31 @@ permalink: /markets/
   </section>
 
   <p class="market-disclaimer">Information is provided for education and general market awareness, not as investment advice or a recommendation to buy or sell any security. Market data may be delayed; always confirm prices and corporate disclosures with the relevant exchange or issuer.</p>
-</main>
+<script>
+(function(){
+ const status=document.getElementById('snapshot-status'), india=document.getElementById('snapshot-india'), us=document.getElementById('snapshot-us'), note=document.getElementById('snapshot-commentary'), sources=document.getElementById('snapshot-sources');
+ const indiaNames=['NIFTY 50','SENSEX','BANK NIFTY','INDIA VIX','USD/INR'];
+ const usNames=['S&P 500','NASDAQ Composite','DOW JONES','US VIX','US 10Y yield','Dollar index'];
+ function fmt(v){if(v===null||v===undefined)return '—';return Number(v).toLocaleString('en-IN',{maximumFractionDigits:4});}
+ function renderItem(name,q){
+   const pct=q.change_pct, color=(pct>0?'↑ ':pct<0?'↓ ':'');
+   const change=pct===null||pct===undefined?'—':color+Math.abs(pct).toFixed(2)+'%';
+   const card=document.createElement('div');card.className='market-card';
+   const title=document.createElement('strong');title.textContent=name;
+   const value=document.createElement('span');value.textContent=fmt(q.price)+' '+(q.currency||'')+' · '+change;
+   card.append(title,value);return card;
+ }
+ fetch('/markets/data/latest.json?ts='+Date.now(),{cache:'no-store'})
+ .then(r=>{if(!r.ok)throw Error('No data snapshot yet');return r.json();})
+ .then(data=>{
+   const q=data.quotes||{}; india.innerHTML='';us.innerHTML='';
+   indiaNames.forEach(n=>{if(q[n])india.appendChild(renderItem(n,q[n]));});
+   usNames.forEach(n=>{if(q[n])us.appendChild(renderItem(n,q[n]));});
+   status.textContent='Snapshot updated '+new Date(data.updated_ist).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})+' IST · '+Object.keys(q).length+' instruments';
+   if(data.commentary){note.hidden=false;note.textContent=data.commentary;}
+   sources.textContent='Data provider: '+(data.provider||'market data feed')+' · Quote times may vary by instrument. Verify with official exchanges before trading.';
+   if(!Object.keys(q).length)status.textContent='Snapshot has no quotes yet. Retry later.';
+ })
+ .catch(e=>{status.textContent='Hourly snapshot not available yet. The market data workflow may still be initializing.';});
+})();
+</script>\n</main>
