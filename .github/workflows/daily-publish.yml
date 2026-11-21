@@ -1,9 +1,7 @@
 name: Deploy SQL Playground
-# Refresh the news feed and deploy the site every five minutes
-# Deployment trigger: publish the latest site and static news feed
+# Refresh the static news feed on a schedule; GitHub Pages publishes on each push
+# Deployment is handled by the repository's Pages build workflow
 on:
-  push:
-    branches: [main]
   schedule:
     - cron: "*/5 * * * *"
   workflow_dispatch:
