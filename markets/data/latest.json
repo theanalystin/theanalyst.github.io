@@ -1,9 +1,109 @@
 {
-  "updated_utc": null,
-  "updated_ist": null,
+  "updated_utc": "2026-11-21T02:24:04.175398+00:00",
+  "updated_ist": "2026-11-21T07:54:04.175398+05:30",
   "provider": "Yahoo Finance chart endpoint",
   "source_url": "https://finance.yahoo.com/",
-  "quotes": {},
-  "errors": ["Hourly workflow has not run yet."],
-  "commentary": "The first automated market snapshot is pending. This page will populate after the scheduled workflow runs."
+  "quotes": {
+    "NIFTY 50": {
+      "symbol": "^NSEI",
+      "price": 25800.6,
+      "previous_close": 25227.9,
+      "change": 572.6999999999971,
+      "change_pct": 2.2701057162902862,
+      "currency": "INR",
+      "timestamp_utc": "2026-11-20T10:01:15+00:00"
+    },
+    "SENSEX": {
+      "symbol": "^BSESN",
+      "price": 83919.71,
+      "previous_close": 82031.8,
+      "change": 1887.9100000000035,
+      "change_pct": 2.301436759890681,
+      "currency": "INR",
+      "timestamp_utc": "2026-11-20T10:02:29+00:00"
+    },
+    "BANK NIFTY": {
+      "symbol": "^NSEBANK",
+      "price": 64635.2,
+      "previous_close": 62038.6,
+      "change": 2596.5999999999985,
+      "change_pct": 4.18545873053228,
+      "currency": "INR",
+      "timestamp_utc": "2026-11-20T10:01:15+00:00"
+    },
+    "INDIA VIX": {
+      "symbol": "^INDIAVIX",
+      "price": 17.32,
+      "previous_close": 15.57,
+      "change": 1.75,
+      "change_pct": 11.23956326268465,
+      "currency": "INR",
+      "timestamp_utc": "2026-11-20T10:13:44+00:00"
+    },
+    "USD/INR": {
+      "symbol": "INR=X",
+      "price": 92.66,
+      "previous_close": 93.28,
+      "change": -0.6200000000000045,
+      "change_pct": -0.6646655231560941,
+      "currency": "INR",
+      "timestamp_utc": "2026-11-20T22:36:29+00:00"
+    },
+    "S&P 500": {
+      "symbol": "^GSPC",
+      "price": 6910.39,
+      "previous_close": 7175.83,
+      "change": -265.4399999999996,
+      "change_pct": -3.69908428711382,
+      "currency": "USD",
+      "timestamp_utc": "2026-11-20T21:35:54+00:00"
+    },
+    "NASDAQ Composite": {
+      "symbol": "^IXIC",
+      "price": 22617.732,
+      "previous_close": 23879.2,
+      "change": -1261.4680000000008,
+      "change_pct": -5.28270628831787,
+      "currency": "USD",
+      "timestamp_utc": "2026-11-20T22:15:59+00:00"
+    },
+    "DOW JONES": {
+      "symbol": "^DJI",
+      "price": 48147.33,
+      "previous_close": 49097.06,
+      "change": -949.7299999999959,
+      "change_pct": -1.9343928129301347,
+      "currency": "USD",
+      "timestamp_utc": "2026-11-20T21:35:59+00:00"
+    },
+    "US VIX": {
+      "symbol": "^VIX",
+      "price": 35.89,
+      "previous_close": 28.44,
+      "change": 7.449999999999999,
+      "change_pct": 26.195499296765117,
+      "currency": "USD",
+      "timestamp_utc": "2026-11-20T21:15:01+00:00"
+    },
+    "US 10Y yield": {
+      "symbol": "^TNX",
+      "price": 4.912,
+      "previous_close": 5.052,
+      "change": -0.13999999999999968,
+      "change_pct": -2.771179730799677,
+      "currency": "USD",
+      "timestamp_utc": "2026-11-20T19:59:55+00:00"
+    },
+    "Dollar index": {
+      "symbol": "DX-Y.NYB",
+      "price": 103.84,
+      "previous_close": 103.807,
+      "change": 0.03300000000000125,
+      "change_pct": 0.031789763696091065,
+      "currency": "USD",
+      "timestamp_utc": "2026-11-20T21:59:59+00:00"
+    }
+  },
+  "errors": [],
+  "commentary": "Automated quote snapshot. Review relative moves across indices, volatility, currencies and yields; this snapshot alone does not explain the cause of a move."
 }
