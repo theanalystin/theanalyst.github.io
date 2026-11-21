@@ -6,13 +6,21 @@ const output = process.env.SQL_PLAYGROUND_SCREENSHOTS || '/tmp/sql-playground-sc
 await fs.mkdir(output, { recursive: true });
 
 async function runSql(page, sql) {
-  const previousStatus = await page.locator('#sqlp-status').textContent();
   await page.locator('.cm-content').fill(sql);
   await page.locator('#sqlp-run').click();
-  await page.waitForFunction(previous => {
-    const current = document.querySelector('#sqlp-status')?.textContent || '';
-    return current !== previous && current.startsWith('Query completed');
-  }, previousStatus, { timeout: 30000 });
+  await page.waitForFunction(() => {
+    const status = document.querySelector('#sqlp-status')?.textContent || '';
+    return status.startsWith('Running the SQL in the editor') ||
+      status.startsWith('Query completed') ||
+      document.querySelector('#sqlp-status')?.classList.contains('error');
+  }, null, { timeout: 10000 });
+  await page.waitForFunction(() => {
+    const el = document.querySelector('#sqlp-status');
+    const status = el?.textContent || '';
+    return status.startsWith('Query completed') || el?.classList.contains('error');
+  }, null, { timeout: 30000 });
+  const finalStatus = await page.locator('#sqlp-status').textContent();
+  if (!finalStatus.startsWith('Query completed')) throw new Error('SQL Playground query failed: ' + finalStatus);
 }
 const browser = await chromium.launch({ headless: true });
 const errors = [];
