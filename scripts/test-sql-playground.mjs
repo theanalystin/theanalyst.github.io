@@ -4,6 +4,16 @@ import fs from 'node:fs/promises';
 const baseURL = process.env.SQL_PLAYGROUND_URL || 'http://127.0.0.1:4000/sql-playground/';
 const output = process.env.SQL_PLAYGROUND_SCREENSHOTS || '/tmp/sql-playground-screenshots';
 await fs.mkdir(output, { recursive: true });
+
+async function runSql(page, sql) {
+  const previousStatus = await page.locator('#sqlp-status').textContent();
+  await page.locator('.cm-content').fill(sql);
+  await page.locator('#sqlp-run').click();
+  await page.waitForFunction(previous => {
+    const current = document.querySelector('#sqlp-status')?.textContent || '';
+    return current !== previous && current.startsWith('Query completed');
+  }, previousStatus, { timeout: 30000 });
+}
 const browser = await chromium.launch({ headless: true });
 const errors = [];
 try {
@@ -61,9 +71,7 @@ try {
         ['SELECT grade, salary FROM employees;', 'boxplot']
       ];
       for (const [sql, chartType] of cases) {
-        await page.locator('.cm-content').fill(sql);
-        await page.locator('#sqlp-run').click();
-        await page.waitForFunction(() => (document.querySelector('#sqlp-status')?.textContent || '').startsWith('Query completed'), null, { timeout: 30000 });
+        await runSql(page, sql);
         const tile = page.locator(`#sqlp [data-chart="${chartType}"]`);
         await tile.waitFor({ state: 'visible' });
         if (await tile.isDisabled()) {
@@ -85,14 +93,10 @@ try {
         if (!hasCanvas) throw new Error(`${chartType} did not render a chart canvas`);
       }
       // Exercise the automatic SQL histogram and boxplot fallbacks on raw result rows.
-      await page.locator('.cm-content').fill('SELECT salary FROM employees;');
-      await page.locator('#sqlp-run').click();
-      await page.waitForFunction(() => (document.querySelector('#sqlp-status')?.textContent || '').startsWith('Query completed'), null, { timeout: 30000 });
+      await runSql(page, 'SELECT salary FROM employees;');
       await page.locator('#sqlp [data-chart="histogram"]').click();
       await page.waitForFunction(type => document.querySelector('#sqlp-chart')?.dataset.chartType === type, 'histogram', { timeout: 15000 });
-      await page.locator('.cm-content').fill('SELECT grade, salary FROM employees;');
-      await page.locator('#sqlp-run').click();
-      await page.waitForFunction(() => (document.querySelector('#sqlp-status')?.textContent || '').startsWith('Query completed'), null, { timeout: 30000 });
+      await runSql(page, 'SELECT grade, salary FROM employees;');
       await page.locator('#sqlp [data-chart="boxplot"]').click();
       await page.waitForFunction(type => document.querySelector('#sqlp-chart')?.dataset.chartType === type, 'boxplot', { timeout: 15000 });
       const csvDownload = page.waitForEvent('download', { timeout: 20000 });
@@ -119,9 +123,7 @@ try {
         ["SELECT COUNT(*) AS n FROM (SELECT DATE_TRUNC('month', o.order_date) AS month, SUM(oi.quantity * p.unit_price * (1 - oi.discount)) AS revenue FROM orders o JOIN order_items oi USING (order_id) JOIN products p USING (product_id) GROUP BY 1) monthly;", '9', 'monthly revenue aggregation']
       ];
       for (const [sql, expected, label] of relationalCases) {
-        await page.locator('.cm-content').fill(sql);
-        await page.locator('#sqlp-run').click();
-        await page.waitForFunction(() => (document.querySelector('#sqlp-status')?.textContent || '').startsWith('Query completed'), null, { timeout: 30000 });
+        await runSql(page, sql);
         const actual = await page.locator('#sqlp-results tbody tr:first-child td:first-child').textContent();
         if ((actual || '').trim() !== expected) throw new Error(`Relational sample check failed for ${label}: expected ${expected}, got ${actual}`);
       }
