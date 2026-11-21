@@ -60,6 +60,9 @@ jobs:
       - name: Test responsive layout, chart types, and exports
         run: node scripts/test-sql-playground.mjs
 
+      - name: Test QueryNest SQLite browser application
+        run: node scripts/test-querynest.mjs
+
       - name: Upload 375px and 1280px screenshots
         if: always()
         uses: actions/upload-artifact@v5
