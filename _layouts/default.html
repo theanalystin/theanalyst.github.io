@@ -12,13 +12,15 @@
 </head>
 <body>
 <header class="site-header">
-<a class="brand" href="{{ '/sql-playground/' | relative_url }}" aria-label="The Analyst home"><img src="https://pbs.twimg.com/profile_images/2003668474753875973/CWCmElIg_400x400.jpg" alt="" width="38" height="38"></a>
+<a class="brand" href="{{ '/' | relative_url }}" aria-label="The Analyst home"><img src="https://pbs.twimg.com/profile_images/2003668474753875973/CWCmElIg_400x400.jpg" alt="" width="38" height="38"></a>
 <nav aria-label="Main navigation">
+<a href="{{ '/' | relative_url }}">Home</a>
+<a href="{{ '/querynest/' | relative_url }}">QueryNest</a>
 <a href="{{ '/sql-playground/' | relative_url }}">SQL Playground</a>
 <a href="{{ '/news/' | relative_url }}">Business News</a>
 </nav>
 </header>
 <main class="container">{{ content }}</main>
-<footer class="site-footer"><span>SQL Playground · Free browser-based analytics</span><span><a href="https://github.com/theanalystin/theanalyst.github.io">GitHub</a></span></footer>
+<footer class="site-footer"><span>The Analyst · Practical browser-based analytics</span><span><a href="https://github.com/theanalystin/theanalyst.github.io">GitHub</a></span></footer>
 </body>
 </html>
