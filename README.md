@@ -65,3 +65,10 @@ The SQL Playground uses third-party CDNs to download the libraries required to r
 ## Automated checks
 
 Pull requests run a Jekyll production build, a syntax check of the embedded SQL Playground module, and Playwright browser checks at **375px** and **1280px**. The browser suite exercises the 17 chart types and CSV, PNG, SVG, and PPTX exports. Responsive screenshots are uploaded as a workflow artifact named `sql-playground-responsive-screenshots`. The test-only Playwright dependency is installed in CI and is not part of the site's runtime bundle.
+
+
+## QueryNest on the live site
+
+The static GitHub Pages edition is published at [https://theanalyst.in/querynest/](https://theanalyst.in/querynest/). It reuses the browser-based SQL workspace so the deployed page can run without a server. Query execution, CSV imports, saved queries, and visualization are handled in the visitor's browser.
+
+The separate [QueryNest application repository](https://github.com/theanalystin/querynest) contains the Express and SQLite backend scaffold for a future server-hosted edition. GitHub Pages cannot run that backend.
