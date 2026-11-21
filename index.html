@@ -1,19 +1,56 @@
 ---
-layout: none
-title: SQL Playground
+layout: default
+title: The Analyst — Practical Analytics Tools
+description: Free browser-based SQL and analytics tools from The Analyst.
 permalink: /
 ---
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="refresh" content="0; url=/sql-playground/">
-<link rel="canonical" href="https://theanalyst.in/sql-playground/">
-<title>SQL Playground | The Analyst</title>
-<script>window.location.replace("/sql-playground/");</script>
-</head>
-<body>
-<p>Opening the <a href="/sql-playground/">SQL Playground</a>…</p>
-</body>
-</html>
+
+<style>
+#home{max-width:1080px;margin:0 auto;padding:28px 0 64px;color:#171717}
+#home .eyebrow{font-size:11px;letter-spacing:.16em;font-weight:800;color:#61708a;margin:0 0 16px}
+#home .hero{padding:42px 38px;background:linear-gradient(135deg,#f2f5ff,#fff 68%);border:1px solid #e0e5ef;border-radius:18px}
+#home h1{font-size:clamp(38px,7vw,64px);letter-spacing:-.055em;line-height:1.02;margin:0 0 16px;max-width:760px}
+#home .lead{font-size:17px;line-height:1.65;color:#596274;max-width:680px;margin:0}
+#home .section-title{font-size:21px;letter-spacing:-.02em;margin:34px 0 14px}
+#home .tool-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+#home .tool-card{display:flex;flex-direction:column;min-height:230px;padding:22px;background:#fff;border:1px solid #e0e4eb;border-radius:14px;text-decoration:none;color:inherit;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
+#home .tool-card:hover{transform:translateY(-3px);border-color:#aab7d2;box-shadow:0 12px 28px rgba(29,45,78,.08)}
+#home .tool-card.featured{border-color:#bdc9f4;background:linear-gradient(160deg,#f8f9ff,#fff 70%)}
+#home .tag{font-size:10px;letter-spacing:.12em;font-weight:800;color:#6276ce}
+#home h2{font-size:24px;letter-spacing:-.03em;margin:18px 0 8px}
+#home .tool-card p{color:#697386;line-height:1.55;margin:0 0 20px}
+#home .open{margin-top:auto;font-weight:700;font-size:13px}
+#home .note{font-size:12px;color:#7c8492;margin:18px 0 0}
+@media(max-width:760px){#home{padding:16px 0 40px}#home .hero{padding:28px 22px}#home .tool-grid{grid-template-columns:1fr}#home .tool-card{min-height:180px}#home .lead{font-size:15px}}
+</style>
+
+<div id="home">
+  <section class="hero">
+    <p class="eyebrow">THE ANALYST · PRACTICAL DATA TOOLS</p>
+    <h1>Explore data.<br>Find the signal.</h1>
+    <p class="lead">A practical workspace for analysts and curious decision-makers. Write SQL, explore datasets, build clear charts, and turn raw data into useful insights.</p>
+  </section>
+
+  <h2 class="section-title">Explore the tools</h2>
+  <section class="tool-grid" aria-label="Analytics tools">
+    <a class="tool-card featured" href="/querynest/">
+      <span class="tag">FEATURED · BROWSER-BASED</span>
+      <h2>QueryNest</h2>
+      <p>A focused SQL workspace with sample data, CSV import, saved queries, interactive charts, and export tools. Your data stays in your browser.</p>
+      <span class="open">Open QueryNest →</span>
+    </a>
+    <a class="tool-card" href="/sql-playground/">
+      <span class="tag">SQL · VISUAL ANALYTICS</span>
+      <h2>SQL Playground</h2>
+      <p>Practice SQL on a relational sample database or your own CSV files, then profile tables and create presentation-ready charts.</p>
+      <span class="open">Open SQL Playground →</span>
+    </a>
+    <a class="tool-card" href="/news/">
+      <span class="tag">MARKETS · BUSINESS</span>
+      <h2>Business News</h2>
+      <p>Follow business, markets, and analytics developments through The Analyst.</p>
+      <span class="open">Explore Business News →</span>
+    </a>
+  </section>
+  <p class="note">Free tools from The Analyst. Browser-based analysis runs locally on your device.</p>
+</div>
