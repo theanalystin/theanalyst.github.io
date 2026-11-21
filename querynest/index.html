@@ -1,0 +1,756 @@
+---
+layout: default
+title: QueryNest
+ description: A browser-based SQL workspace for sample datasets, CSV imports, saved queries, charts, and exports.
+permalink: /querynest/
+---
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
+#sqlp{--ink:#111;--muted:#686868;--line:#dedede;--paper:#fff;color:var(--ink);padding:.45rem 0 1rem;font-size:13px;font-family:"Outfit",ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+#sqlp h1{font-size:clamp(1.65rem,3.5vw,2.25rem);margin:.1rem 0 .35rem}
+#sqlp h2{margin:0 0 .45rem}
+#sqlp p{line-height:1.35}
+#sqlp .intro{margin:.3rem 0 .6rem}
+#sqlp .steps{gap:.35rem;margin:.55rem 0}
+#sqlp .step{padding:.45rem .55rem}
+#sqlp .panel{padding:.7rem;margin-bottom:.45rem;border-radius:8px}
+#sqlp .panel-head{margin-bottom:.4rem;gap:.4rem}
+#sqlp label{margin:.25rem 0 .2rem}
+#sqlp select,#sqlp input[type=text],#sqlp input[type=file]{padding:.4rem}
+#sqlp button{padding:.42rem .6rem}
+#sqlp .workspace,#sqlp .result-layout{gap:.45rem}
+#sqlp .chart-controls{gap:.4rem}
+#sqlp .axis-pair{gap:.5rem}
+#sqlp .chart-picker{gap:.3rem;margin:.35rem 0 .5rem}
+#sqlp .chart-tile{min-height:58px;padding:.35rem .2rem;gap:.2rem}
+#sqlp .chart-tile .chart-glyph{width:23px;height:23px}
+#sqlp .chart-note{margin:.25rem 0 .4rem}
+#sqlp .hint{margin:.25rem 0 0}
+#sqlp .palette-groups{gap:.35rem}
+#sqlp .palette-row{gap:.25rem}
+#sqlp .palette-choice{min-width:82px;padding:.35rem .45rem}
+#sqlp .chart-toggles{gap:.45rem}
+#sqlp #sqlp-chart{height:360px;min-height:240px}
+#sqlp .table-wrap{max-height:300px}
+#sqlp .sqlp-footer{margin-top:.7rem;padding-top:.6rem}
+#sqlp *{box-sizing:border-box}#sqlp h1{font-size:clamp(2rem,5vw,3rem);letter-spacing:-.055em;line-height:1.05;margin:.25rem 0 .6rem}#sqlp h2{font-size:1rem;letter-spacing:-.02em;margin:0 0 .8rem}#sqlp p{line-height:1.5}#sqlp .muted{color:var(--muted);font-size:.84rem}#sqlp .eyebrow{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:750;margin:0}
+#sqlp .intro{max-width:700px;color:var(--muted);margin:.5rem 0 1.2rem}#sqlp .steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.5rem;margin:1.3rem 0}#sqlp .step{border:1px solid var(--line);border-radius:8px;padding:.7rem .8rem;min-width:0}#sqlp .step b{display:block;font-size:.78rem;margin-bottom:.2rem}#sqlp .step span{color:var(--muted);font-size:.76rem}
+#sqlp .panel{border:1px solid var(--line);border-radius:10px;padding:1rem;min-width:0;margin-bottom:.8rem;background:var(--paper)}#sqlp .panel-head{display:flex;align-items:center;justify-content:space-between;gap:.7rem;flex-wrap:wrap;margin-bottom:.65rem}#sqlp .panel-head h2{margin:0}#sqlp .pill{border:1px solid var(--line);border-radius:999px;padding:.25rem .55rem;font-size:.74rem;color:var(--muted)}
+#sqlp button,#sqlp select,#sqlp input,#sqlp textarea{font:inherit}#sqlp button{border:1px solid #cfcfcf;border-radius:7px;background:#fff;color:#111;padding:.58rem .78rem;cursor:pointer;transition:background .15s}#sqlp button:hover{background:#f2f2f2}#sqlp button:focus-visible,#sqlp select:focus-visible,#sqlp input:focus-visible,#sqlp textarea:focus-visible{outline:2px solid #111;outline-offset:2px}#sqlp button.primary{background:#111;color:#fff;border-color:#111}#sqlp button.primary:hover{background:#333}#sqlp button:disabled{opacity:.45;cursor:not-allowed}#sqlp select,#sqlp input[type=text],#sqlp input[type=file]{width:100%;border:1px solid #d2d2d2;border-radius:7px;padding:.55rem;background:#fff;color:#111;min-width:0}#sqlp label{display:block;font-size:.78rem;font-weight:650;margin:.55rem 0 .3rem}
+#sqlp .row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}#sqlp .row>*{min-width:0}#sqlp .dataset{flex:1;text-align:left;min-width:140px}#sqlp .dataset strong{display:block}#sqlp .dataset small{display:block;color:var(--muted);font-size:.75rem;margin-top:.2rem}
+#sqlp textarea,#sqlp #sqlp-query{background:#fff!important;color:#111!important;border:1px solid #d2d2d2}
+#sqlp .cm-editor{border:1px solid #d2d2d2;border-radius:7px;font-size:.88rem;min-height:215px;color:#111;background:#fff}
+#sqlp .cm-scroller{min-height:215px}#sqlp .cm-gutters{background:#f7f7f7;border-right:1px solid #dedede;color:#686868}#sqlp .cm-focused{outline:2px solid #111;outline-offset:2px}
+#sqlp .workspace{display:grid;grid-template-columns:minmax(0,1fr);gap:.8rem;align-items:start}#sqlp .left-workflow{min-width:0}#sqlp .left-workflow>.panel{margin-bottom:.8rem}#sqlp textarea{width:100%;min-height:215px;resize:vertical;padding:.85rem;border:1px solid #333;border-radius:7px;background:#111;color:#f5f5f5;font:.88rem/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2}#sqlp .status{font-size:.82rem;color:var(--muted);min-height:1.2em;margin:.65rem 0 0;overflow-wrap:anywhere}#sqlp .status.error{color:#a32020}#sqlp .drop{border:1px dashed #cfcfcf;border-radius:7px;padding:.7rem}#sqlp .table-wrap{overflow:auto;max-height:360px;border:1px solid var(--line);border-radius:7px}#sqlp table{border-collapse:collapse;width:100%;font-size:.8rem;white-space:nowrap}#sqlp th,#sqlp td{padding:.5rem .65rem;text-align:left;border-bottom:1px solid #e9e9e9}#sqlp th{background:#f7f7f7;position:sticky;top:0}#sqlp .result-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:.8rem}#sqlp .chart-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem}#sqlp .chart-controls .wide{grid-column:span 2}#sqlp #sqlp-chart{position:relative;width:100%;height:430px;min-height:280px}
+#sqlp #sqlp-chart:not([data-chart-type])::before{content:'Run a query to preview your chart';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.9rem;pointer-events:none}
+#sqlp .export-panel{margin-top:.8rem}
+#sqlp .axis-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;align-items:start}
+#sqlp .axis-pair>div{min-width:0}
+@media(max-width:640px){#sqlp .axis-pair{grid-template-columns:1fr}}
+#sqlp .chart-preview-panel{min-width:0}#sqlp .hint{font-size:.78rem;color:var(--muted);margin:.5rem 0 0}#sqlp .table-list{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 0}#sqlp .table-list button{font-size:.78rem;padding:.35rem .5rem}#sqlp .file-note{font-size:.76rem;color:var(--muted);margin:.45rem 0 0}
+#sqlp .palette-groups{display:flex;flex-wrap:wrap;align-items:flex-start;gap:.45rem .7rem}#sqlp .palette-groups>div{display:flex;flex-direction:column;gap:.25rem;min-width:0}#sqlp .palette-heading{margin:0}#sqlp .palette-row{gap:.25rem}#sqlp .palette-heading{display:block;font-size:.72rem;font-weight:700;margin:.1rem 0 .3rem}
+#sqlp .palette-row{display:flex;gap:.35rem;flex-wrap:wrap}#sqlp .palette-choice{display:flex;flex-direction:column;align-items:flex-start;gap:.25rem;font-size:.7rem;min-width:95px}
+#sqlp .palette-choice[aria-pressed=true]{outline:2px solid #111;outline-offset:1px}#sqlp .swatches{display:flex;gap:2px;width:100%}#sqlp .swatches i{display:block;height:9px;flex:1;border-radius:1px}
+#sqlp .chart-toggles{display:flex;flex-wrap:wrap;align-items:center;gap:.8rem}#sqlp .chart-toggles label{display:flex;align-items:center;gap:.35rem;margin:.2rem 0;font-weight:500}#sqlp .chart-toggles input[type=checkbox]{width:16px;height:16px;accent-color:#111}
+#sqlp .profile-card{margin-top:1rem;border-top:1px solid var(--line);padding-top:1rem}
+#sqlp .profile-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin:.7rem 0 1rem}
+#sqlp .profile-metric{border:1px solid var(--line);padding:.65rem;border-radius:7px}
+#sqlp .profile-metric strong{display:block;font-size:1.15rem}#sqlp .profile-metric span{font-size:.75rem;color:var(--muted)}
+#sqlp .profile-card h3{font-size:.85rem;margin:.6rem 0}
+#sqlp .query-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}
+#sqlp .chart-picker{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.45rem;margin:.6rem 0 .9rem}
+#sqlp .chart-tile{min-width:0;min-height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.35rem;padding:.55rem .25rem;text-align:center;border:1px solid var(--line);border-radius:8px;background:#fff}
+#sqlp .chart-tile .chart-glyph{display:flex;align-items:center;justify-content:center;width:28px;height:28px;color:currentColor}#sqlp .chart-tile .chart-glyph svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}#sqlp .chart-tile .chart-label{font-size:.73rem;line-height:1.2}
+#sqlp .chart-tile[aria-pressed=true]{background:#111;color:#fff;border-color:#111}#sqlp .chart-tile:disabled{opacity:.35;cursor:not-allowed;background:#f7f7f7}
+#sqlp .chart-note{font-size:.76rem;color:var(--muted);min-height:1.1em;margin:.4rem 0 .7rem}
+#sqlp .sqlp-footer{border-top:1px solid var(--line);margin-top:1.5rem;padding-top:1rem;color:var(--muted);font-size:.78rem}
+@media(max-width:1100px){#sqlp .steps{grid-template-columns:repeat(2,minmax(0,1fr))}#sqlp .chart-controls{grid-template-columns:repeat(2,minmax(0,1fr))}#sqlp #sqlp-chart{height:360px}}@media(max-width:780px){#sqlp .chart-picker{grid-template-columns:repeat(2,minmax(0,1fr))}#sqlp .steps{grid-template-columns:1fr}#sqlp .query-tools{grid-template-columns:1fr}}@media(max-width:520px){#sqlp .profile-metrics{grid-template-columns:1fr}#sqlp .panel{padding:.75rem}#sqlp .chart-controls{grid-template-columns:1fr}#sqlp .chart-controls .wide{grid-column:auto}#sqlp .steps{gap:.35rem}#sqlp .step{padding:.6rem}#sqlp #sqlp-chart{height:300px}}
+
+
+/* Palette layout: compact families on desktop, stacked without overflow on phones. */
+#sqlp .palette-groups{display:grid;grid-template-columns:max-content max-content max-content;align-items:start;justify-content:start;column-gap:.7rem;row-gap:.45rem}
+#sqlp .palette-groups>div{display:flex;flex-direction:column;gap:.3rem;min-width:0}
+#sqlp .palette-row{display:flex;flex-wrap:nowrap;gap:.3rem;min-width:0}
+#sqlp .palette-choice{min-width:82px;max-width:100%;padding:.35rem .4rem}
+#sqlp .palette-choice .swatches{max-width:100%}
+@media(max-width:900px){
+  #sqlp .palette-groups{grid-template-columns:minmax(0,1fr);row-gap:.4rem}
+  #sqlp .palette-groups>div{display:grid;grid-template-columns:100px minmax(0,1fr);align-items:center;gap:.4rem}
+  #sqlp .palette-row{flex-wrap:wrap;min-width:0}
+  #sqlp .palette-choice{min-width:0}
+}
+@media(max-width:520px){
+  #sqlp .palette-groups{gap:.35rem}
+  #sqlp .palette-groups>div{grid-template-columns:76px minmax(0,1fr);gap:.3rem}
+  #sqlp .palette-heading{line-height:1.2;margin:0!important}
+  #sqlp .palette-row{gap:.25rem}
+  #sqlp .palette-choice{padding:.3rem .35rem;font-size:.68rem}
+  #sqlp .palette-choice .swatches{max-width:74px}
+  #sqlp #sqlp-chart{height:300px}
+}
+
+</style>
+
+<div id="sqlp">
+  <p style="margin:0 0 .8rem;text-align:right;font-size:.85rem"><a href="/news/" style="color:#2879c7;text-decoration:none;font-weight:650">Business News →</a></p>
+  <h1>QueryNest</h1>
+  <p class="intro">QueryNest is your browser-based SQL workspace. Explore the sample relational database or import CSV files, write and save queries, build charts, and export your results. This GitHub Pages edition runs entirely in your browser; your files and query results are not uploaded.</p>
+
+  <div class="steps" aria-label="Workflow">
+    <div class="step"><b>01 / Data</b><span>Sample data or CSV</span></div>
+    <div class="step"><b>02 / Query</b><span>Write SQL or start from an example</span></div>
+    <div class="step"><b>03 / Visualize</b><span>Configure ECharts and style</span></div>
+    <div class="step"><b>04 / Export</b><span>PNG image or PowerPoint</span></div>
+  </div>
+
+  <div class="workspace">
+    <div class="left-workflow">
+        <section class="panel">
+    <div class="panel-head"><h2>01 — Choose your data</h2><span class="pill" id="sqlp-engine">Ready when you are</span></div>
+    <div class="row">
+      <button type="button" class="dataset" data-sample="employees"><strong>Sample database · relational tables</strong><small>Employees, departments, customers, products, orders and order items — ready for JOIN practice</small></button>
+    </div>
+    <div class="row" style="margin-top:.7rem;align-items:flex-end">
+      <div id="sqlp-dropzone" class="drop" style="flex:1;min-width:220px"><label for="sqlp-files">Or import CSV files (drop here or browse)</label><input id="sqlp-files" type="file" accept=".csv,text/csv" multiple><p class="hint">Drop one or more CSV files here.</p></div>
+      <button class="primary" id="sqlp-import" type="button">Import CSV</button>
+    </div>
+    <p class="file-note">CSV files are processed locally in your browser; they are not uploaded to The Analyst. The sample database is fictional. You can write and run new SQL against either the sample table or any imported CSV table.</p>
+    <div class="table-list" id="sqlp-tables"><span class="muted">Tables will appear here when DuckDB is ready.</span></div>
+    <div id="sqlp-profile" class="profile-card" hidden>
+      <div class="profile-metrics" id="sqlp-profile-metrics"></div>
+      <h3>Schema and data profile</h3><div id="sqlp-schema" class="table-wrap"></div>
+      <h3 style="margin-top:1rem">First 10 rows</h3><div id="sqlp-preview" class="table-wrap"></div>
+    </div>
+    <p id="sqlp-import-status" class="status" aria-live="polite"></p>
+  </section>
+      <section class="panel">
+      <div class="panel-head"><h2>02 — Write your SQL</h2><span class="pill">Ctrl / ⌘ + Enter</span></div>
+      <div class="query-tools">
+        <div><label for="sqlp-query-examples">SQL examples · beginner to analyst</label><select id="sqlp-query-examples">
+          <option value="headcount">1. GROUP BY — headcount by department</option>
+          <option value="salaryByGrade">2. AVG — salary by grade</option>
+          <option value="hiringTrend">3. Dates — hiring trend</option>
+          <option value="departmentGender">4. GROUP BY — department and gender</option>
+          <option value="employeeDetail">5. ORDER BY — highest-paid employees</option>
+          <option value="departmentJoin">6. JOIN — employees and departments</option>
+          <option value="customerOrders">7. JOIN — customer order totals</option>
+          <option value="productRevenue">8. JOIN — revenue by product</option>
+          <option value="monthlyRevenue">9. Dates — monthly revenue</option>
+          <option value="rankSalaries">10. Window function — salary rank</option>
+          <option value="customersWithoutOrders">11. LEFT JOIN — customers without orders</option>
+          <option value="orderDetail">12. Multi-table JOIN — order line detail</option>
+        </select><p class="hint">Choose an example to load it into the editor. Then edit any part of the SQL or replace it with your own query and click <strong>Run query</strong>. You can query the sample tables or tables imported from CSV.</p></div>
+        <div><p class="hint">Your query runs in this browser. Save useful SQL locally, or format it before running.</p><div class="row" style="margin-top:.5rem"><button id="sqlp-format" type="button">Format SQL</button><button id="sqlp-save-query" type="button">Save query</button></div></div>
+      </div>
+      <label for="sqlp-query">SQL query — editable</label>
+      <p class="hint">This is a normal, editable SQL editor. Sample queries are starting points, not locked templates.</p>
+      <div id="sqlp-editor-host" aria-label="SQL editor"></div>
+      <textarea id="sqlp-query" spellcheck="false" aria-label="SQL query editor">SELECT department, COUNT(*) AS headcount FROM employees GROUP BY department ORDER BY headcount DESC;</textarea>
+      <div class="row" style="margin-top:.6rem">
+        <button class="primary" id="sqlp-run" type="button">Run query</button>
+        <button id="sqlp-example" type="button">Load selected</button>
+        <button id="sqlp-clear" type="button">Clear</button>
+        <button id="sqlp-plain-editor" type="button" title="Switch to a basic text editor if the highlighted editor is difficult to use">Use basic editor</button>
+      </div>
+      <div class="row" style="margin-top:.55rem;align-items:flex-end">
+        <div style="flex:1;min-width:190px"><label for="sqlp-saved-query">Saved queries · this browser only</label><select id="sqlp-saved-query"><option value="">Saved queries…</option></select></div>
+        <button id="sqlp-load-saved" type="button">Load saved</button>
+        <button id="sqlp-update-saved" type="button" disabled>Update</button>
+        <button id="sqlp-rename-saved" type="button" disabled>Rename</button>
+        <button id="sqlp-delete-saved" type="button" disabled>Delete</button>
+      </div>
+      <p id="sqlp-status" class="status" role="status" aria-live="polite">Choose a sample, import a CSV, or run SQL to start the browser engine.</p>
+      <div style="margin-top:1rem">
+        <div class="panel-head"><h2>Query results</h2><span id="sqlp-result-meta" class="muted">No results yet</span></div>
+        <div id="sqlp-results" class="muted">Run a query to populate the table and chart builder.</div>
+      </div>
+      </section>
+      <section class="panel chart-controls-panel" id="sqlp-chart-controls">
+      <div class="panel-head"><h2>03 — Build your chart</h2><span class="pill">Apache ECharts</span></div>
+      <div class="panel-head" style="margin-top:.25rem"><h2>Chart type</h2><span class="muted">Auto-matched to result columns</span></div>
+      <div id="sqlp-chart-picker" class="chart-picker" aria-label="Chart type picker">
+        <button type="button" class="chart-tile" data-chart="bar" aria-pressed="true" title="Compare values across categories"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20V12h4v8M10 20V5h4v15M16 20V9h4v11"/></svg></span><span class="chart-label">Bar</span></button>
+        <button type="button" class="chart-tile" data-chart="horizontalBar" aria-pressed="false" title="Horizontal comparison of categories"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 6h12M3 12h18M3 18h9"/></svg></span><span class="chart-label">Horizontal bar</span></button>
+        <button type="button" class="chart-tile" data-chart="line" aria-pressed="false" title="Trend across an ordered axis"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="3,17 8,10 13,14 21,5"/></svg></span><span class="chart-label">Line</span></button>
+        <button type="button" class="chart-tile" data-chart="area" aria-pressed="false" title="Trend magnitude over an axis"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 20V14l5-5 5 3 8-8v16z"/></svg></span><span class="chart-label">Area</span></button>
+        <button type="button" class="chart-tile" data-chart="stackedBar" aria-pressed="false" title="Needs two categories and a numeric value"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20V12h5v8M4 12V5h5v7M11 20V15h5v5M11 15V8h5v7M18 20V11h3v9"/></svg></span><span class="chart-label">Stacked bar</span></button>
+        <button type="button" class="chart-tile" data-chart="pie" aria-pressed="false" title="Parts of a whole"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v8h8"/></svg></span><span class="chart-label">Pie / Donut</span></button>
+        <button type="button" class="chart-tile" data-chart="scatter" aria-pressed="false" title="Needs two numeric columns"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="6" cy="16" r="1.5"/><circle cx="9" cy="8" r="1.5"/><circle cx="14" cy="13" r="1.5"/><circle cx="19" cy="5" r="1.5"/><circle cx="18" cy="18" r="1.5"/></svg></span><span class="chart-label">Scatter</span></button>
+        <button type="button" class="chart-tile" data-chart="heatmap" aria-pressed="false" title="Needs two categories and a numeric value"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span class="chart-label">Heatmap</span></button>
+        <button type="button" class="chart-tile" data-chart="histogram" aria-pressed="false" title="SQL automatically bins a numeric column"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 20V14h4v6M8 20V7h4v13M13 20V3h4v17M18 20V11h3v9"/></svg></span><span class="chart-label">Histogram</span></button>
+        <button type="button" class="chart-tile" data-chart="boxplot" aria-pressed="false" title="SQL computes min, quartiles, median and max"><span class="chart-glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12h4M17 12h4M5 7v10M19 7v10M7 6h10v12H7zM12 6v12"/></svg></span><span class="chart-label">Boxplot</span></button>
+      </div>
+      <p id="sqlp-chart-note" class="chart-note" aria-live="polite">Run a query to see which chart types fit your columns.</p>
+      <div class="chart-controls">
+        <div class="wide"><label>Palette</label><div class="palette-groups">
+<div><span class="palette-heading">Default</span><button type="button" class="palette-choice" data-palette="mono" aria-pressed="true"><span class="swatches"><i style="background:#111"></i><i style="background:#555"></i><i style="background:#888"></i><i style="background:#d2d2d2"></i></span><span>Mono</span></button></div>
+<div><span class="palette-heading">Big4-inspired</span><div class="palette-row">
+<button type="button" class="palette-choice" data-palette="deloitte" aria-pressed="false" title="Green, black and grey"><span class="swatches"><i style="background:#86bc25"></i><i style="background:#111"></i><i style="background:#888"></i></span><span>Deloitte-style</span></button>
+<button type="button" class="palette-choice" data-palette="pwc" aria-pressed="false" title="Orange, coral and charcoal"><span class="swatches"><i style="background:#d94f00"></i><i style="background:#db536a"></i><i style="background:#333"></i></span><span>PwC-style</span></button>
+<button type="button" class="palette-choice" data-palette="ey" aria-pressed="false" title="Yellow, grey and black"><span class="swatches"><i style="background:#ffe600"></i><i style="background:#888"></i><i style="background:#111"></i></span><span>EY-style</span></button>
+<button type="button" class="palette-choice" data-palette="kpmg" aria-pressed="false" title="Blue, purple and grey"><span class="swatches"><i style="background:#00338d"></i><i style="background:#483698"></i><i style="background:#888"></i></span><span>KPMG-style</span></button>
+</div></div>
+<div><span class="palette-heading">MBB-inspired</span><div class="palette-row">
+<button type="button" class="palette-choice" data-palette="mck" aria-pressed="false"><span class="swatches"><i style="background:#003f6b"></i><i style="background:#0077a8"></i><i style="background:#4b9fca"></i></span><span>McKinsey-style</span></button>
+<button type="button" class="palette-choice" data-palette="bcg" aria-pressed="false"><span class="swatches"><i style="background:#006b54"></i><i style="background:#888"></i><i style="background:#111"></i></span><span>BCG-style</span></button>
+<button type="button" class="palette-choice" data-palette="bain" aria-pressed="false"><span class="swatches"><i style="background:#a30b22"></i><i style="background:#888"></i><i style="background:#111"></i></span><span>Bain-style</span></button>
+</div></div></div><input id="sqlp-palette" type="hidden" value="mono"></div>
+        <div class="axis-pair wide">
+          <div><label for="sqlp-x">X-axis (category)</label><select id="sqlp-x"><option value="">Run a query first</option></select></div>
+          <div><label for="sqlp-y">Y-axis (value)</label><select id="sqlp-y"><option value="">Run a query first</option></select></div>
+        </div>
+        <div><label for="sqlp-y-multi">Additional Y series (multi-select)</label><select id="sqlp-y-multi" multiple size="3" aria-describedby="sqlp-y-help"></select><p id="sqlp-y-help" class="hint">Use Ctrl/Cmd to select multiple measures.</p></div>
+        <div><label for="sqlp-group">Series / Group</label><select id="sqlp-group"><option value="">Optional</option></select></div>
+        <div><label for="sqlp-extra">Second numeric series</label><select id="sqlp-extra"><option value="">Optional</option></select></div>
+        <div class="wide"><label for="sqlp-title">Action title</label><input id="sqlp-title" type="text" value=""></div>
+        <div class="wide"><label for="sqlp-subtitle">Subtitle</label><input id="sqlp-subtitle" type="text" value=""></div>
+        <div><label for="sqlp-x-title">X-axis title</label><input id="sqlp-x-title" type="text" value=""></div>
+        <div><label for="sqlp-y-title">Y-axis title</label><input id="sqlp-y-title" type="text" value=""></div>
+        <div class="wide"><label for="sqlp-footnote">Source footnote</label><input id="sqlp-footnote" type="text" value="Source: Fictional sample data"></div>
+        <div class="chart-toggles wide"><label><input type="checkbox" id="sqlp-labels"> Data labels</label><label><input type="checkbox" id="sqlp-gridlines" checked> Gridlines</label><label><input type="checkbox" id="sqlp-legend" checked> Legend</label><label for="sqlp-sort">Sort</label><select id="sqlp-sort"><option value="none">None</option><option value="asc">Ascending</option><option value="desc">Descending</option></select></div>
+      </div>
+      
+      <div class="row" style="margin-top:.75rem"><button id="sqlp-render" class="primary" type="button" disabled>Update chart</button></div>
+      <p class="hint">The preview updates as you change chart type, columns, palette, or formatting.</p>
+      <section class="panel chart-preview-panel" style="margin-top:1rem">
+        <div class="panel-head"><h2>Live chart preview</h2><span class="pill">ECharts</span></div>
+        <div id="sqlp-chart" role="img" aria-label="Chart preview"></div>
+        <p class="hint">Palette names are visual references, not official brand colors or endorsements.</p>
+      </section>
+      </section>
+    </div>
+  </div>
+  <section class="panel export-panel" id="sqlp-export-panel">
+    <div class="panel-head"><h2>04 — Export & share</h2><span class="pill">Generated in your browser</span></div>
+    <div class="row" style="margin-top:.75rem">
+      <button id="sqlp-png" type="button" disabled>Export PNG 2×</button>
+      <button id="sqlp-svg" type="button" disabled>Export SVG</button>
+      <button id="sqlp-ppt" type="button" disabled>Export PowerPoint</button>
+      <button id="sqlp-download" type="button" disabled>Results CSV</button>
+      <button id="sqlp-copy-link" type="button">Copy link</button>
+    </div>
+    <p class="hint">PNG exports at 2× resolution; SVG is vector; PowerPoint contains one 16:9 slide with the chart and source note. Copy link shares the query and chart settings only, never uploaded data.</p>
+  </section>
+  <footer class="sqlp-footer">Your data stays in your browser.</footer>
+</div>
+
+<script type="module">
+let duckdb, echarts, pptxgen;
+
+(() => {
+const $ = id => document.getElementById(id);
+const state = {db:null,conn:null,ready:false,initPromise:null,columns:[],rows:[],chart:null,chartPromise:null,chartOption:null,editor:null,editorLoading:false,loadedSamples:new Set(),queryText:'',pendingConfig:null};
+const palettes = {
+ mono:['#111111','#555555','#888888','#b0b0b0','#d2d2d2'],
+ deloitte:['#86bc25','#111111','#666666','#b8b8b8','#e1e1e1'],
+ pwc:['#d94f00','#eb8c00','#db536a','#7a3f25','#333333'],
+ ey:['#ffe600','#555555','#111111','#999999','#d9d9d9'],
+ kpmg:['#00338d','#483698','#00a3e0','#7f77b9','#9b9b9b'],
+ mck:['#003f6b','#0077a8','#4b9fca','#82bfdc','#b7d9e9'],
+ bcg:['#006b54','#269879','#6bb99c','#9bcdb9','#c7e2d6'],
+ bain:['#a30b22','#cf3145','#e46b78','#ed9da6','#f4c9ce']
+};
+const examples = {
+ employees:'SELECT * FROM employees;',
+ headcount:'SELECT department, COUNT(*) AS headcount FROM employees GROUP BY department ORDER BY headcount DESC;',
+ salaryByGrade:'SELECT grade, ROUND(AVG(salary),0) AS avg_salary FROM employees GROUP BY grade ORDER BY grade;',
+ hiringTrend:'SELECT join_date AS hire_date, COUNT(*) AS hires FROM employees GROUP BY join_date ORDER BY join_date;',
+ departmentGender:'SELECT department, gender, COUNT(*) AS headcount FROM employees GROUP BY department, gender ORDER BY department, gender;',
+ employeeDetail:'SELECT name, department, tenure_years, salary, performance_rating FROM employees ORDER BY salary DESC;',
+ departmentJoin:'SELECT e.name, e.department, d.manager, d.budget FROM employees e LEFT JOIN departments d USING (department) ORDER BY e.department, e.name;',
+ customerOrders:'SELECT c.customer_name, c.segment, COUNT(DISTINCT o.order_id) AS orders, ROUND(SUM(oi.quantity * p.unit_price * (1 - oi.discount)), 2) AS net_sales FROM customers c JOIN orders o USING (customer_id) JOIN order_items oi USING (order_id) JOIN products p USING (product_id) GROUP BY c.customer_id, c.customer_name, c.segment ORDER BY net_sales DESC;',
+ productRevenue:'SELECT p.product_name, p.category, ROUND(SUM(oi.quantity * p.unit_price * (1 - oi.discount)), 2) AS net_revenue FROM products p JOIN order_items oi USING (product_id) GROUP BY p.product_id, p.product_name, p.category ORDER BY net_revenue DESC;',
+ monthlyRevenue:"SELECT DATE_TRUNC('month', o.order_date)::DATE AS month, ROUND(SUM(oi.quantity * p.unit_price * (1 - oi.discount)), 2) AS net_revenue FROM orders o JOIN order_items oi USING (order_id) JOIN products p USING (product_id) GROUP BY 1 ORDER BY 1;",
+ rankSalaries:'SELECT name, department, salary, DENSE_RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS salary_rank FROM employees ORDER BY department, salary_rank;',
+ customersWithoutOrders:'SELECT c.customer_id, c.customer_name, c.city, c.segment FROM customers c LEFT JOIN orders o USING (customer_id) WHERE o.order_id IS NULL ORDER BY c.customer_name;',
+ orderDetail:'SELECT o.order_id, o.order_date, c.customer_name, p.product_name, oi.quantity, p.unit_price, oi.discount, ROUND(oi.quantity * p.unit_price * (1 - oi.discount), 2) AS line_total FROM orders o JOIN customers c USING (customer_id) JOIN order_items oi USING (order_id) JOIN products p USING (product_id) ORDER BY o.order_date DESC, o.order_id LIMIT 100;',
+ topLocations:'SELECT location, ROUND(AVG(salary),0) AS avg_salary FROM employees GROUP BY location ORDER BY avg_salary DESC LIMIT 10;',
+ monthlyHiring:'SELECT join_date AS month, COUNT(*) AS hires FROM employees GROUP BY join_date ORDER BY join_date;',
+ cumulativeHiring:'SELECT join_date AS month, SUM(COUNT(*)) OVER (ORDER BY join_date) AS cumulative_hires FROM employees GROUP BY join_date ORDER BY join_date;',
+ genderHeadcount:'SELECT department, gender, COUNT(*) AS headcount FROM employees GROUP BY department, gender ORDER BY department, gender;',
+ attritionShare:'SELECT department, COUNT(*) AS attrition, COUNT(*) AS retained FROM employees GROUP BY department ORDER BY department;',
+ salaryTenure:'SELECT tenure_years, salary, performance_rating FROM employees WHERE tenure_years IS NOT NULL;',
+ performanceHeatmap:'SELECT department, grade, ROUND(AVG(performance_rating),2) AS avg_rating FROM employees GROUP BY department, grade ORDER BY department, grade;',
+ salaryHistogram:'SELECT salary FROM employees;',
+ salaryBoxplot:'SELECT grade, MIN(salary) AS min_salary, quantile_cont(salary,0.25) AS q1, quantile_cont(salary,0.5) AS median, quantile_cont(salary,0.75) AS q3, MAX(salary) AS max_salary FROM employees GROUP BY grade ORDER BY grade;',
+ genderPayGap:'SELECT grade, gender, ROUND(AVG(salary),0) AS avg_salary FROM employees GROUP BY grade, gender ORDER BY grade, gender;',
+ attritionLocation:'SELECT location, ROUND(AVG(performance_rating),1) AS rating FROM employees GROUP BY location ORDER BY rating DESC;',
+ combo:'SELECT join_date AS month, COUNT(*) AS hires, ROUND(AVG(salary),0) AS avg_salary FROM employees GROUP BY join_date ORDER BY join_date;',
+ waterfall:'SELECT department, -COUNT(*) AS attrition_impact FROM employees GROUP BY department ORDER BY attrition_impact;',
+ treemap:'SELECT department, COUNT(*) AS headcount FROM employees GROUP BY department ORDER BY headcount DESC;',
+ funnel:`SELECT * FROM (VALUES ('Applied',10),('Screened',8),('Interviewed',5),('Offered',3),('Hired',2)) AS funnel(stage,candidates);`,
+ radar:'SELECT department, ROUND(AVG(performance_rating),2) AS avg_rating, ROUND(AVG(tenure_years),2) AS avg_tenure, ROUND(AVG(salary),0) AS avg_salary FROM employees GROUP BY department ORDER BY department;',
+ gauge:'SELECT \'Company average rating\' AS metric, AVG(performance_rating) AS avg_rating FROM employees;',
+ sankey:'SELECT department, location, COUNT(*) AS headcount FROM employees GROUP BY department, location;',
+ sales:'SELECT department, ROUND(SUM(salary),0) AS revenue FROM employees GROUP BY department ORDER BY revenue DESC;',
+ web:'SELECT gender AS channel, COUNT(*) AS visitors, ROUND(AVG(performance_rating),1) AS conversions FROM employees GROUP BY gender ORDER BY visitors DESC;'
+};
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function quote(n){return '"'+String(n).replace(/"/g,'""')+'"';}
+function status(msg,error=false){$('sqlp-status').textContent=msg;$('sqlp-status').classList.toggle('error',error);}
+function friendlySqlError(error){const message=String(error?.message||error||'Unknown SQL error');if(/parser error|syntax error|unexpected/i.test(message))return 'SQL syntax error. Check quotes, commas, and clause order. Details: '+message;if(/catalog error|table .* does not exist|not found/i.test(message))return 'A table or column could not be found. Check its spelling and make sure the table is loaded. Details: '+message;if(/conversion error|cannot cast|type mismatch/i.test(message))return 'The query has a data type mismatch. Check casts and the values being compared. Details: '+message;return 'Query failed. Check the SQL and selected table. Details: '+message;}
+function toText(v,type=''){
+ if(v===null||v===undefined)return 'NULL';
+ if(typeof v==='bigint')return v.toString();
+ if(v instanceof Date)return /DATE/i.test(String(type))&&!/TIME|TIMESTAMP/i.test(String(type))?v.toISOString().slice(0,10):v.toISOString();
+ if(typeof v==='number'&&Number.isFinite(v)&&/DATE|TIMESTAMP/i.test(String(type))&&Math.abs(v)>100000000000){
+  const d=new Date(v);
+  if(!Number.isNaN(d.getTime()))return /DATE/i.test(String(type))&&!/TIME|TIMESTAMP/i.test(String(type))?d.toISOString().slice(0,10):d.toISOString();
+ }
+ if(typeof v==='object')return JSON.stringify(v);
+ return String(v);
+}
+function employeeCSV(){
+ return [
+  'emp_id,name,department,grade,location,gender,join_date,tenure_years,salary,performance_rating',
+  '1,Aarav Sharma,Engineering,G3,Bengaluru,Male,2021-01-15,5.8,820000,4.4',
+  '2,Aditi Patel,Sales,G2,Mumbai,Female,2022-03-10,4.6,590000,4.1',
+  '3,Ananya Rao,Analytics,G4,Hyderabad,Female,2020-06-22,6.3,1190000,4.7',
+  '4,Arjun Iyer,Operations,G2,Chennai,Male,2023-02-01,3.7,560000,3.8',
+  '5,Diya Mehta,Finance,G3,Pune,Female,2021-09-13,5.1,790000,4.3',
+  '6,Kabir Singh,Marketing,G1,Delhi NCR,Male,2024-01-08,2.8,410000,3.6',
+  '7,Kavya Nair,People,G3,Kolkata,Female,2020-11-19,5.9,840000,4.6',
+  '8,Neel Kapoor,Engineering,G4,Gurugram,Non-binary,2019-04-03,7.5,1280000,4.8',
+  '9,Meera Das,Sales,G2,Bengaluru,Female,2023-07-17,3.2,610000,4.0',
+  '10,Rohan Khan,Analytics,G5,Hyderabad,Male,2018-08-27,8.2,1640000,4.9'
+ ].join('\n');
+}
+const samples={
+ employees:{name:'employees',csv:null}
+};
+function relatedSampleCSVs(){
+ const departments=[
+  ['Engineering','Priya Menon',5200000,'Bengaluru'],['Sales','Rahul Verma',3100000,'Mumbai'],
+  ['Analytics','Sneha Rao',2800000,'Hyderabad'],['Operations','Vikram Shah',2400000,'Chennai'],
+  ['Finance','Megha Iyer',2200000,'Pune'],['Marketing','Karan Das',2600000,'Delhi NCR'],
+  ['People','Nisha Kapoor',1800000,'Kolkata'],['Support','Dev Patel',1600000,'Bengaluru']
+ ];
+ const customers=Array.from({length:24},(_,i)=>[1001+i,['Aarav Retail','Bluebird Labs','Cedar Foods','Delta Stores','Evergreen Co','Fable Studio','Grove Market','Harbor Health'][i%8]+' '+(Math.floor(i/8)+1),['Bengaluru','Mumbai','Hyderabad','Chennai','Pune','Delhi NCR'][i%6],['SMB','Mid-market','Enterprise'][i%3]]);
+ const products=[
+  [201,'Analytics Starter','Software',12000],[202,'Analytics Pro','Software',28000],[203,'SQL Training','Training',8500],
+  [204,'Dashboard Pack','Services',18000],[205,'Data Quality Audit','Services',32000],[206,'Cloud Credits','Cloud',6500],
+  [207,'Team Workshop','Training',24000],[208,'Executive Report','Services',15000]
+ ];
+ const orders=Array.from({length:18},(_,i)=>[5001+i,1001+((i*7+3)%24),'2026-'+String(1+(i%9)).padStart(2,'0')+'-'+String(1+((i*5)%27)).padStart(2,'0'),['completed','completed','completed','processing','cancelled'][i%5]]);
+ const items=orders.flatMap((o,i)=>[0,1].map(j=>[o[0],201+((i+j*3)%8),1+((i+j)%5),[0,0.05,0.1,0.15][(i+j)%4]]));
+ const csv=(header,rows)=>[header,...rows.map(row=>row.join(','))].join('\n');
+ return {
+  departments:csv('department,manager,budget,location',departments),
+  customers:csv('customer_id,customer_name,city,segment',customers),
+  products:csv('product_id,product_name,category,unit_price',products),
+  orders:csv('order_id,customer_id,order_date,status',orders),
+  order_items:csv('order_id,product_id,quantity,discount',items)
+ };
+}
+function tableName(filename){let n=filename.replace(/\.csv$/i,'').toLowerCase().replace(/[^a-z0-9_]+/g,'_').replace(/^([^a-z_])/,'t_$1').replace(/_+/g,'_');return n||'imported_data';}
+async function addTable(name,csv,tag){
+ const virtual=tag+'_'+name+'.csv';
+ await state.db.registerFileBuffer(virtual,new TextEncoder().encode(csv));
+ try{await state.conn.query('CREATE OR REPLACE TABLE '+quote(name)+' AS SELECT * FROM read_csv_auto('+JSON.stringify(virtual)+', header=true)');}
+ finally{await state.db.dropFile(virtual);}
+}
+async function refreshTables(){
+ const r=await state.conn.query("SELECT table_name FROM information_schema.tables WHERE table_schema='main' AND table_type='BASE TABLE' ORDER BY table_name");
+ const names=r.toArray().map(x=>String(x.table_name));
+ $('sqlp-tables').innerHTML=names.map(n=>'<button type="button" data-table="'+esc(n)+'">'+esc(n)+'</button>').join('');
+ $('sqlp-tables').querySelectorAll('[data-table]').forEach(b=>b.addEventListener('click',()=>{state.pendingConfig=null;setQuery('SELECT * FROM '+quote(b.dataset.table)+' LIMIT 100;');}));
+}
+function fillSelect(id,cols,preferred,blank=false){
+ const el=$(id),old=el.value;el.innerHTML='';
+ if(blank){const o=document.createElement('option');o.value='';o.textContent='— None —';el.appendChild(o);}
+ cols.forEach(c=>{const o=document.createElement('option');o.value=c.name;o.textContent=c.name;el.appendChild(o);});
+ if(cols.some(c=>c.name===old))el.value=old;else if(cols.some(c=>c.name===preferred))el.value=preferred;else if(!blank&&cols.length)el.selectedIndex=Math.min(id==='sqlp-x'?0:1,cols.length-1);
+}
+function getQuery(){const editorText=state.editor?state.editor.state.doc.toString():'';const textareaText=$('sqlp-query').value||'';return editorText.trim()?editorText:textareaText;}
+function setQuery(value){$('sqlp-query').value=String(value??'');if(state.editor){const doc=state.editor.state.doc;state.editor.dispatch({changes:{from:0,to:doc.length,insert:$('sqlp-query').value}});}}
+async function initCodeMirror(){
+ if(state.editor||state.editorLoading||state.editorFailed)return;
+ state.editorLoading=true;
+ try{
+  const [
+   {EditorState},
+   {EditorView,keymap,lineNumbers,highlightActiveLine},
+   {defaultHighlightStyle,syntaxHighlighting},
+   {sql,PostgreSQL},
+   {autocompletion,completionKeymap},
+   {defaultKeymap,historyKeymap}
+  ]=await Promise.all([
+   import('https://esm.sh/@codemirror/state@6.5.2'),
+   import('https://esm.sh/@codemirror/view@6.36.5'),
+   import('https://esm.sh/@codemirror/language@6.11.2'),
+   import('https://esm.sh/@codemirror/lang-sql@6.10.0'),
+   import('https://esm.sh/@codemirror/autocomplete@6.18.6'),
+   import('https://esm.sh/@codemirror/commands@6.8.1')
+  ]);
+  const textarea=$('sqlp-query'),host=$('sqlp-editor-host');
+  const editorState=EditorState.create({
+   doc:textarea.value,
+   extensions:[
+    lineNumbers(),highlightActiveLine(),syntaxHighlighting(defaultHighlightStyle),
+    sql({dialect:PostgreSQL,schema:{
+     employees:['emp_id','name','department','grade','location','gender','join_date','tenure_years','salary','performance_rating'],
+     departments:['department','manager','budget','location'],
+     customers:['customer_id','customer_name','city','segment'],
+     products:['product_id','product_name','category','unit_price'],
+     orders:['order_id','customer_id','order_date','status'],
+     order_items:['order_id','product_id','quantity','discount']
+    }}),autocompletion(),
+    keymap.of([...defaultKeymap,...historyKeymap,...completionKeymap,{key:'Mod-Enter',run:()=>{run();return true;}}]),
+    EditorView.updateListener.of(update=>{
+     if(update.docChanged){
+      textarea.value=update.state.doc.toString();
+      state.pendingConfig=null;
+      persistConfig();
+     }
+    })
+   ]
+  });
+  state.editor=new EditorView({state:editorState,parent:host});
+  textarea.hidden=true;
+  host.hidden=false;
+  host.setAttribute('aria-label','SQL editor with syntax highlighting and autocomplete');
+ }catch(e){
+  state.editorFailed=true;
+  $('sqlp-editor-host').hidden=true;
+  status('SQL highlighting could not load; the plain-text editor is still available.',false);
+ }finally{state.editorLoading=false;}
+}
+
+function selectedYNames(){const extra=Array.from($('sqlp-y-multi')?.selectedOptions||[]).map(o=>o.value);return [...new Set([$('sqlp-y').value,...extra].filter(Boolean))];}
+function configState(){return {type:selectedChart(),x:$('sqlp-x').value,y:$('sqlp-y').value,ys:selectedYNames(),group:$('sqlp-group').value,extra:$('sqlp-extra').value,title:$('sqlp-title').value,subtitle:$('sqlp-subtitle').value,xTitle:$('sqlp-x-title').value,yTitle:$('sqlp-y-title').value,footnote:$('sqlp-footnote').value,palette:$('sqlp-palette').value,labels:$('sqlp-labels').checked,gridlines:$('sqlp-gridlines').checked,legend:$('sqlp-legend').checked,sort:$('sqlp-sort').value};}
+function persistConfig(){try{localStorage.setItem('querynest.browser.session',JSON.stringify(configState()));}catch(_){}}
+function restoreConfig(config){if(!config||typeof config!=='object')return;
+ for(const [key,id] of [['x','sqlp-x'],['y','sqlp-y'],['group','sqlp-group'],['extra','sqlp-extra'],['title','sqlp-title'],['subtitle','sqlp-subtitle'],['xTitle','sqlp-x-title'],['yTitle','sqlp-y-title'],['footnote','sqlp-footnote'],['palette','sqlp-palette'],['sort','sqlp-sort']])if(config[key]!=null&&$(id))$(id).value=config[key];
+ for(const key of ['labels','gridlines','legend'])if(config[key]!=null)$('sqlp-'+key).checked=!!config[key];
+ if(Array.isArray(config.ys))Array.from($('sqlp-y-multi').options).forEach(o=>o.selected=config.ys.includes(o.value));
+ if(config.type)selectChart(config.type);
+}
+function readHashConfig(){try{const h=location.hash.match(/#config=([^&]+)/);if(h)return JSON.parse(decodeURIComponent(escape(atob(h[1]))));}catch(_){}return null;}
+function copyConfigLink(){const cfg=configState();const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(cfg))));const url=location.href.split('#')[0]+'#config='+encoded;history.replaceState(null,'',url);if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>status('Shareable configuration link copied. The link contains no data.'),()=>status('Link updated in address bar; copy it from there.'));else status('Link updated in address bar; copy it from there.');}
+function setPalette(name){$('sqlp-palette').value=name;document.querySelectorAll('#sqlp [data-palette]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.palette===name)));}
+function prettyField(name){return String(name||'').replace(/_/g,' ').replace(/\\s+/g,' ').trim().replace(/\\b\\w/g,ch=>ch.toUpperCase());}
+function autoChartTitle(x,y){const measure=prettyField(y),dimension=prettyField(x);if(!x&&!y)return 'Query Results';if(/headcount|count|employees|employee count/i.test(y||''))return 'Headcount by '+(dimension||'Category');if(/avg|average|mean/i.test(y||''))return measure+' by '+(dimension||'Category');if(/salary/i.test(y||''))return 'Salary by '+(dimension||'Category');if(/revenue|sales|amount|total/i.test(y||''))return measure+' by '+(dimension||'Category');return (measure||'Value')+' by '+(dimension||'Category');}
+function formatChartNumber(value){const n=Number(value);return Number.isFinite(n)?n.toLocaleString(undefined,{maximumFractionDigits:2}):String(value??'');}
+function numericType(type){
+ const value=String(type||'');
+ return /\b(TINYINT|SMALLINT|INTEGER|INT|BIGINT|HUGEINT|UTINYINT|USMALLINT|UINTEGER|UBIGINT|FLOAT|DOUBLE|REAL|DECIMAL|NUMERIC|INT8|INT16|INT32|INT64|UINT8|UINT16|UINT32|UINT64|FLOAT32|FLOAT64)\b/i.test(value);
+}
+function renderRows(cols,rows){
+ state.columns=cols;state.rows=rows;
+ $('sqlp-result-meta').textContent=rows.length.toLocaleString()+' rows · '+cols.length+' columns';
+ if(!cols.length){$('sqlp-results').textContent='Query ran without tabular output.';return;}
+ if(!rows.length){$('sqlp-results').textContent='Query returned zero rows.';return;}
+ const visible=rows.slice(0,200);
+ $('sqlp-results').innerHTML='<label for="sqlp-result-search">Filter visible results</label><input id="sqlp-result-search" type="text" placeholder="Search values in the first 200 rows…" style="width:100%;max-width:420px;margin:0 0 .55rem;padding:.5rem;border:1px solid #d2d2d2;border-radius:7px"><div class="table-wrap"><table><thead><tr>'+cols.map(c=>'<th>'+esc(c.name)+'</th>').join('')+'</tr></thead><tbody>'+visible.map(row=>'<tr>'+row.map((v,i)=>'<td>'+esc(toText(v,cols[i]?.type))+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>'+(rows.length>visible.length?'<p class="muted">Showing the first 200 rows; filtering applies to these visible rows. CSV export includes the complete result.</p>':'');
+ const search=$('sqlp-result-search');
+ search.addEventListener('input',()=>{const q=search.value.toLocaleLowerCase();$('sqlp-results').querySelectorAll('tbody tr').forEach(tr=>{tr.hidden=!tr.textContent.toLocaleLowerCase().includes(q);});});
+ cols.forEach(c=>{c.numeric=numericType(c.type)||rows.some(r=>{const v=r[c.index];return typeof v==='number'||typeof v==='bigint'||(typeof v==='string'&&v.trim()!==''&&Number.isFinite(Number(v)));});});
+ const nums=cols.filter(c=>c.numeric),cats=cols.filter(c=>!c.numeric);
+ fillSelect('sqlp-x',cols,cats[0]?.name||nums[0]?.name||cols[0]?.name);
+ fillSelect('sqlp-y',cols,cats.length===0&&nums.length>1?nums[1].name:nums[0]?.name||cols[1]?.name);
+ if(!$('sqlp-x-title').dataset.custom)$('sqlp-x-title').value=$('sqlp-x').value||'Category';
+ if(!$('sqlp-y-title').dataset.custom)$('sqlp-y-title').value=$('sqlp-y').value||'Value';
+ fillSelect('sqlp-y-multi',nums,nums[1]?.name,true);
+ fillSelect('sqlp-group',cats,cats[1]?.name,true);
+ fillSelect('sqlp-extra',nums,nums[1]?.name,true);
+ const dateCol=cats.find(col=>/date|month|time/i.test(col.name)||rows.some(row=>row[col.index] instanceof Date||/^\\d{4}-\\d{2}/.test(String(row[col.index]??''))));
+ const auto=nums.length>=2&&cats.length===0?'scatter':dateCol&&nums.length?'line':cats.length>=2&&nums.length?'heatmap':cats.length===1&&nums.length&&rows.length<=6?'pie':nums.length?'bar':'treemap';
+ selectChart(auto);
+ updateChartAvailability();$('sqlp-render').disabled=!cols.length;$('sqlp-download').disabled=!cols.length;
+}
+async function profileTable(name){
+ try{
+  const table=quote(name),countResult=await state.conn.query('SELECT COUNT(*) AS n FROM '+table),rowCount=Number(countResult.toArray()[0].n);
+  const schemaResult=await state.conn.query('DESCRIBE SELECT * FROM '+table),schema=schemaResult.toArray().map((r,i)=>({name:String(r.column_name),type:String(r.column_type),index:i}));
+  if(!schema.length)return;
+  const statsSql='SELECT '+schema.map((col,i)=>'COUNT('+quote(col.name)+') AS nn'+i+', COUNT(DISTINCT '+quote(col.name)+') AS dd'+i).join(', ')+' FROM '+table;
+  const stats=(await state.conn.query(statsSql)).toArray()[0];
+  const preview=(await state.conn.query('SELECT * FROM '+table+' LIMIT 10')).toArray().map(row=>schema.map(col=>row[col.name]));
+  $('sqlp-profile').hidden=false;
+  $('sqlp-profile-metrics').innerHTML='<div class="profile-metric"><strong>'+rowCount.toLocaleString()+'</strong><span>Rows in '+esc(name)+'</span></div><div class="profile-metric"><strong>'+schema.length+'</strong><span>Columns</span></div><div class="profile-metric"><strong>'+schema.reduce((n,col,i)=>n+rowCount-Number(stats['nn'+i]),0).toLocaleString()+'</strong><span>Null cells</span></div>';
+  $('sqlp-schema').innerHTML='<table><thead><tr><th>Column</th><th>Inferred type</th><th>Nulls</th><th>Distinct</th></tr></thead><tbody>'+schema.map((col,i)=>'<tr><td>'+esc(col.name)+'</td><td>'+esc(col.type)+'</td><td>'+(rowCount-Number(stats['nn'+i]))+'</td><td>'+Number(stats['dd'+i]).toLocaleString()+'</td></tr>').join('')+'</tbody></table>';
+  $('sqlp-preview').innerHTML='<table><thead><tr>'+schema.map(col=>'<th>'+esc(col.name)+'</th>').join('')+'</tr></thead><tbody>'+preview.map(row=>'<tr>'+row.map((v,i)=>'<td>'+esc(toText(v,schema[i]?.type))+'</td>').join('')+'</tr>').join('')+'</tbody></table>';
+ }catch(e){$('sqlp-import-status').textContent='Loaded the table, but could not profile its schema: '+(e.message||String(e));}
+}
+function updateProfile(cols,rows){
+ const card=$('sqlp-profile');if(!card)return;card.hidden=!cols.length;
+ $('sqlp-profile-metrics').innerHTML='<div class="profile-metric"><strong>'+rows.length.toLocaleString()+'</strong><span>Rows in query result</span></div><div class="profile-metric"><strong>'+cols.length+'</strong><span>Columns</span></div><div class="profile-metric"><strong>'+rows.reduce((n,r)=>n+r.filter(v=>v==null).length,0).toLocaleString()+'</strong><span>Null cells</span></div>';
+ $('sqlp-schema').innerHTML='<table><thead><tr><th>Column</th><th>Inferred type</th><th>Nulls</th><th>Distinct</th></tr></thead><tbody>'+cols.map(c=>{const values=rows.map(r=>r[c.index]),nonnull=values.filter(v=>v!=null);let type='VARCHAR';if(nonnull.length&&nonnull.every(v=>typeof v==='number'||typeof v==='bigint'))type='NUMERIC';else if(nonnull.length&&nonnull.every(v=>v instanceof Date||/^\\d{4}-\\d{2}-\\d{2}/.test(String(v))))type='DATE / TIMESTAMP';return '<tr><td>'+esc(c.name)+'</td><td>'+type+'</td><td>'+values.filter(v=>v==null).length+'</td><td>'+new Set(nonnull.map(toText)).size+'</td></tr>';}).join('')+'</tbody></table>';
+ const preview=rows.slice(0,10);$('sqlp-preview').innerHTML=cols.length&&preview.length?'<table><thead><tr>'+cols.map(c=>'<th>'+esc(c.name)+'</th>').join('')+'</tr></thead><tbody>'+preview.map(row=>'<tr>'+row.map((v,i)=>'<td>'+esc(toText(v,cols[i]?.type))+'</td>').join('')+'</tr>').join('')+'</tbody></table>':'<p class="muted">No rows to preview.</p>';
+}
+function readSavedQueries(){try{const value=JSON.parse(localStorage.getItem('querynest.browser.savedQueries')||'[]');return Array.isArray(value)?value.filter(q=>q&&typeof q.name==='string'&&typeof q.sql==='string'):[];}catch(_){return [];}}
+function selectedSavedIndex(){const value=$('sqlp-saved-query')?.value??'';return value===''?-1:Number(value);}
+function refreshSavedQueries(selectIndex=-1){
+ const saved=readSavedQueries(),el=$('sqlp-saved-query');if(!el)return;
+ el.innerHTML='<option value="">Saved queries…</option>'+saved.map((q,i)=>'<option value="'+i+'">'+esc(q.name)+'</option>').join('');
+ if(selectIndex>=0&&selectIndex<saved.length)el.value=String(selectIndex);
+ const selected=selectedSavedIndex()>=0&&selectedSavedIndex()<saved.length;
+ ['sqlp-update-saved','sqlp-rename-saved','sqlp-delete-saved'].forEach(id=>{if($(id))$(id).disabled=!selected;});
+}
+function saveQuery(){
+ const sql=getQuery().trim();if(!sql){status('Write a query before saving.',true);return;}
+ const name=prompt('Name this query:','My query');if(!name||!name.trim())return;
+ const saved=readSavedQueries(),clean=name.trim(),existing=saved.findIndex(q=>q.name.toLowerCase()===clean.toLowerCase());
+ if(existing>=0&&!confirm('A saved query with this name exists. Replace it?'))return;
+ const index=existing>=0?existing:saved.length;
+ if(existing>=0)saved[existing]={name:clean,sql};else saved.push({name:clean,sql});
+ localStorage.setItem('querynest.browser.savedQueries',JSON.stringify(saved));refreshSavedQueries(index);status('Saved query “'+clean+'”. You can update, rename, or delete it below.');
+}
+function updateSelectedSavedQuery(){
+ const i=selectedSavedIndex(),saved=readSavedQueries();if(i<0||!saved[i])return;
+ const sql=getQuery().trim();if(!sql){status('Write a query before updating the saved copy.',true);return;}
+ if(!confirm('Replace the saved SQL for “'+saved[i].name+'” with the current editor contents?'))return;
+ saved[i].sql=sql;localStorage.setItem('querynest.browser.savedQueries',JSON.stringify(saved));refreshSavedQueries(i);status('Updated saved query “'+saved[i].name+'”.');
+}
+function renameSelectedSavedQuery(){
+ const i=selectedSavedIndex(),saved=readSavedQueries();if(i<0||!saved[i])return;
+ const name=prompt('Rename saved query:',saved[i].name);if(!name||!name.trim())return;
+ const clean=name.trim();if(saved.some((q,j)=>j!==i&&q.name.toLowerCase()===clean.toLowerCase())){status('Another saved query already uses that name.',true);return;}
+ saved[i].name=clean;localStorage.setItem('querynest.browser.savedQueries',JSON.stringify(saved));refreshSavedQueries(i);status('Renamed saved query to “'+clean+'”.');
+}
+function deleteSelectedSavedQuery(){
+ const i=selectedSavedIndex(),saved=readSavedQueries();if(i<0||!saved[i])return;
+ if(!confirm('Delete saved query “'+saved[i].name+'” from this browser?'))return;
+ const name=saved[i].name;saved.splice(i,1);localStorage.setItem('querynest.browser.savedQueries',JSON.stringify(saved));refreshSavedQueries();status('Deleted saved query “'+name+'”.');
+}
+function csvDownload(){
+ const cell=v=>{const s=toText(v);return /[",\r\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
+ const text=[state.columns.map(c=>c.name),...state.rows.map(r=>r.map((v,i)=>toText(v,state.columns[i]?.type)))].map(r=>r.map(cell).join(',')).join('\r\n');
+ downloadBlob(new Blob([text],{type:'text/csv;charset=utf-8'}),'query-results.csv');
+}
+function downloadBlob(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1200);}
+async function run(){
+ if(!state.ready){try{await init();}catch(_){return;}}
+ const sql=String(getQuery()||'').trim();if(!sql){status('Enter a query first.',true);return;}
+ $('sqlp-run').disabled=true;status('Running the SQL in the editor…');const t=performance.now();
+ try{
+  // Load the relational sample only when a query references one of its tables.
+  if(/\b(employees|departments|customers|products|orders|order_items)\b/i.test(sql)&&!state.loadedSamples.has('employees'))await loadSample('employees');
+  const result=await state.conn.query(sql),cols=result.schema.fields.map((f,i)=>({name:f.name,index:i,type:String(f.type??'')}));
+  state.queryText=sql;
+  const rows=result.toArray().map(row=>cols.map(c=>row[c.name]));
+  renderRows(cols,rows);await refreshTables();
+  status('Query completed in '+((performance.now()-t)/1000).toFixed(2)+'s · '+rows.length.toLocaleString()+' rows · '+cols.length.toLocaleString()+' columns.');
+  await drawChart();
+  if(state.pendingConfig){const config=state.pendingConfig;state.pendingConfig=null;restoreConfig(config);setPalette(config.palette||'mono');updateChartAvailability();await drawChart();}
+ }catch(e){status(friendlySqlError(e),true);}
+ finally{$('sqlp-run').disabled=false;}
+}
+function selectedChart(){return document.querySelector('#sqlp [data-chart][aria-pressed="true"]')?.dataset.chart||'bar';}
+function selectChart(type){document.querySelectorAll('#sqlp [data-chart]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.chart===type)));if($('sqlp-chart-note'))$('sqlp-chart-note').textContent='Selected: '+type+'.';}
+function col(name){return state.columns.find(c=>c.name===name);}
+function isNum(name){
+ const c=col(name);if(!c)return false;
+ if(c.numeric)return true;
+ return state.rows.some(r=>{
+  const v=r[c.index];
+  return v!==null&&v!==undefined&&(
+   typeof v==='number'||typeof v==='bigint'||
+   (typeof v==='string'&&v.trim()!==''&&Number.isFinite(Number(v)))
+  );
+ });
+}
+function compatibility(type){
+ const nums=state.columns.filter(c=>c.numeric),x=$('sqlp-x').value,y=$('sqlp-y').value,g=$('sqlp-group').value,e=$('sqlp-extra').value;
+ let ok=false,why='Choose compatible columns for this chart.';
+ if(!state.rows.length||!state.columns.length)return {valid:false,why:'Run a query with rows first.'};
+ if(['bar','horizontalBar','line','area','pie','waterfall','treemap','funnel'].includes(type)){ok=!!col(x)&&isNum(y);why='Needs a category and a numeric value.';}
+ if(type==='gauge'||type==='histogram'||type==='boxplot'){ok=isNum(y);why='Choose a numeric column for Value / Y axis.';}
+ if(type==='scatter'){ok=isNum(x)&&isNum(y)&&x!==y;why='Needs two different numeric columns; choose numeric X and Y.';}
+ if(['stackedBar','heatmap','sankey'].includes(type)){ok=!!col(x)&&!!col(g)&&x!==g&&!isNum(x)&&!isNum(g)&&isNum(y);why='Needs two different categorical columns and one numeric value.';}
+ if(type==='combo'){ok=!!col(x)&&isNum(y)&&isNum(e)&&e!==y;why='Needs a category and two different numeric series.';}
+ if(type==='radar'){ok=nums.length>=2&&isNum(y);why='Needs at least two numeric columns.';}
+ return {valid:ok,why};
+}
+function updateChartAvailability(){
+ let first=null;
+ document.querySelectorAll('#sqlp [data-chart]').forEach(b=>{const a=compatibility(b.dataset.chart);b.disabled=!a.valid;if(!a.valid)b.title=a.why;else b.title=b.dataset.baseTitle||b.title;if(a.valid&&!first)first=b.dataset.chart;});
+ if(!compatibility(selectedChart()).valid&&first)selectChart(first);
+ const a=compatibility(selectedChart());$('sqlp-chart-note').textContent=a.valid?'Selected: '+selectedChart()+'.':a.why;
+}
+function chartData(){
+ const x=$('sqlp-x').value,y=$('sqlp-y').value,g=$('sqlp-group').value,e=$('sqlp-extra').value;
+ const xi=state.columns.findIndex(c=>c.name===x),yi=state.columns.findIndex(c=>c.name===y),gi=state.columns.findIndex(c=>c.name===g),ei=state.columns.findIndex(c=>c.name===e);
+ const rows=state.rows.filter(r=>r[xi]!=null&&r[yi]!=null&&Number.isFinite(Number(r[yi])));
+ return {x,y,g,e,xi,yi,gi,ei,rows,items:rows.map(r=>({name:toText(r[xi],state.columns[xi]?.type),group:gi>=0?toText(r[gi],state.columns[gi]?.type):'',value:Number(r[yi]),extra:ei>=0?Number(r[ei]):null})).slice(0,500)};
+}
+async function chartSql(type){
+ const y=quote($('sqlp-y').value),query=state.queryText.replace(/;\s*$/,'').trim();
+ if(type==='histogram'){
+  if(/bin/i.test($('sqlp-x').value))return {items:chartData().items.map(v=>({name:v.name,value:v.value}))};
+  const sql=`WITH src AS (${query}), stats AS (SELECT MIN(TRY_CAST(${y} AS DOUBLE)) mn, MAX(TRY_CAST(${y} AS DOUBLE)) mx FROM src), b AS (SELECT CASE WHEN mx=mn THEN 0 ELSE LEAST(9,GREATEST(0,CAST(FLOOR((TRY_CAST(s.${y} AS DOUBLE)-mn)/NULLIF(mx-mn,0)*10) AS INTEGER))) END n,mn,mx FROM src s CROSS JOIN stats WHERE TRY_CAST(s.${y} AS DOUBLE) IS NOT NULL) SELECT CAST(n AS VARCHAR)||' ('||ROUND(mn+n*(mx-mn)/10,2)||'–'||ROUND(mn+(n+1)*(mx-mn)/10,2)||')' AS bin,COUNT(*) frequency FROM b GROUP BY n,mn,mx ORDER BY n`;
+  const r=await state.conn.query(sql);return {items:r.toArray().map(v=>({name:String(v.bin),value:Number(v.frequency)}))};
+ }
+ if(type==='boxplot'){
+  const ix=state.columns.findIndex(col=>col.name===$('sqlp-x').value);
+  const precomputed=['min_salary','q1','median','q3','max_salary'].map(name=>state.columns.findIndex(col=>col.name===name));
+  if(precomputed.every(i=>i>=0))return {rows:state.rows.map(row=>({name:String(row[ix]),value:precomputed.map(i=>Number(row[i]))}))};
+  const group=$('sqlp-x').value||$('sqlp-group').value,qg=group?quote(group):null;
+  const sql=`WITH src AS (${query}) SELECT ${qg?qg+',':''} MIN(TRY_CAST(${y} AS DOUBLE)) mn,quantile_cont(TRY_CAST(${y} AS DOUBLE),0.25) q1,quantile_cont(TRY_CAST(${y} AS DOUBLE),0.5) med,quantile_cont(TRY_CAST(${y} AS DOUBLE),0.75) q3,MAX(TRY_CAST(${y} AS DOUBLE)) mx FROM src WHERE TRY_CAST(${y} AS DOUBLE) IS NOT NULL ${qg?'GROUP BY '+qg:''} ${qg?'ORDER BY '+qg:''}`;
+  const r=await state.conn.query(sql);return {rows:r.toArray().map(v=>({name:group?String(v[group]):$('sqlp-y').value,value:[Number(v.mn),Number(v.q1),Number(v.med),Number(v.q3),Number(v.mx)]}))};
+ }
+}
+async function drawChart(){
+ if(!state.columns.length)return;
+ if(!state.chart){try{await initEcharts();}catch(e){$('sqlp-chart-note').textContent='Chart modules could not load. Check the browser connection and retry. '+(e.message||String(e));return;}}
+ updateChartAvailability();
+ const type=selectedChart(),a=compatibility(type);if(!a.valid){$('sqlp-chart-note').textContent=a.why;return;}
+ const d=chartData(),pal=palettes[$('sqlp-palette').value]||palettes.mono,title=$('sqlp-title').value.trim(),subtitle=$('sqlp-subtitle').value.trim(),xt=$('sqlp-x-title').value.trim(),yt=$('sqlp-y-title').value.trim(),showLabels=$('sqlp-labels').checked,showGrid=$('sqlp-gridlines').checked,showLegend=$('sqlp-legend').checked,sort=$('sqlp-sort').value;
+ try{
+  const sp=['histogram','boxplot'].includes(type)?await chartSql(type):null;
+  let chartItems=d.items.slice();if(sort!=='none')chartItems.sort((a,b)=>sort==='asc'?a.value-b.value:b.value-a.value);
+  const base={backgroundColor:'#fff',animation:false,color:pal,title:{text:title||autoChartTitle(d.x,d.y),subtext:subtitle,left:'center',top:8,textStyle:{fontSize:16,color:'#111'},subtextStyle:{fontSize:11,color:'#666'}},tooltip:{trigger:['pie','treemap','funnel','gauge','radar'].includes(type)?'item':'axis',valueFormatter:formatChartNumber},legend:{show:showLegend,top:subtitle?52:38},grid:{left:95,right:35,top:subtitle?82:65,bottom:75,containLabel:true},graphic:$('sqlp-footnote').value?[{type:'text',left:12,bottom:8,style:{text:$('sqlp-footnote').value,fontSize:10,fill:'#666'}}]:[]};
+  const cat={type:'category',name:xt,nameLocation:'middle',nameGap:38,data:chartItems.map(v=>v.name),axisLabel:{color:'#444',rotate:chartItems.length>7?25:0,hideOverlap:true},axisLine:{lineStyle:{color:'#aaa'}}},val={type:'value',name:yt,nameLocation:'middle',nameGap:62,axisLabel:{color:'#555',formatter:formatChartNumber,hideOverlap:true},splitLine:{show:showGrid,lineStyle:{color:'#eee'}}};
+  const labelOpt=showLabels?{show:true,position:type==='horizontalBar'?'right':'top',color:'#111',fontSize:10,formatter:p=>formatChartNumber(Array.isArray(p.value)?p.value[p.value.length-1]:p.value)}:{};
+  let series=[];
+  if(type==='pie')series=[{type:'pie',radius:['40%','70%'],data:chartItems.map(v=>({name:v.name,value:v.value})),label:{show:showLabels,color:'#111'},itemStyle:{borderColor:'#fff',borderWidth:2}}];
+  else if(type==='treemap')series=[{type:'treemap',data:chartItems.map(v=>({name:v.name,value:v.value})),label:{show:true,color:'#fff'}}];
+  else if(type==='funnel')series=[{type:'funnel',sort:'descending',data:chartItems.map(v=>({name:v.name,value:v.value})),label:{show:true,color:'#fff',position:'inside'}}];
+  else if(type==='gauge'){const v=d.items.reduce((s,v)=>s+v.value,0)/Math.max(1,d.items.length);series=[{type:'gauge',max:Math.max(1,...d.items.map(v=>v.value))*1.15,progress:{show:true},detail:{formatter:v=>Number(v).toLocaleString()},data:[{value:v,name:d.y}]}];}
+  else if(type==='radar'){const measures=selectedYNames().filter(n=>isNum(n));const indicators=measures.map(n=>({name:n,max:Math.max(1,...state.rows.map(row=>Number(row[state.columns.findIndex(c=>c.name===n)])||0))*1.1}));base.radar={indicator:indicators};series=state.rows.slice(0,12).map(row=>({name:String(row[d.xi]),type:'radar',data:[{name:String(row[d.xi]),value:measures.map(n=>Number(row[state.columns.findIndex(c=>c.name===n)])||0)}],areaStyle:{opacity:.04}}));}
+  else if(type==='scatter'){base.xAxis={type:'value',name:xt};base.yAxis={type:'value',name:yt};series=[{type:'scatter',data:d.rows.slice(0,1000).map(r=>[Number(r[d.xi]),Number(r[d.yi])]).filter(v=>v.every(Number.isFinite)),symbolSize:8}];}
+  else if(type==='heatmap'||type==='sankey'){
+   const pairs=new Map();d.items.forEach(v=>{const k=v.name+'|||'+v.group;pairs.set(k,(pairs.get(k)||0)+v.value);});
+   if(type==='sankey'){base.grid={left:20,right:20,top:55,bottom:20};series=[{type:'sankey',data:[...new Set(d.items.flatMap(v=>[v.name,v.group]))].map(name=>({name})),links:[...pairs].map(([k,value])=>{const [source,target]=k.split('|||');return {source,target,value};}),lineStyle:{color:'source',curveness:.5}}];}
+   else{const xs=[...new Set(d.items.map(v=>v.name))],ys=[...new Set(d.items.map(v=>v.group))];base.xAxis={type:'category',data:xs};base.yAxis={type:'category',data:ys};base.visualMap={min:0,max:Math.max(1,...pairs.values()),calculable:true,orient:'horizontal',left:'center',bottom:5};series=[{type:'heatmap',data:[...pairs].map(([k,value])=>{const [x,y]=k.split('|||');return [xs.indexOf(x),ys.indexOf(y),value];})}];}
+  }
+  else if(type==='histogram'){base.xAxis={...cat,data:sp.items.map(v=>v.name),name:xt||'Bins'};base.yAxis={...val,name:yt||'Frequency'};series=[{type:'bar',data:sp.items.map(v=>v.value),label:labelOpt}];}
+  else if(type==='boxplot'){base.xAxis={type:'category',data:sp.rows.map(v=>v.name),name:xt};base.yAxis=val;series=[{type:'boxplot',data:sp.rows.map(v=>v.value)}];}
+  else if(type==='combo'){base.xAxis=cat;base.yAxis=[val,{type:'value',name:$('sqlp-extra').value,position:'right',splitLine:{show:false}}];series=[{type:'bar',name:d.y,data:chartItems.map(v=>v.value),label:labelOpt},{type:'line',name:d.e,yAxisIndex:1,data:chartItems.map(v=>v.extra),lineStyle:{width:3},label:labelOpt}];}
+  else if(type==='stackedBar'){const categories=[...new Set(chartItems.map(v=>v.name))],groups=[...new Set(chartItems.map(v=>v.group))];base.xAxis={...cat,data:categories};base.yAxis=val;series=groups.map(g=>({name:g,type:'bar',stack:'total',data:categories.map(name=>chartItems.filter(v=>v.name===name&&v.group===g).reduce((sum,v)=>sum+v.value,0)),label:labelOpt}));}
+  else if(type==='waterfall'){base.xAxis=cat;base.yAxis=val;let total=0;const baseVals=[],deltaVals=[];chartItems.forEach(v=>{baseVals.push(v.value>=0?total:total+v.value);total+=v.value;deltaVals.push(Math.abs(v.value));});series=[{name:'Offset',type:'bar',stack:'wf',itemStyle:{color:'transparent',borderColor:'transparent'},emphasis:{itemStyle:{color:'transparent'}},data:baseVals},{name:'Change',type:'bar',stack:'wf',data:chartItems.map((v,i)=>({value:deltaVals[i],itemStyle:{color:v.value>=0?pal[1]:pal[0]}})),label:labelOpt}];}
+  else{if(type==='horizontalBar'){base.xAxis={...val,name:yt};base.yAxis={...cat,inverse:true,name:xt};}else{base.xAxis=cat;base.yAxis=val;}
+   const ct=type==='horizontalBar'||type==='bar'?'bar':type==='area'?'line':type;
+   const ys=selectedYNames().filter(n=>n!==d.y&&state.columns.some(c=>c.name===n&&c.numeric));
+   series=[{type:ct,name:d.y,data:chartItems.map(v=>v.value),symbolSize:7,label:labelOpt,...(type==='area'?{areaStyle:{opacity:.2}}:{})},...ys.map(name=>{const idx=state.columns.findIndex(c=>c.name===name);return {type:ct,name,data:state.rows.map(r=>Number(r[idx])),symbolSize:7,label:labelOpt,...(type==='area'?{areaStyle:{opacity:.2}}:{})};})];}
+  base.series=series;state.chart.setOption(base,true);$('sqlp-chart').dataset.chartType=type;state.chartOption=base;$('sqlp-png').disabled=false;$('sqlp-svg').disabled=false;$('sqlp-ppt').disabled=false;persistConfig();
+ }catch(e){$('sqlp-chart-note').textContent='Chart error: '+(e.stack||e.message||String(e));}
+}
+async function exportPpt(){
+ try{
+  await drawChart();
+  const png=state.chart.getDataURL({type:'png',pixelRatio:2,backgroundColor:'#ffffff'});
+  if(!pptxgen)({default:pptxgen}=await import('https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/+esm'));
+  const pptx=new pptxgen();pptx.layout='LAYOUT_WIDE';pptx.author='The Analyst';pptx.subject='QueryNest chart';pptx.title=$('sqlp-title').value||'SQL chart';
+  const slide=pptx.addSlide();slide.background={color:'FFFFFF'};
+  slide.addText($('sqlp-title').value||'SQL chart',{x:.55,y:.25,w:12.2,h:.45,fontFace:'Aptos Display',fontSize:22,bold:true,color:'111111',margin:0});
+  slide.addImage({data:png,x:.55,y:.9,w:12.2,h:5.8,sizingCrop:false});
+  slide.addText($('sqlp-footnote').value||'Source not specified',{x:.55,y:7.05,w:12,h:.2,fontSize:8,color:'777777',margin:0});
+  await pptx.writeFile({fileName:'querynest-chart.pptx'});
+  status('PowerPoint exported.');
+ }catch(e){status('PowerPoint export failed: '+(e.message||String(e)),true);}
+}
+async function importFiles(){
+ if(!state.ready){try{await init();}catch(_){return;}}
+ const files=Array.from($('sqlp-files').files||[]).filter(f=>/\.csv$/i.test(f.name));
+ if(!files.length){$('sqlp-import-status').textContent='Choose at least one CSV file.';return;}
+ $('sqlp-import').disabled=true;$('sqlp-import-status').textContent='Importing '+files.length+' file(s)…';
+ try{
+  for(const f of files){const name=tableName(f.name),csv=await f.text();await addTable(name,csv,'upload_'+Date.now());await profileTable(name);}
+  await refreshTables();$('sqlp-import-status').textContent='Imported '+files.length+' CSV file(s). Choose a table above or query it by name.';
+  if(files.length===1)setQuery('SELECT * FROM '+quote(tableName(files[0].name))+' LIMIT 100;');
+ }catch(e){$('sqlp-import-status').textContent='CSV could not be parsed. Check that the file has a header row and consistent delimiters. Details: '+(e.message||String(e));}
+ finally{$('sqlp-import').disabled=!state.ready;}
+}
+async function loadSample(key){
+ const s=samples[key];if(!s||state.loadedSamples.has(key))return;
+ $('sqlp-engine').textContent='Loading sample tables…';
+ if(!s.csv)s.csv=employeeCSV();
+ await addTable(s.name,s.csv,'sample');
+ const related=relatedSampleCSVs();
+ for(const [name,csv] of Object.entries(related))await addTable(name,csv,'sample');
+ state.loadedSamples.add(key);
+ await refreshTables();
+ await profileTable(s.name);
+ $('sqlp-engine').textContent='DuckDB ready · 6 tables';
+}
+async function initEcharts(){
+ if(state.chart)return state.chart;
+ if(state.chartPromise)return state.chartPromise;
+ $('sqlp-chart-note').textContent='Loading chart renderer…';
+ state.chartPromise=(async()=>{
+  echarts=await Promise.race([
+   import('https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.esm.min.js'),
+   new Promise((_,reject)=>setTimeout(()=>reject(new Error('Timed out loading the chart renderer. Check your CDN/network access and retry.')),20000))
+  ]);
+  if(!echarts||typeof echarts.init!=='function')throw new Error('The chart bundle loaded but did not expose the ECharts initializer.');
+  state.chart=echarts.init($('sqlp-chart'),null,{renderer:'canvas'});
+  state.chart.on('finished',()=>{$('sqlp-chart').setAttribute('aria-label','Chart preview ready');});
+  return state.chart;
+ })();
+ try{return await state.chartPromise;}catch(e){state.chartPromise=null;throw e;}
+}
+async function init(){
+ if(state.ready)return true;if(state.initPromise)return state.initPromise;
+ state.initPromise=(async()=>{
+  try{
+   $('sqlp-engine').textContent='Loading DuckDB…';status('Loading DuckDB-Wasm only when you need it…');
+   duckdb=await import('https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.29.0/+esm');
+   const bundle=await duckdb.selectBundle(duckdb.getJsDelivrBundles());
+   const workerUrl=URL.createObjectURL(new Blob(['importScripts("'+bundle.mainWorker+'");'],{type:'text/javascript'}));
+   const worker=new Worker(workerUrl);state.db=new duckdb.AsyncDuckDB(new duckdb.ConsoleLogger(),worker);
+   await state.db.instantiate(bundle.mainModule,bundle.pthreadWorker);URL.revokeObjectURL(workerUrl);
+   state.conn=await state.db.connect();state.ready=true;$('sqlp-engine').textContent='DuckDB ready';
+   $('sqlp-run').disabled=false;$('sqlp-import').disabled=false;
+   let restore=readHashConfig();if(!restore){try{restore=JSON.parse(localStorage.getItem('querynest.browser.session')||'null');}catch(_){}}
+   if(restore){state.pendingConfig=restore;setPalette(restore.palette||'mono');}
+   status('DuckDB ready. Choose a sample, import a CSV, or run SQL.');
+   return true;
+  }catch(e){
+   $('sqlp-engine').textContent='Engine unavailable';status('Could not start DuckDB. Reload the page or check browser/CDN restrictions. '+(e.message||String(e)),true);
+   state.initPromise=null;throw e;
+  }
+ })();
+ return state.initPromise;
+}
+$('sqlp-run').addEventListener('click',run);
+$('sqlp-query').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run();}});
+$('sqlp-query').addEventListener('focus',initCodeMirror,{once:true});
+$('sqlp-query').addEventListener('input',()=>{state.pendingConfig=null;persistConfig();});
+$('sqlp-example').addEventListener('click',()=>{state.pendingConfig=null;setQuery(examples[$('sqlp-query-examples').value]||examples.headcount);});
+$('sqlp-query-examples').addEventListener('change',()=>{state.pendingConfig=null;setQuery(examples[$('sqlp-query-examples').value]||examples.headcount);});
+$('sqlp-clear').addEventListener('click',()=>{setQuery('');state.editor?state.editor.focus():$('sqlp-query').focus();});
+$('sqlp-plain-editor').addEventListener('click',()=>{const current=getQuery();if(state.editor){state.editor.destroy();state.editor=null;}state.editorFailed=true;$('sqlp-editor-host').hidden=true;$('sqlp-query').hidden=false;setQuery(current);$('sqlp-query').focus();status('Basic text editor enabled. Edit your SQL and click Run query.');});
+$('sqlp-format').addEventListener('click',()=>{
+ const sql=getQuery().trim();
+ if(!sql){status('Write a query before formatting.',true);return;}
+ const formatted=sql.replace(/\s+/g,' ').replace(/\s*,\s*/g,', ').replace(/\s*\(\s*/g,'(').replace(/\s*\)\s*/g,')')
+  .replace(/\b(SELECT|FROM|WHERE|GROUP BY|HAVING|ORDER BY|LIMIT|OFFSET|LEFT JOIN|RIGHT JOIN|FULL JOIN|INNER JOIN|CROSS JOIN|JOIN|ON|USING|UNION ALL|UNION|WITH)\b/gi,'\n$1')
+  .replace(/^\n/,'').replace(/;?$/,';').trim();
+ setQuery(formatted);status('SQL formatted locally. Review the result before running.');
+});
+$('sqlp-save-query').addEventListener('click',saveQuery);
+$('sqlp-load-saved').addEventListener('click',()=>{
+ const i=selectedSavedIndex(),saved=readSavedQueries();
+ if(i<0||!saved[i]){status('Choose a saved query first.',true);return;}
+ setQuery(saved[i].sql);status('Loaded saved query “'+saved[i].name+'”.');
+});
+$('sqlp-update-saved').addEventListener('click',updateSelectedSavedQuery);
+$('sqlp-rename-saved').addEventListener('click',renameSelectedSavedQuery);
+$('sqlp-delete-saved').addEventListener('click',deleteSelectedSavedQuery);
+$('sqlp-saved-query').addEventListener('change',()=>refreshSavedQueries(selectedSavedIndex()));
+refreshSavedQueries();
+$('sqlp-download').addEventListener('click',csvDownload);
+$('sqlp-import').addEventListener('click',importFiles);
+const dropzone=$('sqlp-dropzone');
+['dragenter','dragover'].forEach(type=>dropzone.addEventListener(type,e=>{e.preventDefault();dropzone.style.background='#f7f7f7';}));
+['dragleave','drop'].forEach(type=>dropzone.addEventListener(type,e=>{e.preventDefault();dropzone.style.background='#fff';}));
+dropzone.addEventListener('drop',e=>{const files=Array.from(e.dataTransfer?.files||[]).filter(f=>f.name.toLowerCase().endsWith('.csv'));if(!files.length){$('sqlp-import-status').textContent='Drop CSV files to import them.';return;}const dt=new DataTransfer();files.forEach(f=>dt.items.add(f));$('sqlp-files').files=dt.files;importFiles();});
+$('sqlp-render').addEventListener('click',drawChart);
+['sqlp-x','sqlp-y','sqlp-y-multi','sqlp-group','sqlp-extra','sqlp-title','sqlp-subtitle','sqlp-x-title','sqlp-y-title','sqlp-footnote','sqlp-sort','sqlp-labels','sqlp-gridlines','sqlp-legend'].forEach(id=>$(id).addEventListener('change',()=>{updateChartAvailability();drawChart();persistConfig();}));
+['sqlp-x-title','sqlp-y-title'].forEach(id=>$(id).addEventListener('input',()=>{$(id).dataset.custom='true';}));
+document.querySelectorAll('#sqlp [data-palette]').forEach(b=>b.addEventListener('click',()=>{setPalette(b.dataset.palette);drawChart();persistConfig();}));
+document.querySelectorAll('#sqlp [data-chart]').forEach(b=>{b.dataset.baseTitle=b.title;b.addEventListener('click',()=>{if(!b.disabled){selectChart(b.dataset.chart);updateChartAvailability();drawChart();persistConfig();}});});
+$('sqlp-copy-link').addEventListener('click',copyConfigLink);
+$('sqlp-svg').addEventListener('click',()=>{if(!state.chart||!state.chartOption)return;let svgChart;const host=document.createElement('div');host.style.cssText='position:fixed;left:-10000px;top:0;width:1200px;height:675px';document.body.appendChild(host);try{svgChart=echarts.init(host,null,{renderer:'svg',width:1200,height:675});svgChart.setOption(state.chartOption,true);const svg=svgChart.getDataURL({type:'svg',backgroundColor:'#fff'});const body=svg.includes(',')?decodeURIComponent(svg.slice(svg.indexOf(',')+1)):svg;downloadBlob(new Blob([body],{type:'image/svg+xml;charset=utf-8'}),'querynest-chart.svg');}catch(e){status('SVG export failed: '+(e.message||String(e)),true);}finally{if(svgChart)svgChart.dispose();host.remove();}});
+new ResizeObserver(()=>state.chart&&state.chart.resize()).observe($('sqlp-chart'));
+['sqlp-title','sqlp-subtitle','sqlp-x-title','sqlp-y-title','sqlp-footnote'].forEach(id=>$(id).addEventListener('input',()=>{if(id==='sqlp-title')$('sqlp-title').dataset.custom='true';if(id==='sqlp-x-title')$('sqlp-x-title').dataset.custom='true';if(id==='sqlp-y-title')$('sqlp-y-title').dataset.custom='true';if(state.chart)drawChart();persistConfig();}));
+$('sqlp-png').addEventListener('click',()=>{if(state.chart)downloadBlob(dataURItoBlob(state.chart.getDataURL({type:'png',pixelRatio:2,backgroundColor:'#ffffff'})),'querynest-chart.png');});
+$('sqlp-ppt').addEventListener('click',exportPpt);
+
+function dataURItoBlob(uri){const parts=uri.split(','),mime=parts[0].match(/:(.*?);/)[1],raw=atob(parts[1]),arr=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)arr[i]=raw.charCodeAt(i);return new Blob([arr],{type:mime});}
+document.querySelectorAll('#sqlp [data-sample]').forEach(b=>b.addEventListener('click',async()=>{try{if(!state.ready)await init();state.pendingConfig=null;await loadSample(b.dataset.sample);setQuery(examples.headcount);await run();}catch(e){status('Could not load sample: '+(e.message||String(e)),true);}}));
+status('Choose a sample, import a CSV, or run SQL to initialize DuckDB.');
+})();
+</script>
