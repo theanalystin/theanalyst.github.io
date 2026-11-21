@@ -57,11 +57,11 @@ jobs:
           cat /tmp/site.log
           exit 1
 
-      - name: Test responsive layout, chart types, and exports
-        run: node scripts/test-sql-playground.mjs
-
       - name: Test QueryNest SQLite browser application
         run: node scripts/test-querynest.mjs
+
+      - name: Test responsive layout, chart types, and exports
+        run: node scripts/test-sql-playground.mjs
 
       - name: Upload 375px and 1280px screenshots
         if: always()
