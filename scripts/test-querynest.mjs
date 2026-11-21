@@ -64,8 +64,8 @@ try {
     mimeType: 'text/csv',
     buffer: Buffer.from('channel,orders\nOnline,12\nRetail,8\nPartner,5\n')
   });
-  await page.waitForFunction(() => (document.querySelector('#query-status')?.textContent || '').startsWith('Query completed successfully'), null, { timeout: 30000 });
-  assert.ok(await page.locator('#table-list').textContent().then(t => t.includes('querynest_test')));
+  await page.waitForFunction(() => (document.querySelector('#table-list')?.textContent || '').includes('querynest_test'), null, { timeout: 30000 });
+  await page.waitForFunction(() => (document.querySelector('#row-count')?.textContent || '') === '3 rows', null, { timeout: 30000 });
   assert.equal(await page.locator('#table-result tbody tr').count(), 3);
 
   const dbDownload = page.waitForEvent('download');
