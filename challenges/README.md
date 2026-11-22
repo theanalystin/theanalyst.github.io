@@ -2,10 +2,8 @@
 
 Public challenge page: https://theanalyst.in/challenges/30-day-analytics-challenge/
 
-This Jekyll page provides:
-- 30 structured daily missions across business thinking, SQL/Power BI, investigation, and portfolio delivery.
-- Browser-local completion tracking (no account or server storage).
-- JSON progress export and reset.
-- Guidance to use only synthetic or public data in public portfolio work.
+Daily challenges:
+- [Day 1 — Diagnose a Slowing Business](https://theanalyst.in/challenges/daily/day-01/)
 
-Progress is stored in the visitor's browser using localStorage. It does not sync across devices.
+
+This Jekyll challenge series provides practical daily missions across business thinking, SQL, Power BI, analytics investigation, and executive communication. Use synthetic or public data only. Progress tracking on the main 30-day challenge page is browser-local and does not sync across devices.
