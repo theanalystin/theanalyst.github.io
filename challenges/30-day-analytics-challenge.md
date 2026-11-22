@@ -22,9 +22,9 @@ permalink: /challenges/30-day-analytics-challenge/
 .challenge .day{display:grid;grid-template-columns:76px 1fr;gap:14px;padding:14px 18px;border-top:1px solid #edf0f5}
 .challenge .day strong{color:#5266b1}
 .challenge .day p{margin:4px 0;color:#667085;font-size:14px;line-height:1.5}.challenge .day-link{display:grid;text-decoration:none;color:inherit;transition:background .15s;cursor:pointer;position:relative;z-index:1}.challenge .day-link:hover{background:#f8faff}.challenge .day-link:focus-visible{outline:3px solid #6478c6;outline-offset:-3px}.challenge .day-cta{display:inline-block;margin-top:10px;padding:9px 12px;border:1px solid #d5ddef;border-radius:7px;background:#f4f7ff;color:#425bb0;font-size:13px;font-weight:700;width:max-content}
-.challenge .tracker{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
-.challenge .check{display:flex;gap:8px;align-items:center;padding:10px;border:1px solid #e4e8ef;border-radius:8px;font-size:13px}
-.challenge input{accent-color:#5369bd}
+
+
+
 .challenge .callout{padding:18px;border-left:3px solid #6679c8;background:#f6f8ff;border-radius:0 9px 9px 0;line-height:1.65}
 .challenge a{color:#425bb0}
 .challenge .actions{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
@@ -97,14 +97,6 @@ permalink: /challenges/30-day-analytics-challenge/
 </div>
 </section>
 
-<section class="section">
-<h2>Progress tracker</h2>
-<p class="lead" style="font-size:14px">Your checkmarks are saved in this browser on this device. Use the export button to keep a backup.</p>
-<div class="progress"><span id="progressFill"></span></div>
-<p id="progressText" aria-live="polite">0 of 30 completed</p>
-<div class="tracker" id="tracker"></div>
-<div class="actions"><button class="primary" id="exportProgress">Export progress</button><button id="resetProgress">Reset checkmarks</button></div>
-</section>
 
 <section class="section">
 <h2>Definition of done</h2>
@@ -112,34 +104,4 @@ permalink: /challenges/30-day-analytics-challenge/
 <p><b>Start with Day 01.</b> Do not move to building a dashboard until you can explain the business question and how each KPI helps answer it.</p>
 <p><a href="https://github.com/theanalystin/theanalyst.github.io">View the source on GitHub</a></p>
 </section>
-</div>
-<script>
-(function(){
- const key='theanalyst-30day-challenge-v1';
- const tracker=document.getElementById('tracker');
- const fill=document.getElementById('progressFill');
- const text=document.getElementById('progressText');
- let done={};
- try{done=JSON.parse(localStorage.getItem(key)||'{}')||{}}catch(e){done={}}
- function render(){
-   tracker.innerHTML='';
-   for(let i=1;i<=30;i++){
-     const label=document.createElement('label');label.className='check';
-     const input=document.createElement('input');input.type='checkbox';input.checked=!!done[i];
-     input.addEventListener('change',()=>{done[i]=input.checked;localStorage.setItem(key,JSON.stringify(done));renderProgress()});
-     const span=document.createElement('span');span.textContent='Day '+String(i).padStart(2,'0');
-     label.append(input,span);tracker.append(label);
-   }
-   renderProgress();
- }
- function renderProgress(){const n=Object.values(done).filter(Boolean).length;text.textContent=n+' of 30 completed';fill.style.width=(n/30*100)+'%';}
- document.getElementById('exportProgress').addEventListener('click',()=>{
-   const blob=new Blob([JSON.stringify({challenge:'30-Day Analytics Challenge',exportedAt:new Date().toISOString(),completedDays:Object.keys(done).filter(k=>done[k]).map(Number)},null,2)],{type:'application/json'});
-   const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='analytics-challenge-progress.json';a.click();URL.revokeObjectURL(url);
- });
- document.getElementById('resetProgress').addEventListener('click',()=>{
-   if(confirm('Clear all saved checkmarks on this device?')){done={};localStorage.removeItem(key);render();}
- });
- render();
-})();
-</script>
+</div>>
