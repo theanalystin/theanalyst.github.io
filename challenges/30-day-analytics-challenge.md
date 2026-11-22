@@ -21,7 +21,7 @@ permalink: /challenges/30-day-analytics-challenge/
 .challenge .week h3{margin:0;padding:15px 18px;background:#f7f8fb;font-size:17px}
 .challenge .day{display:grid;grid-template-columns:76px 1fr;gap:14px;padding:14px 18px;border-top:1px solid #edf0f5}
 .challenge .day strong{color:#5266b1}
-.challenge .day p{margin:4px 0;color:#667085;font-size:14px;line-height:1.5}
+.challenge .day p{margin:4px 0;color:#667085;font-size:14px;line-height:1.5}.challenge .day-link{display:grid;text-decoration:none;color:inherit;transition:background .15s}.challenge .day-link:hover{background:#f8faff}.challenge .day-cta{display:inline-block;margin-top:6px;color:#425bb0;font-size:13px;font-weight:700}
 .challenge .tracker{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 .challenge .check{display:flex;gap:8px;align-items:center;padding:10px;border:1px solid #e4e8ef;border-radius:8px;font-size:13px}
 .challenge input{accent-color:#5369bd}
@@ -58,7 +58,7 @@ permalink: /challenges/30-day-analytics-challenge/
 <section class="section">
 <h2>Your 30 daily missions</h2>
 <div class="week"><h3>Week 1 · Think like a business analyst</h3>
-<div class="day"><strong>Day 01</strong><div><b>Frame the business problem</b><p>CEO says revenue looks fine but the business may be slowing. Define the problem, list 10 KPIs, 3 analyses, relevant dimensions, 5 possible causes, and a one-slide executive response.</p></div></div>
+<a class="day day-link" href="/challenges/daily/day-01/"><strong>Day 01</strong><div><b>Frame the business problem</b><p>CEO says revenue looks fine but the business may be slowing. Define the problem, list 10 KPIs, 3 analyses, relevant dimensions, 5 possible causes, and a one-slide executive response.</p><span class="day-cta">Open Day 1 challenge →</span></div></a>
 <div class="day"><strong>Day 02</strong><div><b>Design a KPI dictionary</b><p>Define 10 metrics with business meaning, formula, grain, owner, filters, caveats, and target direction.</p></div></div>
 <div class="day"><strong>Day 03</strong><div><b>Answer five questions with SQL</b><p>Query revenue trends, order counts, AOV, customer cohorts, and returns. Explain the grain and joins.</p></div></div>
 <div class="day"><strong>Day 04</strong><div><b>Investigate a performance decline</b><p>Compare periods and decompose change by volume, price/value, mix, customer, product, and region. Separate facts from hypotheses.</p></div></div>
