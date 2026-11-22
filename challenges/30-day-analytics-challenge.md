@@ -21,7 +21,7 @@ permalink: /challenges/30-day-analytics-challenge/
 .challenge .week h3{margin:0;padding:15px 18px;background:#f7f8fb;font-size:17px}
 .challenge .day{display:grid;grid-template-columns:76px 1fr;gap:14px;padding:14px 18px;border-top:1px solid #edf0f5}
 .challenge .day strong{color:#5266b1}
-.challenge .day p{margin:4px 0;color:#667085;font-size:14px;line-height:1.5}.challenge .day-link{display:grid;text-decoration:none;color:inherit;transition:background .15s}.challenge .day-link:hover{background:#f8faff}.challenge .day-cta{display:inline-block;margin-top:6px;color:#425bb0;font-size:13px;font-weight:700}
+.challenge .day p{margin:4px 0;color:#667085;font-size:14px;line-height:1.5}.challenge .day-link{display:grid;text-decoration:none;color:inherit;transition:background .15s;cursor:pointer;position:relative;z-index:1}.challenge .day-link:hover{background:#f8faff}.challenge .day-link:focus-visible{outline:3px solid #6478c6;outline-offset:-3px}.challenge .day-cta{display:inline-block;margin-top:10px;padding:9px 12px;border:1px solid #d5ddef;border-radius:7px;background:#f4f7ff;color:#425bb0;font-size:13px;font-weight:700;width:max-content}
 .challenge .tracker{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 .challenge .check{display:flex;gap:8px;align-items:center;padding:10px;border:1px solid #e4e8ef;border-radius:8px;font-size:13px}
 .challenge input{accent-color:#5369bd}
