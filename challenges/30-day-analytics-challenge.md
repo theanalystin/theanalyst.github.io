@@ -59,7 +59,7 @@ permalink: /challenges/30-day-analytics-challenge/
 <h2>Your 30 daily missions</h2>
 <div class="week"><h3>Week 1 · Think like a business analyst</h3>
 <a class="day day-link" href="/challenges/daily/day-01/"><strong>Day 01</strong><div><b>Frame the business problem</b><p>CEO says revenue looks fine but the business may be slowing. Define the problem, list 10 KPIs, 3 analyses, relevant dimensions, 5 possible causes, and a one-slide executive response.</p><span class="day-cta">Open Day 1 challenge →</span></div></a>
-<div class="day"><strong>Day 02</strong><div><b>Design a KPI dictionary</b><p>Define 10 metrics with business meaning, formula, grain, owner, filters, caveats, and target direction.</p></div></div>
+<a class="day day-link" href="/challenges/daily/day-02/"><strong>Day 02</strong><div><b>Design a KPI dictionary</b><p>Define 10 metrics with business meaning, formula, grain, owner, filters, caveats, and target direction.</p><span class="day-cta">Open Day 2 challenge →</span></div></a>
 <div class="day"><strong>Day 03</strong><div><b>Answer five questions with SQL</b><p>Query revenue trends, order counts, AOV, customer cohorts, and returns. Explain the grain and joins.</p></div></div>
 <div class="day"><strong>Day 04</strong><div><b>Investigate a performance decline</b><p>Compare periods and decompose change by volume, price/value, mix, customer, product, and region. Separate facts from hypotheses.</p></div></div>
 <div class="day"><strong>Day 05</strong><div><b>Challenge misleading metrics</b><p>Find five ways a metric can mislead: denominator shifts, mix changes, averages hiding segments, timing, and data quality.</p></div></div>
