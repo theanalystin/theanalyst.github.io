@@ -1,6 +1,6 @@
 {
-  "updated_utc": "2026-11-24T11:01:53.710179+00:00",
-  "updated_ist": "2026-11-24T16:31:53.710179+05:30",
+  "updated_utc": "2026-11-24T21:19:01.778052+00:00",
+  "updated_ist": "2026-11-25T02:49:01.778052+05:30",
   "provider": "Yahoo Finance chart endpoint",
   "source_url": "https://finance.yahoo.com/",
   "quotes": {
@@ -47,61 +47,61 @@
       "change": 0.0,
       "change_pct": 0.0,
       "currency": "INR",
-      "timestamp_utc": "2026-11-24T04:18:32+00:00"
+      "timestamp_utc": "2026-11-24T21:13:27+00:00"
     },
     "S&P 500": {
       "symbol": "^GSPC",
-      "price": 7237.17,
-      "previous_close": 6910.39,
-      "change": 326.77999999999975,
-      "change_pct": 4.728821383453028,
+      "price": 7201.09,
+      "previous_close": 7237.17,
+      "change": -36.07999999999993,
+      "change_pct": -0.4985374117230897,
       "currency": "USD",
-      "timestamp_utc": "2026-11-23T21:42:33+00:00"
+      "timestamp_utc": "2026-11-24T21:19:01+00:00"
     },
     "NASDAQ Composite": {
       "symbol": "^IXIC",
-      "price": 24089.559,
-      "previous_close": 22617.7,
-      "change": 1471.8590000000004,
-      "change_pct": 6.5075538184696065,
+      "price": 23733.535,
+      "previous_close": 24089.559,
+      "change": -356.02400000000125,
+      "change_pct": -1.4779182964702726,
       "currency": "USD",
-      "timestamp_utc": "2026-11-23T22:15:59+00:00"
+      "timestamp_utc": "2026-11-24T21:18:59+00:00"
     },
     "DOW JONES": {
       "symbol": "^DJI",
-      "price": 49595.31,
-      "previous_close": 48147.3,
-      "change": 1448.0099999999948,
-      "change_pct": 3.0074583621511377,
+      "price": 50018.7,
+      "previous_close": 49595.31,
+      "change": 423.3899999999994,
+      "change_pct": 0.8536895928264173,
       "currency": "USD",
-      "timestamp_utc": "2026-11-23T21:42:39+00:00"
+      "timestamp_utc": "2026-11-24T21:19:01+00:00"
     },
     "US VIX": {
       "symbol": "^VIX",
-      "price": 28.52,
+      "price": 26.33,
       "previous_close": 26.62,
-      "change": 1.8999999999999986,
-      "change_pct": 7.137490608564984,
+      "change": -0.2900000000000027,
+      "change_pct": -1.0894064613072978,
       "currency": "USD",
-      "timestamp_utc": "2026-11-24T10:46:46+00:00"
+      "timestamp_utc": "2026-11-24T21:03:46+00:00"
     },
     "US 10Y yield": {
       "symbol": "^TNX",
-      "price": 4.918,
-      "previous_close": 4.9119997,
-      "change": 0.0060003000000001805,
-      "change_pct": 0.12215595208607567,
+      "price": 4.904,
+      "previous_close": 4.918,
+      "change": -0.014000000000000234,
+      "change_pct": -0.28466856445710115,
       "currency": "USD",
-      "timestamp_utc": "2026-11-23T19:59:52+00:00"
+      "timestamp_utc": "2026-11-24T19:59:53+00:00"
     },
     "Dollar index": {
       "symbol": "DX-Y.NYB",
-      "price": 104.103,
+      "price": 103.824,
       "previous_close": 104.318,
-      "change": -0.2150000000000034,
-      "change_pct": -0.2061005770816191,
+      "change": -0.4939999999999998,
+      "change_pct": -0.47355202362008453,
       "currency": "USD",
-      "timestamp_utc": "2026-11-24T10:51:53+00:00"
+      "timestamp_utc": "2026-11-24T21:08:58+00:00"
     }
   },
   "errors": [],
