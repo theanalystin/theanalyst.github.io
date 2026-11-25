@@ -56,3 +56,42 @@ Finish with the CEO shortlist and governance memo.
 - Use public or synthetic data only; never include confidential employer or customer information.
 
 **Quality bar:** A KPI should be clear enough that two analysts can calculate it independently and reach the same result.
+
+
+## Sample Answer — Click to Reveal
+
+<details class="answer-reveal"><summary>Show Day 2 answer</summary><div class="answer-content">
+
+### 1. Example KPI dictionary
+
+| KPI | Definition / Formula | Grain | Owner | Filters / caveats | Direction |
+|---|---|---|---|---|---|
+| Net Sales | Gross sales − discounts | Order line, aggregated | Sales | Completed orders; exclude cancellations | Higher |
+| Revenue Growth % | (Current net sales − prior net sales) ÷ prior net sales | Month | Finance | Compare equivalent periods | Higher |
+| Completed Orders | Count of distinct completed order IDs | Order | Operations | Exclude pending/cancelled | Higher, if profitable |
+| AOV | Net sales ÷ completed orders | Order-period | Sales | Count each order once | Context-dependent |
+| Gross Profit | Net sales − cost of goods sold | Order line, aggregated | Finance | Cost coverage and timing must be consistent | Higher |
+| Gross Margin % | Gross profit ÷ net sales | Period | Finance | Define cost basis | Higher |
+| Active Customers | Distinct customers with a completed order | Customer-period | Marketing | Define activity window | Higher, with retention |
+| Repeat Customer Rate | Customers with 2+ completed orders in period ÷ active customers | Customer-period | CRM/Marketing | Define repeat window consistently | Higher |
+| Discount Rate | Discounts ÷ gross sales | Order line, aggregated | Sales/Finance | Define pre-discount gross sales | Lower, subject to strategy |
+| Unit Return Rate | Returned units ÷ units sold | Order line, aggregated | Operations | Aggregate return events before joining | Lower |
+
+### 2. CEO shortlist
+
+1. **Net Sales Growth:** establishes commercial momentum.
+2. **Gross Margin %:** ensures growth is economically healthy.
+3. **Repeat Customer Rate:** indicates customer relationship strength beyond one-time acquisition.
+
+### 3. Common definition conflicts
+
+- **Revenue:** Sales uses gross sales while Finance uses net sales after discounts. Resolve by publishing both with explicit names.
+- **Orders:** Operations includes all orders while Finance excludes pending and cancelled orders. Define completed-order status centrally.
+- **Returns:** Teams count return events, returned units, or returned orders. Publish separate event, unit, and order return measures with explicit denominators.
+
+### 4. Governance memo (sample)
+
+Create a centrally owned KPI dictionary with a named business owner and data steward for every metric. Agree on formula, grain, exclusions, refresh timing, and approved dimensions before publishing reports. Store definitions in one shared location, version changes, and require Finance plus the relevant operational owner to approve material changes. Reconcile critical KPIs across source systems monthly and document known limitations. Reports should use certified measures rather than locally recreated formulas.
+
+**Note:** Owners and target directions are illustrative; adapt them to the organization's accountability model and business strategy.
+</div></details>
