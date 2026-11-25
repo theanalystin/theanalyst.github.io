@@ -117,3 +117,142 @@ Submit in this order:
 - Keep the SQL reproducible: another analyst should be able to run it and understand the assumptions.
 
 **Quality bar:** Correct totals matter more than clever syntax. Every query must answer a business question, preserve the intended grain, and support a defensible interpretation.
+
+
+## Sample Answer — Click to Reveal
+
+<details class="answer-reveal"><summary>Show Day 3 answer and SQL pattern</summary><div class="answer-content">
+
+**Assumptions:** PostgreSQL; completed status is exactly `'completed'`; amounts share one currency; `discount_amount` is a line-level amount. This is a reference pattern—validate names and business rules against your dataset.
+
+### Shared sales and return base
+
+```sql
+WITH completed_orders AS (
+  SELECT order_id, customer_id, order_date, region_id
+  FROM orders
+  WHERE order_status = 'completed'
+),
+returns_by_line AS (
+  SELECT order_item_id,
+         SUM(quantity_returned) AS units_returned,
+         SUM(refund_amount) AS refund_value
+  FROM returns
+  GROUP BY order_item_id
+),
+line_facts AS (
+  SELECT o.order_id, o.customer_id, o.order_date, o.region_id,
+         oi.order_item_id, oi.product_id, oi.quantity,
+         oi.quantity * oi.unit_price AS gross_sales,
+         oi.discount_amount,
+         oi.quantity * oi.unit_price - oi.discount_amount AS net_sales,
+         COALESCE(r.units_returned, 0) AS units_returned,
+         COALESCE(r.refund_value, 0) AS refund_value
+  FROM completed_orders o
+  JOIN order_items oi ON oi.order_id = o.order_id
+  LEFT JOIN returns_by_line r ON r.order_item_id = oi.order_item_id
+)
+SELECT * FROM line_facts;
+```
+
+### 1. Monthly sales trend
+
+```sql
+WITH monthly AS (
+  SELECT date_trunc('month', order_date)::date AS month,
+         SUM(gross_sales) AS gross_sales,
+         SUM(discount_amount) AS discounts,
+         SUM(net_sales) AS net_sales
+  FROM line_facts
+  GROUP BY 1
+)
+SELECT *,
+       (net_sales - LAG(net_sales) OVER (ORDER BY month))
+       / NULLIF(LAG(net_sales) OVER (ORDER BY month), 0) AS mom_growth
+FROM monthly
+ORDER BY month;
+```
+
+### 2. Orders, customers and AOV by month and region
+
+```sql
+SELECT date_trunc('month', order_date)::date AS month,
+       region_id, COUNT(DISTINCT order_id) AS completed_orders,
+       COUNT(DISTINCT customer_id) AS customers,
+       SUM(net_sales) AS net_sales,
+       SUM(net_sales) / NULLIF(COUNT(DISTINCT order_id), 0) AS aov
+FROM line_facts
+GROUP BY 1, 2 ORDER BY 1, 2;
+```
+
+### 3. Monthly customer cohort retention
+
+```sql
+WITH customer_months AS (
+  SELECT DISTINCT customer_id,
+         date_trunc('month', order_date)::date AS activity_month
+  FROM line_facts
+),
+cohorts AS (
+  SELECT customer_id, MIN(activity_month) AS cohort_month
+  FROM customer_months GROUP BY customer_id
+),
+cohort_activity AS (
+  SELECT c.cohort_month, a.activity_month,
+         ((EXTRACT(YEAR FROM a.activity_month) - EXTRACT(YEAR FROM c.cohort_month)) * 12
+          + EXTRACT(MONTH FROM a.activity_month) - EXTRACT(MONTH FROM c.cohort_month))::int AS month_number,
+         COUNT(DISTINCT a.customer_id) AS retained_customers
+  FROM customer_months a JOIN cohorts c USING (customer_id)
+  GROUP BY 1, 2, 3
+),
+cohort_sizes AS (
+  SELECT cohort_month, COUNT(*) AS cohort_size FROM cohorts GROUP BY 1
+)
+SELECT a.cohort_month, a.month_number, s.cohort_size,
+       a.retained_customers,
+       a.retained_customers::numeric / NULLIF(s.cohort_size, 0) AS retention_rate
+FROM cohort_activity a JOIN cohort_sizes s USING (cohort_month)
+ORDER BY 1, 2;
+```
+
+### 4. Returns by product category
+
+```sql
+SELECT p.category, SUM(f.quantity) AS units_sold,
+       SUM(f.units_returned) AS units_returned,
+       SUM(f.units_returned)::numeric / NULLIF(SUM(f.quantity), 0) AS unit_return_rate,
+       SUM(f.refund_value) AS refund_value
+FROM line_facts f JOIN products p USING (product_id)
+GROUP BY p.category ORDER BY unit_return_rate DESC;
+```
+
+### 5. Region/category monthly comparison
+
+```sql
+WITH segment_month AS (
+  SELECT date_trunc('month', f.order_date)::date AS month,
+         f.region_id, p.category,
+         SUM(f.net_sales) AS net_sales,
+         COUNT(DISTINCT f.order_id) AS orders,
+         SUM(f.units_returned)::numeric / NULLIF(SUM(f.quantity), 0) AS unit_return_rate
+  FROM line_facts f JOIN products p USING (product_id)
+  GROUP BY 1, 2, 3
+)
+SELECT *,
+       net_sales - LAG(net_sales) OVER
+         (PARTITION BY region_id, category ORDER BY month) AS sales_change,
+       unit_return_rate - LAG(unit_return_rate) OVER
+         (PARTITION BY region_id, category ORDER BY month) AS return_rate_change
+FROM segment_month ORDER BY month, region_id, category;
+```
+
+### Validation checks
+
+- Confirm `orders.order_id` and `order_items.order_item_id` are unique.
+- Check that return events are aggregated to one row per order line before joining.
+- Reconcile total completed order count against a direct count from `orders`.
+- Reconcile gross sales, discounts, and net sales to a separately calculated order-line total.
+- Flag returned units greater than sold units for review; do not silently cap them.
+
+**Interpretation:** SQL patterns produce metrics, not findings by themselves. Your two priority segments must be selected from your actual result set; no region or category can be named without data.
+</div></details>
