@@ -100,3 +100,55 @@ Submit in this order:
 - Use synthetic or public data only. Never publish confidential employer or customer information.
 
 **Day 4 standard:** Do not stop at “sales declined.” Explain how much changed, where the change came from, what evidence supports the explanation, and what should happen next.
+
+
+## Sample Answer — Click to Reveal
+
+<details class="answer-reveal"><summary>Show Day 4 sample analysis and answer framework</summary><div class="answer-content">
+
+**Important:** No dataset or actual result extracts are supplied with this challenge. The example below shows the calculation method and a model executive response, not fabricated business findings.
+
+### 1. Baseline scorecard
+
+| KPI | Current complete month | Previous complete month | Change |
+|---|---:|---:|---:|
+| Net sales | Pull from dataset | Pull from dataset | Current − previous |
+| Completed orders | Pull from dataset | Pull from dataset | Current − previous |
+| Unique customers | Pull from dataset | Pull from dataset | Current − previous |
+| AOV | Net sales ÷ orders | Net sales ÷ orders | Current vs previous % |
+| Gross margin % | Gross profit ÷ net sales | Same formula | Percentage-point change |
+| Discount rate | Discounts ÷ gross sales | Same formula | Percentage-point change |
+| Unit return rate | Returned units ÷ units sold | Same formula | Percentage-point change |
+
+### 2. Volume and AOV decomposition
+
+Let previous orders = (O_0), previous AOV = (A_0), current orders = (O_1), and current AOV = (A_1).
+
+- Previous net sales = (O_0 \times A_0)
+- Current net sales = (O_1 \times A_1)
+- Total change = (O_1A_1 - O_0A_0)
+- Order-volume effect (using previous AOV) = ((O_1-O_0) \times A_0)
+- AOV effect (using current order volume) = (O_1 \times (A_1-A_0))
+
+These two effects add exactly to the total change using this sequential convention. State the convention because an alternative order of calculation allocates the interaction differently.
+
+### 3. Segment contribution
+
+Calculate each segment's current net sales minus prior-period net sales. Rank by the most negative absolute currency change, not percentage decline alone. Check that segment contributions reconcile to the total change and that segments do not overlap.
+
+### 4. Example hypothesis log
+
+| Hypothesis | Evidence to test | What would weaken it? |
+|---|---|---|
+| Fewer purchasing customers | Unique customers and order count decline | Customers stable or increasing |
+| Basket value weakened | AOV or units/order decline | AOV stable or higher |
+| Promotions eroded value | Discount rate rises while margin falls | Discount rate and margin stable |
+| Returns worsened | Unit return rate/refund value rises | Return measures stable or lower |
+| Mix shifted | Category/region contribution changes | Mix shares remain stable |
+
+### 5. Model executive brief
+
+“Net sales declined versus the prior complete month. We decomposed the movement into order-volume and AOV effects, then ranked region/category/customer segments by absolute contribution. The two largest negative contributors should be prioritized for validation against customer activity, product mix, discounting, and returns. The next action is to review those segments with their operational owners and confirm whether the pattern persists in a comparable period. This is descriptive evidence, not proof of cause; any pricing, marketing, or inventory intervention should follow a targeted validation.”
+
+Replace generic references with your measured results before publishing a portfolio case study.
+</div></details>
