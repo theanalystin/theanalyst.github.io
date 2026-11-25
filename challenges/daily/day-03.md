@@ -121,7 +121,7 @@ Submit in this order:
 
 ## Sample Answer — Click to Reveal
 
-<details class="answer-reveal"><summary>Show Day 3 answer and SQL pattern</summary><div class="answer-content">
+<details class="answer-reveal"><summary>Show Day 3 answer and SQL pattern</summary><div class="answer-content" markdown="1">
 
 **Assumptions:** PostgreSQL; completed status is exactly `'completed'`; amounts share one currency; `discount_amount` is a line-level amount. This is a reference pattern—validate names and business rules against your dataset.
 
