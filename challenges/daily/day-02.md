@@ -60,7 +60,7 @@ Finish with the CEO shortlist and governance memo.
 
 ## Sample Answer — Click to Reveal
 
-<details class="answer-reveal"><summary>Show Day 2 answer</summary><div class="answer-content">
+<details class="answer-reveal"><summary>Show Day 2 answer</summary><div class="answer-content" markdown="1">
 
 ### 1. Example KPI dictionary
 
