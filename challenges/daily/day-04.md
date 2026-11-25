@@ -104,7 +104,7 @@ Submit in this order:
 
 ## Sample Answer — Click to Reveal
 
-<details class="answer-reveal"><summary>Show Day 4 sample analysis and answer framework</summary><div class="answer-content">
+<details class="answer-reveal"><summary>Show Day 4 sample analysis and answer framework</summary><div class="answer-content" markdown="1">
 
 **Important:** No dataset or actual result extracts are supplied with this challenge. The example below shows the calculation method and a model executive response, not fabricated business findings.
 
