@@ -1,53 +1,53 @@
 {
-  "updated_utc": "2026-11-26T09:37:35.051899+00:00",
-  "updated_ist": "2026-11-26T15:07:35.051899+05:30",
+  "updated_utc": "2026-11-26T19:41:12.398172+00:00",
+  "updated_ist": "2026-11-27T01:11:12.398172+05:30",
   "provider": "Yahoo Finance chart endpoint",
   "source_url": "https://finance.yahoo.com/",
   "quotes": {
     "NIFTY 50": {
       "symbol": "^NSEI",
-      "price": 25890.95,
+      "price": 25884.5,
       "previous_close": 25349.7,
-      "change": 541.25,
-      "change_pct": 2.1351337491173465,
+      "change": 534.7999999999993,
+      "change_pct": 2.1096896610216267,
       "currency": "INR",
-      "timestamp_utc": "2026-11-26T09:37:34+00:00"
+      "timestamp_utc": "2026-11-26T10:01:27+00:00"
     },
     "SENSEX": {
       "symbol": "^BSESN",
-      "price": 84364.93,
+      "price": 84328.59,
       "previous_close": 82436.0,
-      "change": 1928.929999999993,
-      "change_pct": 2.339912174292776,
+      "change": 1892.5899999999965,
+      "change_pct": 2.2958294919695237,
       "currency": "INR",
-      "timestamp_utc": "2026-11-26T09:22:33+00:00"
+      "timestamp_utc": "2026-11-26T10:02:28+00:00"
     },
     "BANK NIFTY": {
       "symbol": "^NSEBANK",
-      "price": 63555.85,
+      "price": 63535.3,
       "previous_close": 62585.4,
-      "change": 970.4499999999971,
-      "change_pct": 1.5506012584404623,
+      "change": 949.9000000000015,
+      "change_pct": 1.5177661243676663,
       "currency": "INR",
-      "timestamp_utc": "2026-11-26T09:37:34+00:00"
+      "timestamp_utc": "2026-11-26T10:01:28+00:00"
     },
     "INDIA VIX": {
       "symbol": "^INDIAVIX",
-      "price": 16.85,
+      "price": 16.835,
       "previous_close": 17.7,
-      "change": -0.8499999999999979,
-      "change_pct": -4.802259887005638,
+      "change": -0.8649999999999984,
+      "change_pct": -4.887005649717505,
       "currency": "INR",
-      "timestamp_utc": "2026-11-26T09:37:34+00:00"
+      "timestamp_utc": "2026-11-26T10:13:33+00:00"
     },
     "USD/INR": {
       "symbol": "INR=X",
-      "price": 92.4675,
+      "price": 92.435,
       "previous_close": 92.22,
-      "change": 0.24750000000000227,
-      "change_pct": 0.2683799609629172,
+      "change": 0.2150000000000034,
+      "change_pct": 0.23313814790718218,
       "currency": "INR",
-      "timestamp_utc": "2026-11-26T09:37:12+00:00"
+      "timestamp_utc": "2026-11-26T19:15:33+00:00"
     },
     "S&P 500": {
       "symbol": "^GSPC",
@@ -78,12 +78,12 @@
     },
     "US VIX": {
       "symbol": "^VIX",
-      "price": 27.27,
+      "price": 26.8,
       "previous_close": 28.29,
-      "change": -1.0199999999999996,
-      "change_pct": -3.6055143160127243,
+      "change": -1.4899999999999984,
+      "change_pct": -5.266878755744074,
       "currency": "USD",
-      "timestamp_utc": "2026-11-26T09:22:31+00:00"
+      "timestamp_utc": "2026-11-26T16:30:00+00:00"
     },
     "US 10Y yield": {
       "symbol": "^TNX",
@@ -96,12 +96,12 @@
     },
     "Dollar index": {
       "symbol": "DX-Y.NYB",
-      "price": 103.684,
+      "price": 103.786,
       "previous_close": 103.665,
-      "change": 0.018999999999991246,
-      "change_pct": 0.018328268943222155,
+      "change": 0.12099999999999511,
+      "change_pct": 0.11672213379635857,
       "currency": "USD",
-      "timestamp_utc": "2026-11-26T09:27:34+00:00"
+      "timestamp_utc": "2026-11-26T19:31:13+00:00"
     }
   },
   "errors": [],
