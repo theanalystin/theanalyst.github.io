@@ -1,6 +1,6 @@
 {
-  "updated_utc": "2026-11-25T15:41:47.331092+00:00",
-  "updated_ist": "2026-11-25T21:11:47.331092+05:30",
+  "updated_utc": "2026-11-26T00:27:48.885403+00:00",
+  "updated_ist": "2026-11-26T05:57:48.885403+05:30",
   "provider": "Yahoo Finance chart endpoint",
   "source_url": "https://finance.yahoo.com/",
   "quotes": {
@@ -43,65 +43,65 @@
     "USD/INR": {
       "symbol": "INR=X",
       "price": 92.22,
-      "previous_close": 92.9,
-      "change": -0.6800000000000068,
-      "change_pct": -0.7319698600645929,
+      "previous_close": 92.22,
+      "change": 0.0,
+      "change_pct": 0.0,
       "currency": "INR",
-      "timestamp_utc": "2026-11-25T14:44:08+00:00"
+      "timestamp_utc": "2026-11-25T22:30:09+00:00"
     },
     "S&P 500": {
       "symbol": "^GSPC",
-      "price": 7009.37,
+      "price": 7182.78,
       "previous_close": 7201.09,
-      "change": -191.72000000000025,
-      "change_pct": -2.662374723826535,
+      "change": -18.3100000000004,
+      "change_pct": -0.2542670623475113,
       "currency": "USD",
-      "timestamp_utc": "2026-11-25T15:41:46+00:00"
+      "timestamp_utc": "2026-11-25T21:32:06+00:00"
     },
     "NASDAQ Composite": {
       "symbol": "^IXIC",
-      "price": 22785.057,
+      "price": 23585.803,
       "previous_close": 23733.535,
-      "change": -948.4779999999992,
-      "change_pct": -3.9963621095635316,
+      "change": -147.73199999999997,
+      "change_pct": -0.622461002964792,
       "currency": "USD",
-      "timestamp_utc": "2026-11-25T15:41:46+00:00"
+      "timestamp_utc": "2026-11-25T22:15:59+00:00"
     },
     "DOW JONES": {
       "symbol": "^DJI",
-      "price": 49262.96,
+      "price": 50182.95,
       "previous_close": 50018.7,
-      "change": -755.739999999998,
-      "change_pct": -1.510914917820731,
+      "change": 164.25,
+      "change_pct": 0.32837718693208745,
       "currency": "USD",
-      "timestamp_utc": "2026-11-25T15:41:46+00:00"
+      "timestamp_utc": "2026-11-25T21:32:17+00:00"
     },
     "US VIX": {
       "symbol": "^VIX",
-      "price": 34.04,
+      "price": 28.29,
       "previous_close": 26.36,
-      "change": 7.68,
-      "change_pct": 29.1350531107739,
+      "change": 1.9299999999999997,
+      "change_pct": 7.321699544764794,
       "currency": "USD",
-      "timestamp_utc": "2026-11-25T15:26:46+00:00"
+      "timestamp_utc": "2026-11-25T21:15:01+00:00"
     },
     "US 10Y yield": {
       "symbol": "^TNX",
-      "price": 4.82,
+      "price": 4.848,
       "previous_close": 4.9040003,
-      "change": -0.08400029999999958,
-      "change_pct": -1.7128934514950904,
+      "change": -0.0560003,
+      "change_pct": -1.1419310068149875,
       "currency": "USD",
-      "timestamp_utc": "2026-11-25T15:26:43+00:00"
+      "timestamp_utc": "2026-11-25T19:59:53+00:00"
     },
     "Dollar index": {
       "symbol": "DX-Y.NYB",
-      "price": 103.966,
-      "previous_close": 103.814,
-      "change": 0.15200000000000102,
-      "change_pct": 0.14641570501088585,
+      "price": 103.696,
+      "previous_close": 103.665,
+      "change": 0.0309999999999917,
+      "change_pct": 0.02990401774947349,
       "currency": "USD",
-      "timestamp_utc": "2026-11-25T15:31:46+00:00"
+      "timestamp_utc": "2026-11-25T23:04:59+00:00"
     }
   },
   "errors": [],
