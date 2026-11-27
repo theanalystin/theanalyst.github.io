@@ -1,6 +1,6 @@
 {
-  "updated_utc": "2026-11-26T19:41:12.398172+00:00",
-  "updated_ist": "2026-11-27T01:11:12.398172+05:30",
+  "updated_utc": "2026-11-27T02:54:22.812941+00:00",
+  "updated_ist": "2026-11-27T08:24:22.812941+05:30",
   "provider": "Yahoo Finance chart endpoint",
   "source_url": "https://finance.yahoo.com/",
   "quotes": {
@@ -43,11 +43,11 @@
     "USD/INR": {
       "symbol": "INR=X",
       "price": 92.435,
-      "previous_close": 92.22,
-      "change": 0.2150000000000034,
-      "change_pct": 0.23313814790718218,
+      "previous_close": 92.435,
+      "change": 0.0,
+      "change_pct": 0.0,
       "currency": "INR",
-      "timestamp_utc": "2026-11-26T19:15:33+00:00"
+      "timestamp_utc": "2026-11-26T22:32:45+00:00"
     },
     "S&P 500": {
       "symbol": "^GSPC",
@@ -96,12 +96,12 @@
     },
     "Dollar index": {
       "symbol": "DX-Y.NYB",
-      "price": 103.786,
+      "price": 103.66,
       "previous_close": 103.665,
-      "change": 0.12099999999999511,
-      "change_pct": 0.11672213379635857,
+      "change": -0.005000000000009663,
+      "change_pct": -0.004823228669280532,
       "currency": "USD",
-      "timestamp_utc": "2026-11-26T19:31:13+00:00"
+      "timestamp_utc": "2026-11-27T02:44:21+00:00"
     }
   },
   "errors": [],
