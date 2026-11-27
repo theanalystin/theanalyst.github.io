@@ -63,7 +63,7 @@ permalink: /challenges/30-day-analytics-challenge/
 <a class="day day-link" href="/challenges/daily/day-03/"><strong>Day 03</strong><div><b>Answer five questions with SQL</b><p>Query revenue trends, order counts, AOV, customer cohorts, and returns. Explain the grain and joins.</p><span class="day-cta">Open Day 3 challenge →</span></div></a>
 <a class="day day-link" href="/challenges/daily/day-04/"><strong>Day 04</strong><div><b>Investigate a performance decline</b><p>Compare periods and decompose change by volume, price/value, mix, customer, product, and region. Separate facts from hypotheses.</p><span class="day-cta">Open Day 4 challenge →</span></div></a>
 <a class="day day-link" href="/challenges/daily/day-05/"><strong>Day 05</strong><div><b>Challenge misleading metrics</b><p>Audit five KPIs for denominator shifts, mix changes, averages hiding segments, timing, and data quality.</p><span class="day-cta">Open Day 5 challenge →</span></div></a>
-<div class="day"><strong>Day 06</strong><div><b>Design the data model</b><p>Sketch a star schema. Define fact grain, dimensions, keys, relationships, and slowly changing attributes where relevant.</p></div></div>
+<a class="day day-link" href="/challenges/daily/day-06/"><strong>Day 06</strong><div><b>Design a reliable star schema</b><p>Model sales and returns with explicit fact grain, conformed dimensions, date roles, and validation checks.</p><span class="day-cta">Open Day 6 challenge →</span></div></a>
 <div class="day"><strong>Day 07</strong><div><b>Present a five-minute briefing</b><p>Summarize the business question, evidence, caveats, and recommended next action. Include one slide or one-page memo.</p></div></div>
 </div>
 <div class="week"><h3>Week 2 · Build with SQL and Power BI</h3>
