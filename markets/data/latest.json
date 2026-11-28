@@ -1,6 +1,6 @@
 {
-  "updated_utc": "2026-11-28T03:57:12.689198+00:00",
-  "updated_ist": "2026-11-28T09:27:12.689198+05:30",
+  "updated_utc": "2026-11-28T13:07:59.397809+00:00",
+  "updated_ist": "2026-11-28T18:37:59.397809+05:30",
   "provider": "Yahoo Finance chart endpoint",
   "source_url": "https://finance.yahoo.com/",
   "quotes": {
@@ -16,9 +16,9 @@
     "SENSEX": {
       "symbol": "^BSESN",
       "price": 83339.26,
-      "previous_close": 84328.59,
-      "change": -989.3300000000017,
-      "change_pct": -1.1731845629103983,
+      "previous_close": 84328.6,
+      "change": -989.3400000000111,
+      "change_pct": -1.1731962821628854,
       "currency": "INR",
       "timestamp_utc": "2026-11-27T10:02:25+00:00"
     },
@@ -34,9 +34,9 @@
     "INDIA VIX": {
       "symbol": "^INDIAVIX",
       "price": 16.545,
-      "previous_close": 16.835,
-      "change": -0.28999999999999915,
-      "change_pct": -1.7226017226017174,
+      "previous_close": 16.84,
+      "change": -0.29499999999999815,
+      "change_pct": -1.7517814726840748,
       "currency": "INR",
       "timestamp_utc": "2026-11-27T10:13:24+00:00"
     },
@@ -70,9 +70,9 @@
     "DOW JONES": {
       "symbol": "^DJI",
       "price": 50774.94,
-      "previous_close": 50182.95,
-      "change": 591.9900000000052,
-      "change_pct": 1.179663610847918,
+      "previous_close": 50182.9,
+      "change": 592.0400000000009,
+      "change_pct": 1.1797644217452576,
       "currency": "USD",
       "timestamp_utc": "2026-11-27T18:38:45+00:00"
     },
